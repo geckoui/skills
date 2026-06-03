@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIPortal", "Toast", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "GeckoUIPortal", "Toast", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "1.0.0"
 ---
 
@@ -28,16 +28,33 @@ For Tailwind CSS v4 projects, import inside `@layer`:
 }
 ```
 
-Add `GeckoUIPortal` to your layout (required for Dialog, Drawer, ConfirmDialog, Toast):
+Wrap your app with `GeckoUIProvider` (required for Dialog, Drawer, ConfirmDialog, Toast). Place it **below** your own context providers so overlays can read those contexts:
 
 ```tsx
-import { GeckoUIPortal } from "@geckoui/geckoui";
+import { GeckoUIProvider } from "@geckoui/geckoui";
 
-<body>
-  {children}
-  <GeckoUIPortal />
-</body>;
+// app/layout.tsx
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <AuthProvider>
+          <GeckoUIProvider>
+            {children}
+          </GeckoUIProvider>
+        </AuthProvider>
+      </body>
+    </html>
+  );
+}
 ```
+
+**Migration from GeckoUIPortal:** Replace the self-closing `<GeckoUIPortal />` with `<GeckoUIProvider>{children}</GeckoUIProvider>`. Toast options move to `<GeckoUIProvider toastOptions={...}>`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | — | Your app tree |
+| `toastOptions` | `ToasterProps` | `{}` | Options for sonner's Toaster |
 
 ## Components
 
@@ -194,8 +211,10 @@ Extends `TextareaAutosizeProps`.
 
 ### Dialog
 
+`Dialog.show()` pushes onto the overlay stack and returns an `id`. Multiple dialogs can be stacked; only the topmost responds to Esc/click-outside.
+
 ```tsx
-Dialog.show({
+const id = Dialog.show({
   content: ({ dismiss }) => (
     <div>
       <h3>Title</h3>
@@ -206,6 +225,20 @@ Dialog.show({
   className: "max-w-md",
   dismissOnEsc: true,
   dismissOnOutsideClick: true
+});
+
+Dialog.dismiss(id);  // close specific dialog
+Dialog.dismiss();    // close topmost overlay
+```
+
+Dialog content can read React context provided above `GeckoUIProvider`:
+
+```tsx
+Dialog.show({
+  content: () => {
+    const { user } = useContext(AuthContext);
+    return <p>Hello, {user.name}</p>;
+  }
 });
 ```
 
@@ -254,10 +287,20 @@ ConfirmDialog.show({
 
 ### Drawer
 
+Controlled JSX usage:
+
 ```tsx
 <Drawer open={isOpen} handleClose={() => setOpen(false)} placement="right">
   <div className="p-6">Drawer content</div>
 </Drawer>
+```
+
+Imperative API (returns `id`, stackable):
+
+```tsx
+const id = Drawer.show(<DrawerContent />, { placement: "right", allowClickOutside: true });
+Drawer.dismiss(id);  // close specific drawer
+Drawer.dismiss();    // close topmost overlay
 ```
 
 **Built-in styles:** `bg-surface-primary`, `shadow-xl`, `overflow-y-auto`, no padding. `max-w-md` for left/right, `max-h-[50%]` for top/bottom. Override via `className`.
