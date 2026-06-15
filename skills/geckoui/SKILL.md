@@ -343,11 +343,7 @@ Drawer.dismiss();    // close topmost overlay
 ### Calendar
 
 ```tsx
-// Single date
 <Calendar selectedDate={date} onSelectDate={setDate} />
-
-// Date range
-<Calendar mode="range" selectedRange={range} onSelectRange={setRange} numberOfMonths={2} />
 ```
 
 ### DateInput / DateRangeInput
@@ -355,14 +351,14 @@ Drawer.dismiss();    // close topmost overlay
 ```tsx
 <DateInput value={date} onChange={setDate} format="MM/DD/YYYY" />
 <DateInput value={date} onChange={setDate} disabled />
-<DateRangeInput value={range} onChange={setRange} numberOfMonths={2} />
+<DateRangeInput value={range} onChange={setRange} />
 ```
 
 | Prop                   | Type                                                             | Default          |
 | ---------------------- | ---------------------------------------------------------------- | ---------------- |
 | `value`                | `string \| null` (DateInput) / `DateRange` (Range)               | -                |
 | `onChange`             | `(v: string \| null) => void` / `(v: DateRange \| null) => void` | -                |
-| `format`               | `"DD/MM/YYYY" \| "MM/DD/YYYY" \| "YYYY/MM/DD"`                   | -                |
+| `format`               | `"DD/MM/YYYY" \| "MM/DD/YYYY" \| "YYYY-MM-DD"`                   | -                |
 | `separator`            | `string`                                                         | -                |
 | `rangeSeparator`       | `string` (DateRangeInput only)                                   | -                |
 | `placeholder`          | `string`                                                         | -                |
@@ -376,7 +372,6 @@ Drawer.dismiss();    // close topmost overlay
 | `hideCalendar`         | `boolean`                                                        | `false`          |
 | `calendarPlacement`    | `Placement`                                                      | `"bottom-start"` |
 | `floatingStrategy`     | `Strategy`                                                       | -                |
-| `numberOfMonths`       | `1 \| 2` (DateRangeInput only)                                   | -                |
 | `className`            | `string`                                                         | -                |
 | `wrapperClassName`     | `string`                                                         | -                |
 | `calendarClassName`    | `string`                                                         | -                |

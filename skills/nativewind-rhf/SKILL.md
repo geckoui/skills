@@ -219,7 +219,6 @@ Wraps `DateRangeInput`. Stores `DateRange | null` on the form field.
 ```tsx
 <RHFDateRangeInput
   name="vacation"
-  numberOfMonths={2}
   rules={{ validate: (v) => (v?.from && v?.to ? true : "Pick a start and end") }}
 />
 ```
