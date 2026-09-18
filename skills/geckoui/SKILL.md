@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Skeleton component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -737,6 +737,51 @@ in a schema.
 <Spinner />
 <Spinner className="stroke-red-500" />
 ```
+
+### Skeleton
+
+A placeholder that holds the space content will take while it loads. Size it with
+`className` the way you would size the real thing, so the page does not move when the
+content arrives.
+
+```tsx
+<Skeleton />
+<Skeleton lines={3} />
+<Skeleton shape="circle" className="size-12" />
+<Skeleton shape="rounded" className="h-24 w-40" />
+```
+
+| Prop        | Type                                 | Default    |
+| ----------- | ------------------------------------ | ---------- |
+| `shape`     | `"text" \| "rounded" \| "circle"`    | `"text"`   |
+| `animation` | `"pulse" \| "wave" \| "none"`        | `"pulse"`  |
+| `lines`     | `number`                             | `1`        |
+| `loading`   | `boolean`                            | `true`     |
+| `children`  | `ReactNode`                          | -          |
+
+Extends `HTMLAttributes<HTMLDivElement>`. Uses `data-shape` and `data-animation`.
+
+There are no `width` and `height` props. Size it through `className`. A `text` skeleton
+takes its height from the current font size, and `lines` draws a paragraph with the last
+line short.
+
+`loading` lets it wrap the real thing instead of leaving a ternary at the call site:
+
+```tsx
+<Skeleton loading={isLoading} lines={2}>
+  <p>{user.bio}</p>
+</Skeleton>
+```
+
+Children are never rendered while loading, so nothing inside has to guard against data
+that has not arrived. Once loading is over the wrapper is gone too, leaving only your own
+markup.
+
+Both animations are dropped under `prefers-reduced-motion`, so `animation="none"` is for
+when you want it still for everyone.
+
+**Which one to reach for:** `Spinner` for work with no shape to hold, like a button that is
+submitting. `Skeleton` when you know the shape of what is coming.
 
 ### Label / InputError
 
