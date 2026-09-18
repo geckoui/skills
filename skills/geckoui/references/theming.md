@@ -78,21 +78,6 @@ These control buttons, focus rings, active states, and all accent colors.
 }
 ```
 
-### Semantic Colors
-
-Status colours, shared by Toast, Alert and Badge. New in v2.
-
-```css
-:root {
-  --color-success: oklch(0.6271 0.1699 149.21);
-  --color-error: oklch(0.6368 0.2078 25.33);
-  --color-warning: oklch(0.6685 0.1626 58.32);
-  --color-info: oklch(0.6231 0.188 259.81);
-}
-```
-
-These are lifted in dark mode, because the light values sit too dark on a dark surface.
-
 ### Scrollbar Colors
 
 These use the `--gecko-ui-` prefix (not Tailwind utilities):
@@ -143,43 +128,6 @@ Apply `.dark` class to root element. Override the same variables:
 ```
 
 **Note:** Primary colors (50-950) are NOT overridden in dark mode by default. Override them if your brand color needs dark mode adjustment.
-
-## Component Variables
-
-Some components expose their own `--gecko-*` variables, so you can retheme them without
-touching their rules. Set them on the component's class, or globally on `:root`.
-
-```css
-/* Alert */
---gecko-alert-accent   --gecko-alert-bg   --gecko-alert-border   --gecko-alert-radius
-
-/* Badge */
---gecko-badge-accent   --gecko-badge-on-accent   --gecko-badge-radius
---gecko-badge-soft-mix   --gecko-badge-outline-mix
-
-/* Tabs */
---gecko-tabs-accent   --gecko-tabs-muted   --gecko-tabs-indicator   --gecko-tabs-radius
---gecko-tabs-gap   --gecko-tabs-padding-x   --gecko-tabs-padding-y   --gecko-tabs-font-size
-
-/* Toast */
---gecko-toast-accent   --gecko-toast-bg   --gecko-toast-fg   --gecko-toast-border
---gecko-toast-muted   --gecko-toast-radius   --gecko-toast-shadow   --gecko-toast-width
---gecko-toast-gap   --gecko-toast-offset   --gecko-toast-padding   --gecko-toast-duration
---gecko-toast-z
-```
-
-Each takes one accent and lets the variants decide how to use it, so a new colour is one
-rule rather than a block per variant:
-
-```css
-.GeckoUITabs {
-  --gecko-tabs-accent: rebeccapurple;
-  --gecko-tabs-indicator: 3px;
-}
-```
-
-`--gecko-scrollbar-width` is set by the library while an overlay locks page scroll, so
-fixed elements pinned to the right edge can compensate.
 
 ## OKLCH Primer
 
@@ -351,8 +299,8 @@ Built-in panel: `border`, `rounded-md`, `p-1`, `shadow-xl`. Built-in item: `px-3
 
 | Class                                | Element    | Targets                            | Data Attrs                       |
 | ------------------------------------ | ---------- | ---------------------------------- | -------------------------------- |
-| `.GeckoUIAlert`                      | `<div>`    | Alert container                    | `data-color`, `data-condensed`   |
-| `.GeckoUIAlert__icon`                | `<div>`    | Colour icon                        | `data-color`                     |
+| `.GeckoUIAlert`                      | `<div>`    | Alert container                    | `data-variant`, `data-condensed` |
+| `.GeckoUIAlert__icon`                | `<div>`    | Variant icon                       | `data-variant`                   |
 | `.GeckoUIAlert__body`                | `<div>`    | Header area (icon + title + close) | —                                |
 | `.GeckoUIAlert__title`               | `<div>`    | Title text                         | —                                |
 | `.GeckoUIAlert__description`         | `<div>`    | Description text                   | —                                |
@@ -360,50 +308,6 @@ Built-in panel: `border`, `rounded-md`, `p-1`, `shadow-xl`. Built-in item: `px-3
 | `.GeckoUIAlert__remove-button__icon` | `<span>`   | Close icon                         | —                                |
 
 Built-in: `border`, `rounded-lg`, `px-4`, `py-3`.
-
-### Badge
-
-| Class                  | Element  | Targets         | Data Attrs                                          |
-| ---------------------- | -------- | --------------- | --------------------------------------------------- |
-| `.GeckoUIBadge`        | `<span>` | Badge container | `data-variant`, `data-color`, `data-size`, `data-shape` |
-| `.GeckoUIBadge__dot`   | `<span>` | Status dot      | —                                                   |
-| `.GeckoUIBadge__icon`  | `<span>` | Leading icon    | —                                                   |
-
-Variables: `--gecko-badge-accent`, `--gecko-badge-on-accent`, `--gecko-badge-radius`,
-`--gecko-badge-soft-mix`, `--gecko-badge-outline-mix`.
-
-### Tabs
-
-| Class                  | Element             | Targets            | Data Attrs                                                          |
-| ---------------------- | ------------------- | ------------------ | ------------------------------------------------------------------- |
-| `.GeckoUITabs`         | `<div>`             | Outer container    | `data-variant`, `data-size`, `data-orientation`, `data-full-width`   |
-| `.GeckoUITabs__list`   | `<div>` or `<nav>`  | The strip of tabs  | —                                                                   |
-| `.GeckoUITabs__tab`    | `<button>` or yours | One tab            | `data-state="selected\|unselected"`, `data-disabled`                 |
-| `.GeckoUITabs__panel`  | `<div>`             | The panel          | —                                                                   |
-
-Variables: `--gecko-tabs-accent`, `--gecko-tabs-muted`, `--gecko-tabs-indicator`,
-`--gecko-tabs-radius`, `--gecko-tabs-gap`, `--gecko-tabs-padding-x`,
-`--gecko-tabs-padding-y`, `--gecko-tabs-font-size`.
-
-### Toast
-
-| Class                            | Element    | Targets              | Data Attrs                   |
-| -------------------------------- | ---------- | -------------------- | ---------------------------- |
-| `.GeckoUIToaster`                | `<div>`    | A corner stack       | —                            |
-| `.GeckoUIToaster__item`          | `<div>`    | Slot holding a toast | —                            |
-| `.GeckoUIToast`                  | `<div>`    | One toast            | `data-variant`, `data-state` |
-| `.GeckoUIToast__icon`            | `<div>`    | Variant icon         | —                            |
-| `.GeckoUIToast__spinner`         | `<div>`    | Loading spinner      | —                            |
-| `.GeckoUIToast__body`            | `<div>`    | Message + description| —                            |
-| `.GeckoUIToast__message`         | `<div>`    | Message text         | —                            |
-| `.GeckoUIToast__description`     | `<div>`    | Description text     | —                            |
-| `.GeckoUIToast__actions`         | `<div>`    | Button row           | —                            |
-| `.GeckoUIToast__action`          | `<button>` | Action button        | —                            |
-| `.GeckoUIToast__cancel`          | `<button>` | Cancel button        | —                            |
-| `.GeckoUIToast__close`           | `<button>` | Close button         | —                            |
-| `.GeckoUIToast__custom`          | `<div>`    | Fully custom content | —                            |
-
-Variables: the `--gecko-toast-*` set listed under Component Variables.
 
 ### Dialog
 
