@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Skeleton component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Skeleton component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -592,6 +592,67 @@ select-all box shows the dash while staying unchecked.
 
 Extends `HTMLAttributes<HTMLSpanElement>`. Uses `data-variant`, `data-color`, `data-size`,
 `data-shape`.
+
+### Avatar
+
+A picture of someone, falling back to their initials.
+
+```tsx
+<Avatar name="Ada Lovelace" src={user.image} />
+<Avatar name="Ada Lovelace" size="lg" color="primary" />
+<Avatar shape="rounded" fallback={<BotIcon />} />
+<Avatar name="Ada Lovelace" onClick={() => open(user)} />
+```
+
+| Prop       | Type                                                                    | Default     |
+| ---------- | ----------------------------------------------------------------------- | ----------- |
+| `src`      | `string`                                                                | -           |
+| `alt`      | `string`                                                                | -           |
+| `name`     | `string`                                                                | -           |
+| `fallback` | `ReactNode \| FC`                                                       | -           |
+| `size`     | `"xs" \| "sm" \| "md" \| "lg" \| "xl"`                                  | `"md"`      |
+| `shape`    | `"circle" \| "rounded" \| "square"`                                     | `"circle"`  |
+| `color`    | `"default" \| "primary" \| "success" \| "error" \| "warning" \| "info"` | `"default"` |
+
+Extends `HTMLAttributes<HTMLSpanElement>`. Uses `data-size`, `data-shape`, `data-color`,
+`data-clickable`.
+
+It shows, in order: the image, then `fallback`, then the initials from `name`, then a
+person icon. A failed image falls through the same chain, and a new `src` gets a fresh
+attempt. `onClick` makes it `role="button"` with a tab stop and Enter/Space.
+
+### AvatarGroup
+
+```tsx
+<AvatarGroup max={3}>
+  <Avatar name="Ada Lovelace" />
+  <Avatar name="Grace Hopper" />
+  <Avatar name="Alan Turing" />
+  <Avatar name="Katherine Johnson" />
+</AvatarGroup>
+```
+
+| Prop             | Type                        | Default           |
+| ---------------- | --------------------------- | ----------------- |
+| `max`            | `number`                    | -                 |
+| `size`           | `keyof AvatarSizeMap`       | `"md"`            |
+| `shape`          | `keyof AvatarShapeMap`      | `"circle"`        |
+| `interactive`    | `boolean`                   | `true`            |
+| `renderOverflow` | `({ avatars }) => ReactNode` | the list of names |
+
+`size` and `shape` apply to every avatar inside; an avatar can still set its own. Avatars
+overlap, each over the one after it, and `max` counts the rest as `+2`.
+
+Hovering an avatar lifts it and names it. Hovering the count opens an overlay listing the
+rest. `renderOverflow` fills that overlay — `avatars` holds the props of everyone past
+`max`, so it can show anything, not only avatars. The overlay is placed for you; where and
+how it opens is not configurable.
+
+`interactive={false}` drops the lift, the names and the overlay, keeping the count.
+
+Each avatar is wrapped in a `GeckoUIAvatarGroup__slot` that holds its place while it lifts,
+so `.GeckoUIAvatarGroup > .GeckoUIAvatar` is not the selector to style against — use
+`.GeckoUIAvatarGroup__slot > .GeckoUIAvatar`.
 
 ### Tabs
 
