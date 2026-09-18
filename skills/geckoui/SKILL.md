@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Skeleton component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -798,6 +798,40 @@ in a schema.
 <Spinner />
 <Spinner className="stroke-red-500" />
 ```
+
+### Progress
+
+How far along something is.
+
+```tsx
+<Progress value={40} />
+<Progress value={3} max={7} label={({ value, max }) => `${value} of ${max} files`} />
+<Progress />
+<Progress value={100} color="success" size="lg" />
+```
+
+| Prop    | Type                                                                    | Default     |
+| ------- | ----------------------------------------------------------------------- | ----------- |
+| `value` | `number`                                                                | -           |
+| `max`   | `number`                                                                | `100`       |
+| `color` | `"default" \| "primary" \| "success" \| "error" \| "warning" \| "info"` | `"primary"` |
+| `size`  | `"sm" \| "md" \| "lg"`                                                  | `"md"`      |
+| `label` | `ReactNode \| ({ percent, value, max }) => ReactNode`                    | -           |
+
+Extends `HTMLAttributes<HTMLDivElement>`. Uses `data-size`, `data-color`,
+`data-indeterminate`. Carries `role="progressbar"`, so `aria-label` names it.
+
+Leaving `value` out runs the bar end to end until you have a number, and drops
+`aria-valuenow` so the value reads as unknown rather than zero. `value={0}` is a known
+value and draws an empty bar.
+
+`value` is clamped into range, and the `label` function is handed the clamped number.
+`percent` is rounded and drives the bar width too, so the number and the bar never
+disagree. A `label` node shows while the value is unknown; a `label` function is only
+called when there is a value.
+
+**Which one to reach for:** `Spinner` for work with no length, `Progress` when you can
+count it, `Skeleton` when you know the shape of what is coming.
 
 ### Skeleton
 
