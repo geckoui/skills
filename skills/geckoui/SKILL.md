@@ -198,6 +198,13 @@ Extends `TextareaAutosizeProps`.
 
 **SelectOption props:** `value` (required), `label` (required), `disabled`, `visibility`, `hideCheckIcon`, `onClick`, `onRemove`, `className` (string or render fn), `children` (ReactNode or render fn).
 
+**A value that matches no option.** The trigger falls back to text worked out from the
+value itself: a string or number prints as is, an object uses its `label` key if it has
+one, otherwise its first non-nil property. `{ id: null, name: "Ann" }` reads as "Ann".
+Anything that would leave the trigger blank — `null`, `undefined`, `""`, an object whose
+properties are all nil — shows the placeholder instead, and the library warns in
+development. Give object values a `label` key rather than relying on property order.
+
 **SelectTrigger:** render-props for custom trigger, receives `{ keyword, selectedOptions, handleChange, options, toggleMenu, open, openMenu, closeMenu, hasValue, filteredOptions, handleInputChange, handleKeyboardInteraction }`.
 
 **SelectConsumer:** render-props for accessing full Select context: `<SelectConsumer render={(ctx) => ...} />`.
@@ -698,6 +705,15 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 | -                | RHFFilePicker     | `render` (drag & drop)                                                                |
 | -                | RHFError          | `render`                                                                              |
 | -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName` (wraps label + input + error)             |
+
+## Development Warnings
+
+The library warns in the console about mistakes only a developer can fix — no provider
+mounted, several providers, an invalid calendar date, `RHFInputGroup` misuse, a `Select`
+value matching no option. Every message is prefixed `[GeckoUI]`.
+
+They are stripped from production builds, so they cost nothing at runtime. If one appears,
+it is pointing at a real wiring problem rather than noise to ignore.
 
 ## Module Augmentation
 
