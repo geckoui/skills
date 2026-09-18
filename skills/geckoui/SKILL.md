@@ -79,9 +79,9 @@ export default function RootLayout({ children }) {
 }
 ```
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `toastOptions` | `ToasterProps` | `{}` | Options for sonner's Toaster |
+| Prop           | Type           | Default | Description                  |
+| -------------- | -------------- | ------- | ---------------------------- |
+| `toastOptions` | `ToasterProps` | `{}`    | Options for sonner's Toaster |
 
 ## Components
 
@@ -254,7 +254,7 @@ Dialog.show({
   dismissOnOutsideClick: true
 });
 
-Dialog.dismiss();  // close the open dialog
+Dialog.dismiss(); // close the open dialog
 ```
 
 **Dialog content cannot read your app's React context.** It is rendered in a separate
@@ -265,7 +265,7 @@ provider above it, will not work. Pass what the content needs as a prop instead:
 const { user } = useContext(AuthContext);
 
 Dialog.show({
-  content: () => <p>Hello, {user.name}</p>  // captured, not read from context
+  content: () => <p>Hello, {user.name}</p> // captured, not read from context
 });
 ```
 
