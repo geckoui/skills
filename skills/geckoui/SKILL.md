@@ -423,6 +423,51 @@ Drawer.dismiss(); // close the topmost drawer
 
 `className` targets the drawer panel. `backdropClassName` targets the backdrop overlay. Uses `data-placement`, `data-state="open" | "closed"` on the panel.
 
+### Popover
+
+A panel anchored to whatever opens it. `PopoverTrigger` uses its child as the trigger
+rather than wrapping it, so the button keeps its own tag, styling and click handler.
+
+```tsx
+<Popover placement="bottom-start" arrow>
+  <PopoverTrigger>
+    <Button>Filters</Button>
+  </PopoverTrigger>
+
+  <PopoverContent>
+    <FilterForm />
+  </PopoverContent>
+</Popover>
+```
+
+| Prop                    | Type                      | Default          |
+| ----------------------- | ------------------------- | ---------------- |
+| `open`                  | `boolean`                 | -                |
+| `defaultOpen`           | `boolean`                 | `false`          |
+| `onOpenChange`          | `(open: boolean) => void` | -                |
+| `placement`             | `Placement`               | `"bottom-start"` |
+| `offset`                | `number`                  | `6`              |
+| `floatingStrategy`      | `Strategy`                | -                |
+| `dismissOnEscape`       | `boolean`                 | `true`           |
+| `dismissOnOutsideClick` | `boolean`                 | `true`           |
+| `arrow`                 | `boolean`                 | `false`          |
+| `disabled`              | `boolean`                 | `false`          |
+
+**PopoverTrigger props:** one child, used as the trigger.
+
+**PopoverContent props:** `children`, plus any div attribute.
+
+`usePopover()` gives anything inside the panel `open`, `close()`, `toggle()` and
+`setOpen()`, so a Cancel button or a form submit can shut it.
+
+Focus moves into the panel when it opens and returns to the trigger when it closes.
+Escape closes it even from inside a text field, unlike `Dialog` and `Drawer`, which leave
+Escape alone while you type. The panel renders inline rather than in a portal, so it stays
+inside a dialog and keeps React context.
+
+**Which one to reach for:** `Tooltip` for a label on hover, `Popover` for a panel you click
+open that can hold a form, `Menu` for a list of actions with arrow key navigation.
+
 ### Tooltip
 
 ```tsx

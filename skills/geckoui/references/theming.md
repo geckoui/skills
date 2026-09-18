@@ -453,6 +453,21 @@ Built-in panel: `bg-surface-primary`, `p-6`, `rounded-md`, `shadow-xl`, `max-w-[
 
 Built-in panel: `bg-surface-primary`, `shadow-xl`, no padding. Override via `className`.
 
+### Popover
+
+| Class                      | Element | Targets                       | Data Attrs                  |
+| -------------------------- | ------- | ----------------------------- | --------------------------- |
+| `.GeckoUIPopover`          | `<div>` | Wraps the trigger             | —                           |
+| `.GeckoUIPopover__content` | `<div>` | `PopoverContent`              | `data-state="open\|closed"` |
+| `.GeckoUIPopover__arrow`   | `<svg>` | The arrow, when `arrow` is on | —                           |
+
+Variables: `--gecko-popover-bg`, `--gecko-popover-border`, `--gecko-popover-radius`,
+`--gecko-popover-padding`, `--gecko-popover-width`, `--gecko-popover-max-width`,
+`--gecko-popover-z`.
+
+The trigger is the caller's own element, so it carries no class of ours — style it however
+you already style that button.
+
 ### Tooltip
 
 | Class                      | Element  | Targets                |
