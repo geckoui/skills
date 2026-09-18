@@ -457,6 +457,10 @@ rather than wrapping it, so the button keeps its own tag, styling and click hand
 
 **PopoverContent props:** `children`, plus any div attribute.
 
+`offset` is the gap between the trigger and the nearest part of the popover, which is the
+arrow's tip when `arrow` is on rather than the panel edge, so the spacing looks the same
+either way.
+
 `usePopover()` gives anything inside the panel `open`, `close()`, `toggle()` and
 `setOpen()`, so a Cancel button or a form submit can shut it.
 
