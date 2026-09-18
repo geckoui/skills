@@ -452,61 +452,63 @@ Checked state: use `.GeckoUISwitch:has(input:checked)` selector.
 
 RHF classes stack on the **same DOM element** as their base component class (see Class Stacking section above). Styling `.GeckoUIInput` also affects `.GeckoUIRHFInput`.
 
-| Class                                       | Element      | Targets                                  | Data Attrs                                    |
-| ------------------------------------------- | ------------ | ---------------------------------------- | --------------------------------------------- |
-| `.GeckoUIRHFInput`                          | `<label>`    | Wraps Input                              | — (see below)                                 |
-| `.GeckoUIRHFTextarea`                       | `<textarea>` | Wraps Textarea                           | `data-error`                                  |
-| `.GeckoUIRHFSelect`                         | `<div>`      | Wraps Select outer container             | —                                             |
-| `.GeckoUIRHFSelectButton`                   | `<div>`      | Wraps SelectButton                       | — (see below)                                 |
-| `.GeckoUIRHFOTPInput`                       | `<div>`      | Wraps OTPInput                           | — (see below)                                 |
-| `.GeckoUIRHFCounterInput`                   | `<div>`      | Wraps CounterInput                       | — (see below)                                 |
-| `.GeckoUIRHFSwitch`                         | `<label>`    | Wraps Switch                             | —                                             |
-| `.GeckoUIRHFSwitch__thumb`                  | `<span>`     | Switch thumb                             | —                                             |
-| `.GeckoUIRHFCheckbox`                       | `<label>`    | Checkbox + label wrapper                 | —                                             |
-| `.GeckoUIRHFCheckbox__label`                | `<span>`     | Label text                               | —                                             |
-| `.GeckoUIRHFRadio`                          | `<label>`    | Radio + label wrapper                    | —                                             |
-| `.GeckoUIRHFRadio__label`                   | `<span>`     | Label text                               | —                                             |
-| `.GeckoUIRHFFileInput`                      | `<label>`    | File input wrapper                       | —                                             |
-| `.GeckoUIRHFFileInput__input`               | `<input>`    | Hidden file input                        | `data-custom`                                 |
-| `.GeckoUIRHFFilePicker`                     | `<div>`      | Drag & drop container                    | `data-loading`, `data-dragging`, `data-error` |
-| `.GeckoUIRHFFilePicker__upload-area`        | `<div>`      | Drop zone (dashed border)                | —                                             |
-| `.GeckoUIRHFFilePicker__browse-button`      | `<button>`   | Browse files button                      | —                                             |
-| `.GeckoUIRHFFilePicker__file-list`          | `<div>`      | Selected files list                      | —                                             |
-| `.GeckoUIRHFFilePicker__file-row`           | `<div>`      | Individual file row                      | —                                             |
-| `.GeckoUIRHFFilePicker__file-name`          | `<span>`     | File name                                | —                                             |
-| `.GeckoUIRHFFilePicker__file-size`          | `<span>`     | File size                                | —                                             |
-| `.GeckoUIRHFFilePicker__file-remove`        | `<button>`   | Remove file button                       | —                                             |
-| `.GeckoUIRHFFilePicker__file-remove-icon`   | `<svg>`      | Remove icon                              | —                                             |
-| `.GeckoUIRHFFilePicker__upload-icon`        | `<svg>`      | Upload icon                              | —                                             |
+| Class                                     | Element      | Targets                      | Data Attrs                                    |
+| ----------------------------------------- | ------------ | ---------------------------- | --------------------------------------------- |
+| `.GeckoUIRHFInput`                        | `<label>`    | Wraps Input                  | — (see below)                                 |
+| `.GeckoUIRHFTextarea`                     | `<textarea>` | Wraps Textarea               | `data-error`                                  |
+| `.GeckoUIRHFSelect`                       | `<div>`      | Wraps Select outer container | —                                             |
+| `.GeckoUIRHFSelectButton`                 | `<div>`      | Wraps SelectButton           | — (see below)                                 |
+| `.GeckoUIRHFOTPInput`                     | `<div>`      | Wraps OTPInput               | — (see below)                                 |
+| `.GeckoUIRHFCounterInput`                 | `<div>`      | Wraps CounterInput           | — (see below)                                 |
+| `.GeckoUIRHFSwitch`                       | `<label>`    | Wraps Switch                 | —                                             |
+| `.GeckoUIRHFSwitch__thumb`                | `<span>`     | Switch thumb                 | —                                             |
+| `.GeckoUIRHFCheckbox`                     | `<label>`    | Checkbox + label wrapper     | —                                             |
+| `.GeckoUIRHFCheckbox__label`              | `<span>`     | Label text                   | —                                             |
+| `.GeckoUIRHFRadio`                        | `<label>`    | Radio + label wrapper        | —                                             |
+| `.GeckoUIRHFRadio__label`                 | `<span>`     | Label text                   | —                                             |
+| `.GeckoUIRHFFileInput`                    | `<label>`    | File input wrapper           | —                                             |
+| `.GeckoUIRHFFileInput__input`             | `<input>`    | Hidden file input            | `data-custom`                                 |
+| `.GeckoUIRHFFilePicker`                   | `<div>`      | Drag & drop container        | `data-loading`, `data-dragging`, `data-error` |
+| `.GeckoUIRHFFilePicker__upload-area`      | `<div>`      | Drop zone (dashed border)    | —                                             |
+| `.GeckoUIRHFFilePicker__browse-button`    | `<button>`   | Browse files button          | —                                             |
+| `.GeckoUIRHFFilePicker__file-list`        | `<div>`      | Selected files list          | —                                             |
+| `.GeckoUIRHFFilePicker__file-row`         | `<div>`      | Individual file row          | —                                             |
+| `.GeckoUIRHFFilePicker__file-name`        | `<span>`     | File name                    | —                                             |
+| `.GeckoUIRHFFilePicker__file-size`        | `<span>`     | File size                    | —                                             |
+| `.GeckoUIRHFFilePicker__file-remove`      | `<button>`   | Remove file button           | —                                             |
+| `.GeckoUIRHFFilePicker__file-remove-icon` | `<svg>`      | Remove icon                  | —                                             |
+| `.GeckoUIRHFFilePicker__upload-icon`      | `<svg>`      | Upload icon                  | —                                             |
 
 **`data-error` does not reach most of these in v1.** Only `.GeckoUIRHFTextarea` and
 `.GeckoUIRHFFilePicker` carry it, because those components render the classed element
 themselves. Elsewhere it goes astray:
 
-| Component | Where `data-error` ends up |
-| --- | --- |
-| `RHFInput` | the inner `<input>`, not the `<label>` holding the class |
-| `RHFCounterInput` | the inner `<input>`, not the container |
-| `RHFSelect` | nowhere — `Select` never forwards it to the DOM |
-| `RHFOTPInput` | nowhere — `OTPInput` takes no extra props |
+| Component         | Where `data-error` ends up                               |
+| ----------------- | -------------------------------------------------------- |
+| `RHFInput`        | the inner `<input>`, not the `<label>` holding the class |
+| `RHFCounterInput` | the inner `<input>`, not the container                   |
+| `RHFSelect`       | nowhere — `Select` never forwards it to the DOM          |
+| `RHFOTPInput`     | nowhere — `OTPInput` takes no extra props                |
 
 So `.GeckoUIRHFInput[data-error]` matches nothing. To style an error state in v1, reach
 for the inner element or the field's own state:
 
 ```css
 /* RHFInput and RHFCounterInput */
-.GeckoUIRHFInput:has(input[data-error]) { border-color: red; }
+.GeckoUIRHFInput:has(input[data-error]) {
+  border-color: red;
+}
 
 /* RHFSelect and RHFOTPInput: no attribute at all, so drive it yourself */
 ```
 
 Fixed in v2, where `data-error` sits on the element carrying the class in every case.
 
-| `.GeckoUIRHFFilePicker__upload-text`        | `<p>`        | Upload instruction text                  | —                                             |
-| `.GeckoUIRHFFilePicker__upload-buttons`     | `<div>`      | Button container                         | —                                             |
-| `.GeckoUIRHFFilePicker__loading-overlay`    | `<div>`      | Loading spinner overlay                  | —                                             |
-| `.GeckoUIRHFCurrencyInput`                  | `<label>`    | Currency input wrapper                   | —                                             |
-| `.GeckoUIRHFCurrencyInput__currency-symbol` | `<span>`     | Currency symbol ($ € £)                  | —                                             |
-| `.GeckoUIRHFCurrencyInput__currency-code`   | `<span>`     | Currency code (USD, EUR)                 | —                                             |
-| `.GeckoUIRHFError`                          | `<div>`      | Error message                            | —                                             |
-| `.GeckoUIRHFInputGroup`                     | `<div>`      | Form field group (label + input + error) | —                                             |
+| `.GeckoUIRHFFilePicker__upload-text` | `<p>` | Upload instruction text | — |
+| `.GeckoUIRHFFilePicker__upload-buttons` | `<div>` | Button container | — |
+| `.GeckoUIRHFFilePicker__loading-overlay` | `<div>` | Loading spinner overlay | — |
+| `.GeckoUIRHFCurrencyInput` | `<label>` | Currency input wrapper | — |
+| `.GeckoUIRHFCurrencyInput__currency-symbol` | `<span>` | Currency symbol ($ € £) | — |
+| `.GeckoUIRHFCurrencyInput__currency-code` | `<span>` | Currency code (USD, EUR) | — |
+| `.GeckoUIRHFError` | `<div>` | Error message | — |
+| `.GeckoUIRHFInputGroup` | `<div>` | Form field group (label + input + error) | — |
