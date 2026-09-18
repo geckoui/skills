@@ -36,6 +36,36 @@ For Tailwind CSS v4 projects, import inside `@layer`:
 }
 ```
 
+### Dark mode needs the `dark` class
+
+GeckoUI keeps its dark values under a `.dark` class. Nothing switches on its own, so
+**add `dark` to an element above the app — normally `<html>` — or every component stays
+light no matter what else the app does.**
+
+```tsx
+// app/layout.tsx
+<html lang="en" className="dark">
+```
+
+Toggling it:
+
+```tsx
+document.documentElement.classList.toggle("dark", isDark);
+```
+
+Or let `next-themes` write it:
+
+```tsx
+<ThemeProvider attribute="class">{children}</ThemeProvider>
+```
+
+The class sets CSS variables, so everything beneath it inherits. Putting it on a wrapper
+instead of the root themes only that subtree, which is occasionally what you want and
+usually not.
+
+When a dark themed app renders GeckoUI components in light colours, this class is the
+first thing to check.
+
 Wrap your app in `<GeckoUIProvider>` (required for Dialog, Drawer, ConfirmDialog and Toast). Place it **below** your own context providers, so overlays opened imperatively can read them:
 
 ```tsx
