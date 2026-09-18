@@ -232,6 +232,55 @@ development. Give object values a `label` key rather than relying on property or
 
 **MenuTrigger:** render function receiving `{ open, toggleMenu, openMenu, closeMenu, disabled }`.
 
+### Accordion
+
+Four parts. The header and the panel sit inside their item, so nothing is paired by hand.
+
+```tsx
+<Accordion defaultValue="shipping">
+  <AccordionItem value="shipping">
+    <AccordionHeader>Shipping</AccordionHeader>
+    <AccordionPanel>Ships in two to three working days.</AccordionPanel>
+  </AccordionItem>
+  <AccordionItem value="returns">
+    <AccordionHeader>
+      Returns <Badge color="info">free</Badge>
+    </AccordionHeader>
+    <AccordionPanel>Thirty days, unopened.</AccordionPanel>
+  </AccordionItem>
+</Accordion>
+```
+
+| Prop           | Type                                    | Default   |
+| -------------- | --------------------------------------- | --------- |
+| `value`        | `string \| string[]`                    | -         |
+| `defaultValue` | `string \| string[]`                    | -         |
+| `onChange`     | `(value: string \| string[]) => void`   | -         |
+| `multiple`     | `boolean`                               | `false`   |
+| `collapsible`  | `boolean`                               | `true`    |
+| `variant`      | `"plain" \| "separated" \| "contained"` | `"plain"` |
+| `size`         | `"sm" \| "md" \| "lg"`                  | `"md"`    |
+| `keepMounted`  | `boolean`                               | `true`    |
+
+**AccordionItem props:** `value` (required), `disabled`, `children`.
+
+**AccordionHeader props:** `hideIcon`, `icon`, `children`. Whatever is inside is what the
+header shows, so an icon or a badge needs no prop of its own.
+
+**AccordionPanel props:** `keepMounted`, `children`.
+
+One item opens at a time unless `multiple` is set, and `value`, `defaultValue` and
+`onChange` then deal in arrays. `onChange` reports an empty string when the last open item
+closes, so `setOpen("")` closes everything. `collapsible={false}` keeps one open at all
+times.
+
+Closed panels stay in the DOM, which is what makes the open and close animate and keeps a
+half filled form alive while its panel is shut. `keepMounted={false}` trades the closing
+animation for a lighter DOM.
+
+Arrow up and down move between headers, Home and End jump to the ends, and Enter or Space
+opens. Disabled items are skipped, and the arrow keys are left alone inside a panel.
+
 ### Alert
 
 ```tsx

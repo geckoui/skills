@@ -29,5 +29,5 @@ Behaviour that changed without a rename:
 - Toast loses `richColors`, `theme` and `expand`; `toastOptions.className` and `.style`
   become `toastClassName` and `toastStyle`.
 
-New in v2: `Badge`, `Tabs`, and the `--color-success` / `--color-error` / `--color-warning`
+New in v2: `Accordion`, `Badge`, `Tabs`, and the `--color-success` / `--color-error` / `--color-warning`
 / `--color-info` semantic tokens.

@@ -361,6 +361,25 @@ Built-in panel: `border`, `rounded-md`, `p-1`, `shadow-xl`. Built-in item: `px-3
 
 Built-in: `border`, `rounded-lg`, `px-4`, `py-3`.
 
+### Accordion
+
+| Class                                | Element    | Targets           | Data Attrs                                   |
+| ------------------------------------ | ---------- | ----------------- | -------------------------------------------- |
+| `.GeckoUIAccordion`                  | `<div>`    | `Accordion`       | `data-variant`, `data-size`                  |
+| `.GeckoUIAccordion__item`            | `<div>`    | `AccordionItem`   | `data-state="open\|closed"`, `data-disabled` |
+| `.GeckoUIAccordion__header`          | `<button>` | `AccordionHeader` | `data-state`, `data-disabled`                |
+| `.GeckoUIAccordion__header__content` | `<span>`   | Header contents   | —                                            |
+| `.GeckoUIAccordion__header__icon`    | `<span>`   | The chevron       | —                                            |
+| `.GeckoUIAccordion__panel`           | `<div>`    | `AccordionPanel`  | `data-state`                                 |
+| `.GeckoUIAccordion__panel__content`  | `<div>`    | Panel contents    | —                                            |
+
+Variables: `--gecko-accordion-radius`, `--gecko-accordion-gap`,
+`--gecko-accordion-padding-x`, `--gecko-accordion-padding-y`,
+`--gecko-accordion-font-size`, `--gecko-accordion-duration`.
+
+The open and close animates a grid row from `0fr` to `1fr` rather than a height, so it
+reaches the content's real height with nothing measured in JavaScript.
+
 ### Badge
 
 | Class                 | Element  | Targets         | Data Attrs                                              |
