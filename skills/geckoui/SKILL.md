@@ -741,8 +741,7 @@ in a schema.
 ### Skeleton
 
 A placeholder that holds the space content will take while it loads. Size it with
-`className` the way you would size the real thing, so the page does not move when the
-content arrives.
+`className` the way you would size the real thing.
 
 ```tsx
 <Skeleton />
@@ -761,11 +760,10 @@ content arrives.
 
 Extends `HTMLAttributes<HTMLDivElement>`. Uses `data-shape` and `data-animation`.
 
-There are no `width` and `height` props. Size it through `className`. A `text` skeleton
-takes its height from the current font size, and `lines` draws a paragraph with the last
-line short.
+Size it through `className`. A `text` skeleton takes its height from the current font
+size, and `lines` draws a paragraph with the last line short.
 
-`loading` lets it wrap the real thing instead of leaving a ternary at the call site:
+`loading` renders `children` in place of the placeholder:
 
 ```tsx
 <Skeleton loading={isLoading} lines={2}>
@@ -777,8 +775,7 @@ Children are never rendered while loading, so nothing inside has to guard agains
 that has not arrived. Once loading is over the wrapper is gone too, leaving only your own
 markup.
 
-Both animations are dropped under `prefers-reduced-motion`, so `animation="none"` is for
-when you want it still for everyone.
+Both animations are dropped under `prefers-reduced-motion`.
 
 **Which one to reach for:** `Spinner` for work with no shape to hold, like a button that is
 submitting. `Skeleton` when you know the shape of what is coming.
