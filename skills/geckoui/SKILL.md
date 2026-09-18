@@ -1,12 +1,15 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "GeckoUIPortal", "Toast", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIPortal", "Toast", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "1.0.0"
 ---
 
 # GeckoUI
 
 React component library with Tailwind CSS v4, OKLCH theming, and React Hook Form integration.
+
+**Covers `@geckoui/geckoui` v1.x.** v2 renames several props and replaces `GeckoUIPortal`
+with `GeckoUIProvider`, so none of the overlay guidance below applies to it.
 
 ## Setup
 
@@ -28,32 +31,26 @@ For Tailwind CSS v4 projects, import inside `@layer`:
 }
 ```
 
-Wrap your app with `GeckoUIProvider` (required for Dialog, Drawer, ConfirmDialog, Toast). Place it **below** your own context providers so overlays can read those contexts:
+Mount `<GeckoUIPortal />` once, near the root (required for Dialog, Drawer, ConfirmDialog and Toast). It is self-closing and renders the containers those overlays portal into — it does **not** wrap your app:
 
 ```tsx
-import { GeckoUIProvider } from "@geckoui/geckoui";
+import { GeckoUIPortal } from "@geckoui/geckoui";
 
 // app/layout.tsx
 export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <AuthProvider>
-          <GeckoUIProvider>
-            {children}
-          </GeckoUIProvider>
-        </AuthProvider>
+        {children}
+        <GeckoUIPortal />
       </body>
     </html>
   );
 }
 ```
 
-**Migration from GeckoUIPortal:** Replace the self-closing `<GeckoUIPortal />` with `<GeckoUIProvider>{children}</GeckoUIProvider>`. Toast options move to `<GeckoUIProvider toastOptions={...}>`.
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `children` | `ReactNode` | — | Your app tree |
 | `toastOptions` | `ToasterProps` | `{}` | Options for sonner's Toaster |
 
 ## Components
@@ -211,10 +208,10 @@ Extends `TextareaAutosizeProps`.
 
 ### Dialog
 
-`Dialog.show()` pushes onto the overlay stack and returns an `id`. Multiple dialogs can be stacked; only the topmost responds to Esc/click-outside.
+`Dialog.show()` renders one dialog into the `GeckoUIPortal` container. It returns nothing, and calling it again replaces whatever is open — dialogs do not stack.
 
 ```tsx
-const id = Dialog.show({
+Dialog.show({
   content: ({ dismiss }) => (
     <div>
       <h3>Title</h3>
@@ -227,18 +224,18 @@ const id = Dialog.show({
   dismissOnOutsideClick: true
 });
 
-Dialog.dismiss(id);  // close specific dialog
-Dialog.dismiss();    // close topmost overlay
+Dialog.dismiss();  // close the open dialog
 ```
 
-Dialog content can read React context provided above `GeckoUIProvider`:
+**Dialog content cannot read your app's React context.** It is rendered in a separate
+React root via `createRoot`, so hooks like `useContext`, and anything relying on a
+provider above it, will not work. Pass what the content needs as a prop instead:
 
 ```tsx
+const { user } = useContext(AuthContext);
+
 Dialog.show({
-  content: () => {
-    const { user } = useContext(AuthContext);
-    return <p>Hello, {user.name}</p>;
-  }
+  content: () => <p>Hello, {user.name}</p>  // captured, not read from context
 });
 ```
 
@@ -295,12 +292,12 @@ Controlled JSX usage:
 </Drawer>
 ```
 
-Imperative API (returns `id`, stackable):
+Imperative API. Like `Dialog`, it renders one drawer into the `GeckoUIPortal` container,
+returns nothing, does not stack, and cannot read your app's React context:
 
 ```tsx
-const id = Drawer.show(<DrawerContent />, { placement: "right", allowClickOutside: true });
-Drawer.dismiss(id);  // close specific drawer
-Drawer.dismiss();    // close topmost overlay
+Drawer.show(<DrawerContent />, { placement: "right", allowClickOutside: true });
+Drawer.dismiss();
 ```
 
 **Built-in styles:** `bg-surface-primary`, `shadow-xl`, `overflow-y-auto`, no padding. `max-w-md` for left/right, `max-h-[50%]` for top/bottom. Override via `className`.
@@ -321,7 +318,7 @@ Drawer.dismiss();    // close topmost overlay
 ### Tooltip
 
 ```tsx
-<Tooltip content="Helpful text" side="top" triggerAsChild>
+<Tooltip content="Helpful text" placement="top" triggerAsChild>
   <Button>Hover me</Button>
 </Tooltip>
 ```
@@ -329,7 +326,7 @@ Drawer.dismiss();    // close topmost overlay
 | Prop               | Type                        | Default |
 | ------------------ | --------------------------- | ------- |
 | `content`          | `string \| ReactNode \| FC` | -       |
-| `side`             | `Placement`                 | `"top"` |
+| `placement`        | `Placement`                 | `"top"` |
 | `sideOffset`       | `number`                    | `12`    |
 | `triggerAsChild`   | `boolean`                   | `false` |
 | `delayDuration`    | `number`                    | `700`   |
