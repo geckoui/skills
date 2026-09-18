@@ -374,12 +374,12 @@ Variables: `--gecko-badge-accent`, `--gecko-badge-on-accent`, `--gecko-badge-rad
 
 ### Tabs
 
-| Class                 | Element             | Targets           | Data Attrs                                                         |
-| --------------------- | ------------------- | ----------------- | ------------------------------------------------------------------ |
-| `.GeckoUITabs`        | `<div>`             | Outer container   | `data-variant`, `data-size`, `data-orientation`, `data-full-width` |
-| `.GeckoUITabs__list`  | `<div>` or `<nav>`  | The strip of tabs | —                                                                  |
-| `.GeckoUITabs__tab`   | `<button>` or yours | One tab           | `data-state="selected\|unselected"`, `data-disabled`               |
-| `.GeckoUITabs__panel` | `<div>`             | The panel         | —                                                                  |
+| Class                 | Element             | Targets    | Data Attrs                                                         |
+| --------------------- | ------------------- | ---------- | ------------------------------------------------------------------ |
+| `.GeckoUITabs`        | `<div>`             | `Tabs`     | `data-variant`, `data-size`, `data-orientation`, `data-full-width` |
+| `.GeckoUITabs__list`  | `<div>` or `<nav>`  | `TabList`  | —                                                                  |
+| `.GeckoUITabs__tab`   | `<button>` or yours | `Tab`      | `data-state="selected\|unselected"`, `data-disabled`               |
+| `.GeckoUITabs__panel` | `<div>`             | `TabPanel` | —                                                                  |
 
 Variables: `--gecko-tabs-accent`, `--gecko-tabs-muted`, `--gecko-tabs-indicator`,
 `--gecko-tabs-radius`, `--gecko-tabs-gap`, `--gecko-tabs-padding-x`,
