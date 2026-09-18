@@ -349,37 +349,37 @@ Built-in panel: `border`, `rounded-md`, `p-1`, `shadow-xl`. Built-in item: `px-3
 
 ### Alert
 
-| Class                                | Element    | Targets                            | Data Attrs                       |
-| ------------------------------------ | ---------- | ---------------------------------- | -------------------------------- |
-| `.GeckoUIAlert`                      | `<div>`    | Alert container                    | `data-color`, `data-condensed`   |
-| `.GeckoUIAlert__icon`                | `<div>`    | Colour icon                        | `data-color`                     |
-| `.GeckoUIAlert__body`                | `<div>`    | Header area (icon + title + close) | —                                |
-| `.GeckoUIAlert__title`               | `<div>`    | Title text                         | —                                |
-| `.GeckoUIAlert__description`         | `<div>`    | Description text                   | —                                |
-| `.GeckoUIAlert__remove-button`       | `<button>` | Close/dismiss button               | —                                |
-| `.GeckoUIAlert__remove-button__icon` | `<span>`   | Close icon                         | —                                |
+| Class                                | Element    | Targets                            | Data Attrs                     |
+| ------------------------------------ | ---------- | ---------------------------------- | ------------------------------ |
+| `.GeckoUIAlert`                      | `<div>`    | Alert container                    | `data-color`, `data-condensed` |
+| `.GeckoUIAlert__icon`                | `<div>`    | Colour icon                        | `data-color`                   |
+| `.GeckoUIAlert__body`                | `<div>`    | Header area (icon + title + close) | —                              |
+| `.GeckoUIAlert__title`               | `<div>`    | Title text                         | —                              |
+| `.GeckoUIAlert__description`         | `<div>`    | Description text                   | —                              |
+| `.GeckoUIAlert__remove-button`       | `<button>` | Close/dismiss button               | —                              |
+| `.GeckoUIAlert__remove-button__icon` | `<span>`   | Close icon                         | —                              |
 
 Built-in: `border`, `rounded-lg`, `px-4`, `py-3`.
 
 ### Badge
 
-| Class                  | Element  | Targets         | Data Attrs                                          |
-| ---------------------- | -------- | --------------- | --------------------------------------------------- |
-| `.GeckoUIBadge`        | `<span>` | Badge container | `data-variant`, `data-color`, `data-size`, `data-shape` |
-| `.GeckoUIBadge__dot`   | `<span>` | Status dot      | —                                                   |
-| `.GeckoUIBadge__icon`  | `<span>` | Leading icon    | —                                                   |
+| Class                 | Element  | Targets         | Data Attrs                                              |
+| --------------------- | -------- | --------------- | ------------------------------------------------------- |
+| `.GeckoUIBadge`       | `<span>` | Badge container | `data-variant`, `data-color`, `data-size`, `data-shape` |
+| `.GeckoUIBadge__dot`  | `<span>` | Status dot      | —                                                       |
+| `.GeckoUIBadge__icon` | `<span>` | Leading icon    | —                                                       |
 
 Variables: `--gecko-badge-accent`, `--gecko-badge-on-accent`, `--gecko-badge-radius`,
 `--gecko-badge-soft-mix`, `--gecko-badge-outline-mix`.
 
 ### Tabs
 
-| Class                  | Element             | Targets            | Data Attrs                                                          |
-| ---------------------- | ------------------- | ------------------ | ------------------------------------------------------------------- |
-| `.GeckoUITabs`         | `<div>`             | Outer container    | `data-variant`, `data-size`, `data-orientation`, `data-full-width`   |
-| `.GeckoUITabs__list`   | `<div>` or `<nav>`  | The strip of tabs  | —                                                                   |
-| `.GeckoUITabs__tab`    | `<button>` or yours | One tab            | `data-state="selected\|unselected"`, `data-disabled`                 |
-| `.GeckoUITabs__panel`  | `<div>`             | The panel          | —                                                                   |
+| Class                 | Element             | Targets           | Data Attrs                                                         |
+| --------------------- | ------------------- | ----------------- | ------------------------------------------------------------------ |
+| `.GeckoUITabs`        | `<div>`             | Outer container   | `data-variant`, `data-size`, `data-orientation`, `data-full-width` |
+| `.GeckoUITabs__list`  | `<div>` or `<nav>`  | The strip of tabs | —                                                                  |
+| `.GeckoUITabs__tab`   | `<button>` or yours | One tab           | `data-state="selected\|unselected"`, `data-disabled`               |
+| `.GeckoUITabs__panel` | `<div>`             | The panel         | —                                                                  |
 
 Variables: `--gecko-tabs-accent`, `--gecko-tabs-muted`, `--gecko-tabs-indicator`,
 `--gecko-tabs-radius`, `--gecko-tabs-gap`, `--gecko-tabs-padding-x`,
@@ -387,21 +387,21 @@ Variables: `--gecko-tabs-accent`, `--gecko-tabs-muted`, `--gecko-tabs-indicator`
 
 ### Toast
 
-| Class                            | Element    | Targets              | Data Attrs                   |
-| -------------------------------- | ---------- | -------------------- | ---------------------------- |
-| `.GeckoUIToaster`                | `<div>`    | A corner stack       | —                            |
-| `.GeckoUIToaster__item`          | `<div>`    | Slot holding a toast | —                            |
-| `.GeckoUIToast`                  | `<div>`    | One toast            | `data-variant`, `data-state` |
-| `.GeckoUIToast__icon`            | `<div>`    | Variant icon         | —                            |
-| `.GeckoUIToast__spinner`         | `<div>`    | Loading spinner      | —                            |
-| `.GeckoUIToast__body`            | `<div>`    | Message + description| —                            |
-| `.GeckoUIToast__message`         | `<div>`    | Message text         | —                            |
-| `.GeckoUIToast__description`     | `<div>`    | Description text     | —                            |
-| `.GeckoUIToast__actions`         | `<div>`    | Button row           | —                            |
-| `.GeckoUIToast__action`          | `<button>` | Action button        | —                            |
-| `.GeckoUIToast__cancel`          | `<button>` | Cancel button        | —                            |
-| `.GeckoUIToast__close`           | `<button>` | Close button         | —                            |
-| `.GeckoUIToast__custom`          | `<div>`    | Fully custom content | —                            |
+| Class                        | Element    | Targets               | Data Attrs                   |
+| ---------------------------- | ---------- | --------------------- | ---------------------------- |
+| `.GeckoUIToaster`            | `<div>`    | A corner stack        | —                            |
+| `.GeckoUIToaster__item`      | `<div>`    | Slot holding a toast  | —                            |
+| `.GeckoUIToast`              | `<div>`    | One toast             | `data-variant`, `data-state` |
+| `.GeckoUIToast__icon`        | `<div>`    | Variant icon          | —                            |
+| `.GeckoUIToast__spinner`     | `<div>`    | Loading spinner       | —                            |
+| `.GeckoUIToast__body`        | `<div>`    | Message + description | —                            |
+| `.GeckoUIToast__message`     | `<div>`    | Message text          | —                            |
+| `.GeckoUIToast__description` | `<div>`    | Description text      | —                            |
+| `.GeckoUIToast__actions`     | `<div>`    | Button row            | —                            |
+| `.GeckoUIToast__action`      | `<button>` | Action button         | —                            |
+| `.GeckoUIToast__cancel`      | `<button>` | Cancel button         | —                            |
+| `.GeckoUIToast__close`       | `<button>` | Close button          | —                            |
+| `.GeckoUIToast__custom`      | `<div>`    | Fully custom content  | —                            |
 
 Variables: the `--gecko-toast-*` set listed under Component Variables.
 

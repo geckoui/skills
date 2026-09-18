@@ -77,9 +77,7 @@ export default function RootLayout({ children }) {
     <html>
       <body>
         <AuthProvider>
-          <GeckoUIProvider>
-            {children}
-          </GeckoUIProvider>
+          <GeckoUIProvider>{children}</GeckoUIProvider>
         </AuthProvider>
       </body>
     </html>
@@ -87,10 +85,10 @@ export default function RootLayout({ children }) {
 }
 ```
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | — | Your app tree |
-| `toastOptions` | `ToasterOptions` | `{}` | Defaults for every toast, and where the stacks sit |
+| Prop           | Type             | Default | Description                                        |
+| -------------- | ---------------- | ------- | -------------------------------------------------- |
+| `children`     | `ReactNode`      | —       | Your app tree                                      |
+| `toastOptions` | `ToasterOptions` | `{}`    | Defaults for every toast, and where the stacks sit |
 
 `react-hook-form` is an optional peer dependency. Install it only if you use the `RHF*` components.
 
@@ -276,8 +274,8 @@ const id = Dialog.show({
   dismissOnOutsideClick: true
 });
 
-Dialog.dismiss(id);  // close that dialog
-Dialog.dismiss();    // close the topmost dialog
+Dialog.dismiss(id); // close that dialog
+Dialog.dismiss(); // close the topmost dialog
 ```
 
 `Dialog.dismiss()` only closes dialogs. Use `Drawer.dismiss()` for drawers.
@@ -357,8 +355,8 @@ Imperative API. Returns an `id`, stacks, and the content can read your app's con
 
 ```tsx
 const id = Drawer.show(<DrawerContent />, { placement: "right", onClose: () => {} });
-Drawer.dismiss(id);  // close that drawer
-Drawer.dismiss();    // close the topmost drawer
+Drawer.dismiss(id); // close that drawer
+Drawer.dismiss(); // close the topmost drawer
 ```
 
 **Built-in styles:** `bg-surface-primary`, `shadow-xl`, `overflow-y-auto`, no padding. `max-w-md` for left/right, `max-h-[50%]` for top/bottom. Override via `className`.
@@ -485,14 +483,14 @@ select-all box shows the dash while staying unchecked.
 <Badge shape="pill" size="lg" icon={<StarIcon />}>Featured</Badge>
 ```
 
-| Prop      | Type                                                                     | Default     |
-| --------- | ------------------------------------------------------------------------ | ----------- |
-| `variant` | `"filled" \| "soft" \| "outlined"`                                        | `"soft"`    |
-| `color`   | `"default" \| "primary" \| "success" \| "error" \| "warning" \| "info"`   | `"default"` |
-| `size`    | `"sm" \| "md" \| "lg"`                                                    | `"md"`      |
-| `shape`   | `"rounded" \| "pill" \| "square"`                                         | `"rounded"` |
-| `dot`     | `boolean`                                                                | `false`     |
-| `icon`    | `ReactNode \| FC`                                                        | -           |
+| Prop      | Type                                                                    | Default     |
+| --------- | ----------------------------------------------------------------------- | ----------- |
+| `variant` | `"filled" \| "soft" \| "outlined"`                                      | `"soft"`    |
+| `color`   | `"default" \| "primary" \| "success" \| "error" \| "warning" \| "info"` | `"default"` |
+| `size`    | `"sm" \| "md" \| "lg"`                                                  | `"md"`      |
+| `shape`   | `"rounded" \| "pill" \| "square"`                                       | `"rounded"` |
+| `dot`     | `boolean`                                                               | `false`     |
+| `icon`    | `ReactNode \| FC`                                                       | -           |
 
 Extends `HTMLAttributes<HTMLSpanElement>`. Uses `data-variant`, `data-color`, `data-size`,
 `data-shape`.
@@ -501,28 +499,38 @@ Extends `HTMLAttributes<HTMLSpanElement>`. Uses `data-variant`, `data-color`, `d
 
 ```tsx
 <Tabs defaultValue="profile" variant="underline">
-  <Tab value="profile" label="Profile"><ProfileForm /></Tab>
-  <Tab value="billing" label={<>Billing <Badge color="error">2</Badge></>}>
+  <Tab value="profile" label="Profile">
+    <ProfileForm />
+  </Tab>
+  <Tab
+    value="billing"
+    label={
+      <>
+        Billing <Badge color="error">2</Badge>
+      </>
+    }>
     <BillingForm />
   </Tab>
-  <Tab value="team" label="Team" disabled><TeamList /></Tab>
+  <Tab value="team" label="Team" disabled>
+    <TeamList />
+  </Tab>
 </Tabs>
 ```
 
 `label` is the tab. `children` is the panel it reveals.
 
-| Prop           | Type                                   | Default        |
-| -------------- | -------------------------------------- | -------------- |
-| `value`        | `string`                               | -              |
-| `defaultValue` | `string`                               | first enabled  |
-| `onChange`     | `(value: string) => void`              | -              |
-| `variant`      | `"underline" \| "segmented" \| "soft"` | `"underline"`  |
-| `size`         | `"sm" \| "md" \| "lg"`                 | `"md"`         |
-| `orientation`  | `"horizontal" \| "vertical"`           | `"horizontal"` |
-| `fullWidth`    | `boolean`                              | `false`        |
-| `as`           | `"div" \| "nav"`                       | `"div"`        |
-| `keepMounted`  | `boolean`                              | `false`        |
-| `listClassName`| `string`                               | -              |
+| Prop            | Type                                   | Default        |
+| --------------- | -------------------------------------- | -------------- |
+| `value`         | `string`                               | -              |
+| `defaultValue`  | `string`                               | first enabled  |
+| `onChange`      | `(value: string) => void`              | -              |
+| `variant`       | `"underline" \| "segmented" \| "soft"` | `"underline"`  |
+| `size`          | `"sm" \| "md" \| "lg"`                 | `"md"`         |
+| `orientation`   | `"horizontal" \| "vertical"`           | `"horizontal"` |
+| `fullWidth`     | `boolean`                              | `false`        |
+| `as`            | `"div" \| "nav"`                       | `"div"`        |
+| `keepMounted`   | `boolean`                              | `false`        |
+| `listClassName` | `string`                               | -              |
 
 **Tab props:** `value` (required), `label` (required, node or render function), `disabled`,
 `keepMounted`, `className`, `panelClassName`, `children` (the panel).
@@ -539,7 +547,9 @@ and leaves the arrow keys alone. Your router owns the state:
   <Tab
     value="/settings/profile"
     label={({ props }) => (
-      <Link href="/settings/profile" {...props} className="GeckoUITabs__tab">Profile</Link>
+      <Link href="/settings/profile" {...props} className="GeckoUITabs__tab">
+        Profile
+      </Link>
     )}
   />
 </Tabs>
@@ -580,23 +590,23 @@ Spread `props` onto whatever you render, or the keyboard and aria wiring break.
 <CounterInput value={count} onChange={setCount} min={0} max={100} size="md" />
 ```
 
-| Prop              | Type                                | Default  |
-| ----------------- | ----------------------------------- | -------- |
-| `value`           | `string`                            | required |
-| `onChange`        | `(value: string) => void`           | required |
-| `min`             | `number`                            | -        |
-| `max`             | `number`                            | -        |
-| `step`            | `number`                            | `1`      |
-| `size`            | `"sm" \| "md" \| "lg"` (extensible) | `"md"`   |
-| `disabled`        | `boolean`                           | -        |
-| `readOnly`        | `boolean`                           | -        |
-| `allowTyping`     | `boolean`                           | `false`  |
-| `strict`          | `boolean`                           | `true`   |
-| `positiveOnly`    | `boolean`                           | `false`  |
-| `maxFractionDigits` | `number`                          | -        |
-| `maxWholeDigitPlaces` | `number`                        | -        |
-| `inputClassName`  | `string`                            | -        |
-| `buttonClassName` | `string`                            | -        |
+| Prop                  | Type                                | Default  |
+| --------------------- | ----------------------------------- | -------- |
+| `value`               | `string`                            | required |
+| `onChange`            | `(value: string) => void`           | required |
+| `min`                 | `number`                            | -        |
+| `max`                 | `number`                            | -        |
+| `step`                | `number`                            | `1`      |
+| `size`                | `"sm" \| "md" \| "lg"` (extensible) | `"md"`   |
+| `disabled`            | `boolean`                           | -        |
+| `readOnly`            | `boolean`                           | -        |
+| `allowTyping`         | `boolean`                           | `false`  |
+| `strict`              | `boolean`                           | `true`   |
+| `positiveOnly`        | `boolean`                           | `false`  |
+| `maxFractionDigits`   | `number`                            | -        |
+| `maxWholeDigitPlaces` | `number`                            | -        |
+| `inputClassName`      | `string`                            | -        |
+| `buttonClassName`     | `string`                            | -        |
 
 `inputClassName` targets the number display input. `buttonClassName` targets the increment/decrement buttons.
 
@@ -638,8 +648,8 @@ toast.warning("Careful");
 toast.info("Heads up");
 
 const id = toast.success("Saved!", { description: "All changes stored." });
-toast.dismiss(id);   // one toast
-toast.dismiss();     // all of them
+toast.dismiss(id); // one toast
+toast.dismiss(); // all of them
 
 toast.promise(save(), {
   loading: "Saving...",
@@ -687,24 +697,24 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 </FormProvider>;
 ```
 
-| Base Component   | RHF Component     | Extra Props                                                                           |
-| ---------------- | ----------------- | ------------------------------------------------------------------------------------- |
-| Input            | RHFInput          | `transform`, `onChange`, `onBlur`                                                     |
-| Textarea         | RHFTextarea       | `onChange`, `onBlur`                                                                  |
-| Select           | RHFSelect         | `onChange`                                                                            |
+| Base Component   | RHF Component     | Extra Props                                                                                 |
+| ---------------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| Input            | RHFInput          | `transform`, `onChange`, `onBlur`                                                           |
+| Textarea         | RHFTextarea       | `onChange`, `onBlur`                                                                        |
+| Select           | RHFSelect         | `onChange`                                                                                  |
 | Checkbox         | RHFCheckbox       | `label`, `labelClassName`, `value`, `uncheckedValue`, `single`, `onChange`, `indeterminate` |
-| Radio            | RHFRadio          | `label`, `labelClassName`, `value`, `onChange`                                        |
-| Switch           | RHFSwitch         | `value`, `uncheckedValue`, `onChange`                                                 |
-| DateInput        | RHFDateInput      | `onChange`                                                                            |
-| DateRangeInput   | RHFDateRangeInput | `onChange`                                                                            |
-| OTPInput         | RHFOTPInput       | -                                                                                     |
-| CounterInput     | RHFCounterInput   | `onChange`                                                                            |
-| Input (number)   | RHFNumberInput    | `positiveOnly`, `strict`, `maxFractionDigits`, `maxWholeDigitPlaces`                  |
-| Input (currency) | RHFCurrencyInput  | `currency: { symbol, code }`                                                          |
-| -                | RHFFileInput      | `multiple`, `render`, `inputClassName`                                                |
-| -                | RHFFilePicker     | `render` (drag & drop)                                                                |
-| -                | RHFError          | `render`                                                                              |
-| -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName` (wraps label + input + error)             |
+| Radio            | RHFRadio          | `label`, `labelClassName`, `value`, `onChange`                                              |
+| Switch           | RHFSwitch         | `value`, `uncheckedValue`, `onChange`                                                       |
+| DateInput        | RHFDateInput      | `onChange`                                                                                  |
+| DateRangeInput   | RHFDateRangeInput | `onChange`                                                                                  |
+| OTPInput         | RHFOTPInput       | -                                                                                           |
+| CounterInput     | RHFCounterInput   | `onChange`                                                                                  |
+| Input (number)   | RHFNumberInput    | `positiveOnly`, `strict`, `maxFractionDigits`, `maxWholeDigitPlaces`                        |
+| Input (currency) | RHFCurrencyInput  | `currency: { symbol, code }`                                                                |
+| -                | RHFFileInput      | `multiple`, `render`, `inputClassName`                                                      |
+| -                | RHFFilePicker     | `render` (drag & drop)                                                                      |
+| -                | RHFError          | `render`                                                                                    |
+| -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName` (wraps label + input + error)                   |
 
 ## Development Warnings
 

@@ -2,18 +2,18 @@
 
 Anything below fails silently rather than at build time, so check by hand.
 
-| v1 | v2 |
-| --- | --- |
+| v1                                | v2                                              |
+| --------------------------------- | ----------------------------------------------- |
 | `<GeckoUIPortal />`, self-closing | `<GeckoUIProvider>{children}</GeckoUIProvider>` |
-| `<Alert variant="error">` | `<Alert color="error">` |
-| `<Drawer handleClose>` | `<Drawer onClose>` |
-| `<Checkbox partial>` | `<Checkbox indeterminate>` |
-| `<CounterInput editable>` | `<CounterInput allowTyping>` |
-| `CounterInput value: number` | `value: string` |
-| `dismissOnEsc` | `dismissOnEscape` |
-| `AlertVariantMap` | `AlertColorMap` |
-| `toast` re-exported from sonner | GeckoUI's own, no sonner |
-| `BaseDateRangeInput` exported | removed, use `DateRangeInput` |
+| `<Alert variant="error">`         | `<Alert color="error">`                         |
+| `<Drawer handleClose>`            | `<Drawer onClose>`                              |
+| `<Checkbox partial>`              | `<Checkbox indeterminate>`                      |
+| `<CounterInput editable>`         | `<CounterInput allowTyping>`                    |
+| `CounterInput value: number`      | `value: string`                                 |
+| `dismissOnEsc`                    | `dismissOnEscape`                               |
+| `AlertVariantMap`                 | `AlertColorMap`                                 |
+| `toast` re-exported from sonner   | GeckoUI's own, no sonner                        |
+| `BaseDateRangeInput` exported     | removed, use `DateRangeInput`                   |
 
 Behaviour that changed without a rename:
 
