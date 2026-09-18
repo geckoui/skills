@@ -1,15 +1,20 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIPortal", "Toast", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
-version: "1.0.0"
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+version: "2.0.0"
 ---
 
 # GeckoUI
 
 React component library with Tailwind CSS v4, OKLCH theming, and React Hook Form integration.
 
-**Covers `@geckoui/geckoui` v1.x.** v2 renames several props and replaces `GeckoUIPortal`
-with `GeckoUIProvider`, so none of the overlay guidance below applies to it.
+**Covers `@geckoui/geckoui` v2.x.** For v1, use the skill on the `v1` branch:
+`npx skills add https://github.com/geckoui/skills/tree/v1/skills/geckoui`.
+
+v2 renamed several props. If code uses `GeckoUIPortal`, `Alert variant`,
+`Drawer handleClose`, `Checkbox partial`, `CounterInput editable`, a numeric
+`CounterInput value`, or imports `toast` expecting sonner, it is written for v1 — see
+Migrating from v1 at the end.
 
 ## Setup
 
@@ -31,18 +36,21 @@ For Tailwind CSS v4 projects, import inside `@layer`:
 }
 ```
 
-Mount `<GeckoUIPortal />` once, near the root (required for Dialog, Drawer, ConfirmDialog and Toast). It is self-closing and renders the containers those overlays portal into — it does **not** wrap your app:
+Wrap your app in `<GeckoUIProvider>` (required for Dialog, Drawer, ConfirmDialog and Toast). Place it **below** your own context providers, so overlays opened imperatively can read them:
 
 ```tsx
-import { GeckoUIPortal } from "@geckoui/geckoui";
+import { GeckoUIProvider } from "@geckoui/geckoui";
 
 // app/layout.tsx
 export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        {children}
-        <GeckoUIPortal />
+        <AuthProvider>
+          <GeckoUIProvider>
+            {children}
+          </GeckoUIProvider>
+        </AuthProvider>
       </body>
     </html>
   );
@@ -51,7 +59,10 @@ export default function RootLayout({ children }) {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `toastOptions` | `ToasterProps` | `{}` | Options for sonner's Toaster |
+| `children` | `ReactNode` | — | Your app tree |
+| `toastOptions` | `ToasterOptions` | `{}` | Defaults for every toast, and where the stacks sit |
+
+`react-hook-form` is an optional peer dependency. Install it only if you use the `RHF*` components.
 
 ## Components
 
@@ -189,14 +200,14 @@ Extends `TextareaAutosizeProps`.
 ### Alert
 
 ```tsx
-<Alert variant="error" title="Error" description="Something went wrong" />
-<Alert variant="success" title="Done!" onRemove={() => {}} />
-<Alert variant="warning" title="Warning" condensed />
+<Alert color="error" title="Error" description="Something went wrong" />
+<Alert color="success" title="Done!" onRemove={() => {}} />
+<Alert color="warning" title="Warning" condensed />
 ```
 
 | Prop            | Type                                                       | Default     |
 | --------------- | ---------------------------------------------------------- | ----------- |
-| `variant`       | `"error" \| "warning" \| "info" \| "success" \| "default"` | `"default"` |
+| `color`         | `"error" \| "warning" \| "info" \| "success" \| "default"` | `"default"` |
 | `title`         | `ReactNode \| FC`                                          | required    |
 | `description`   | `ReactNode \| FC`                                          | -           |
 | `condensed`     | `boolean`                                                  | `false`     |
@@ -204,14 +215,18 @@ Extends `TextareaAutosizeProps`.
 | `icon`          | `ReactNode \| FC`                                          | -           |
 | `iconClassName` | `string`                                                   | -           |
 
-`iconClassName` targets the icon element. Uses `data-variant`, `data-condensed` attributes.
+`iconClassName` targets the icon element. Uses `data-color`, `data-condensed` attributes.
+
+`variant` meant the visual treatment on Button and the meaning on Alert. v2 settles it:
+**`variant` is how a thing looks, `color` is what it means.** Alert took the rename because
+it was the odd one out.
 
 ### Dialog
 
-`Dialog.show()` renders one dialog into the `GeckoUIPortal` container. It returns nothing, and calling it again replaces whatever is open — dialogs do not stack.
+`Dialog.show()` pushes onto the overlay stack and returns an `id`. Dialogs stack, and only the topmost responds to Escape or a backdrop click. Dialogs always sit above drawers.
 
 ```tsx
-Dialog.show({
+const id = Dialog.show({
   content: ({ dismiss }) => (
     <div>
       <h3>Title</h3>
@@ -220,30 +235,36 @@ Dialog.show({
     </div>
   ),
   className: "max-w-md",
-  dismissOnEsc: true,
+  dismissOnEscape: true,
   dismissOnOutsideClick: true
 });
 
-Dialog.dismiss();  // close the open dialog
+Dialog.dismiss(id);  // close that dialog
+Dialog.dismiss();    // close the topmost dialog
 ```
 
-**Dialog content cannot read your app's React context.** It is rendered in a separate
-React root via `createRoot`, so hooks like `useContext`, and anything relying on a
-provider above it, will not work. Pass what the content needs as a prop instead:
+`Dialog.dismiss()` only closes dialogs. Use `Drawer.dismiss()` for drawers.
+
+Dialog content renders inside your tree, so it can read React context provided above
+`GeckoUIProvider`:
 
 ```tsx
-const { user } = useContext(AuthContext);
-
 Dialog.show({
-  content: () => <p>Hello, {user.name}</p>  // captured, not read from context
+  content: () => {
+    const { user } = useContext(AuthContext);
+    return <p>Hello, {user.name}</p>;
+  }
 });
 ```
+
+Clicking inside a dialog never dismisses it. Only a press and release both landing on the
+backdrop does, so a `Select` or `Menu` popup inside a dialog is safe.
 
 | Prop                    | Type                           | Default |
 | ----------------------- | ------------------------------ | ------- |
 | `content`               | `ReactNode \| FC<{ dismiss }>` | -       |
 | `className`             | `string`                       | -       |
-| `dismissOnEsc`          | `boolean`                      | `true`  |
+| `dismissOnEscape`       | `boolean`                      | `true`  |
 | `dismissOnOutsideClick` | `boolean`                      | `true`  |
 
 `className` targets the dialog panel. **Built-in styles:** `bg-surface-primary`, `p-6`, `rounded-md`, `shadow-xl`, `max-w-[400px]`. Override via `className`.
@@ -277,8 +298,11 @@ ConfirmDialog.show({
 | `className`             | `string`                                   | -       |
 | `titleClassName`        | `string`                                   | -       |
 | `contentClassName`      | `string`                                   | -       |
-| `dismissOnEsc`          | `boolean`                                  | `true`  |
+| `dismissOnEscape`       | `boolean`                                  | `true`  |
 | `dismissOnOutsideClick` | `boolean`                                  | `true`  |
+
+`onConfirm` and `onCancel` are both awaited, so an async callback shows the button's
+loading state and a `preventDefault()` inside one still lands in time.
 
 **Built-in styles:** Same dialog panel styles as Dialog. Title is `text-base font-semibold`, content is `text-sm text-muted`, actions are right-aligned.
 
@@ -287,17 +311,17 @@ ConfirmDialog.show({
 Controlled JSX usage:
 
 ```tsx
-<Drawer open={isOpen} handleClose={() => setOpen(false)} placement="right">
+<Drawer open={isOpen} onClose={() => setOpen(false)} placement="right">
   <div className="p-6">Drawer content</div>
 </Drawer>
 ```
 
-Imperative API. Like `Dialog`, it renders one drawer into the `GeckoUIPortal` container,
-returns nothing, does not stack, and cannot read your app's React context:
+Imperative API. Returns an `id`, stacks, and the content can read your app's context:
 
 ```tsx
-Drawer.show(<DrawerContent />, { placement: "right", allowClickOutside: true });
-Drawer.dismiss();
+const id = Drawer.show(<DrawerContent />, { placement: "right", onClose: () => {} });
+Drawer.dismiss(id);  // close that drawer
+Drawer.dismiss();    // close the topmost drawer
 ```
 
 **Built-in styles:** `bg-surface-primary`, `shadow-xl`, `overflow-y-auto`, no padding. `max-w-md` for left/right, `max-h-[50%]` for top/bottom. Override via `className`.
@@ -305,7 +329,7 @@ Drawer.dismiss();
 | Prop                | Type                                     | Default   |
 | ------------------- | ---------------------------------------- | --------- |
 | `open`              | `boolean`                                | required  |
-| `handleClose`       | `() => void`                             | -         |
+| `onClose`           | `() => void`                             | -         |
 | `placement`         | `"top" \| "bottom" \| "left" \| "right"` | `"right"` |
 | `hideBackdrop`      | `boolean`                                | `false`   |
 | `allowClickOutside` | `boolean`                                | `false`   |
@@ -341,7 +365,13 @@ Drawer.dismiss();
 
 ```tsx
 <Calendar selectedDate={date} onSelectDate={setDate} />
+<Calendar mode="range" selectedRange={range} onSelectRange={setRange} />
+<Calendar fixedWeeks selectedDate={date} onSelectDate={setDate} />
 ```
+
+A month takes the four to six weeks it needs, so the calendar changes height as you page
+between months. Pass `fixedWeeks` to always render six, which `DateInput` and
+`DateRangeInput` also accept.
 
 ### DateInput / DateRangeInput
 
@@ -403,8 +433,82 @@ Drawer.dismiss();
   <Checkbox checked={val} onChange={(e) => setVal(e.target.checked)} />
   <span>Agree</span>
 </label>
-<Checkbox partial /> {/* indeterminate */}
+<Checkbox checked={allChecked} indeterminate={someChecked && !allChecked} />
 ```
+
+`indeterminate` mirrors the native DOM property and is independent of `checked`, so a
+select-all box shows the dash while staying unchecked.
+
+### Badge
+
+```tsx
+<Badge>Default</Badge>
+<Badge variant="filled" color="error">Failed</Badge>
+<Badge variant="soft" color="success" dot>Live</Badge>
+<Badge shape="pill" size="lg" icon={<StarIcon />}>Featured</Badge>
+```
+
+| Prop      | Type                                                                     | Default     |
+| --------- | ------------------------------------------------------------------------ | ----------- |
+| `variant` | `"filled" \| "soft" \| "outlined"`                                        | `"soft"`    |
+| `color`   | `"default" \| "primary" \| "success" \| "error" \| "warning" \| "info"`   | `"default"` |
+| `size`    | `"sm" \| "md" \| "lg"`                                                    | `"md"`      |
+| `shape`   | `"rounded" \| "pill" \| "square"`                                         | `"rounded"` |
+| `dot`     | `boolean`                                                                | `false`     |
+| `icon`    | `ReactNode \| FC`                                                        | -           |
+
+Extends `HTMLAttributes<HTMLSpanElement>`. Uses `data-variant`, `data-color`, `data-size`,
+`data-shape`.
+
+### Tabs
+
+```tsx
+<Tabs defaultValue="profile" variant="underline">
+  <Tab value="profile" label="Profile"><ProfileForm /></Tab>
+  <Tab value="billing" label={<>Billing <Badge color="error">2</Badge></>}>
+    <BillingForm />
+  </Tab>
+  <Tab value="team" label="Team" disabled><TeamList /></Tab>
+</Tabs>
+```
+
+`label` is the tab. `children` is the panel it reveals.
+
+| Prop           | Type                                   | Default        |
+| -------------- | -------------------------------------- | -------------- |
+| `value`        | `string`                               | -              |
+| `defaultValue` | `string`                               | first enabled  |
+| `onChange`     | `(value: string) => void`              | -              |
+| `variant`      | `"underline" \| "segmented" \| "soft"` | `"underline"`  |
+| `size`         | `"sm" \| "md" \| "lg"`                 | `"md"`         |
+| `orientation`  | `"horizontal" \| "vertical"`           | `"horizontal"` |
+| `fullWidth`    | `boolean`                              | `false`        |
+| `as`           | `"div" \| "nav"`                       | `"div"`        |
+| `keepMounted`  | `boolean`                              | `false`        |
+| `listClassName`| `string`                               | -              |
+
+**Tab props:** `value` (required), `label` (required, node or render function), `disabled`,
+`keepMounted`, `className`, `panelClassName`, `children` (the panel).
+
+The strip scrolls sideways when the tabs outgrow it, centring the selected one. Arrow keys
+move focus; Enter or Space selects.
+
+**Navigation tabs.** Tabs that change the URL are not tabs to a screen reader, so pass
+`as="nav"`: it renders a `nav` of links with `aria-current="page"` instead of a tablist,
+and leaves the arrow keys alone. Your router owns the state:
+
+```tsx
+<Tabs as="nav" value={pathname}>
+  <Tab
+    value="/settings/profile"
+    label={({ props }) => (
+      <Link href="/settings/profile" {...props} className="GeckoUITabs__tab">Profile</Link>
+    )}
+  />
+</Tabs>
+```
+
+Spread `props` onto whatever you render, or the keyboard and aria wiring break.
 
 ### Radio
 
@@ -441,19 +545,27 @@ Drawer.dismiss();
 
 | Prop              | Type                                | Default  |
 | ----------------- | ----------------------------------- | -------- |
-| `value`           | `number`                            | required |
-| `onChange`        | `(value: number) => void`           | required |
+| `value`           | `string`                            | required |
+| `onChange`        | `(value: string) => void`           | required |
 | `min`             | `number`                            | -        |
 | `max`             | `number`                            | -        |
 | `step`            | `number`                            | `1`      |
 | `size`            | `"sm" \| "md" \| "lg"` (extensible) | `"md"`   |
 | `disabled`        | `boolean`                           | -        |
 | `readOnly`        | `boolean`                           | -        |
-| `editable`        | `boolean`                           | `false`  |
+| `allowTyping`     | `boolean`                           | `false`  |
+| `strict`          | `boolean`                           | `true`   |
+| `positiveOnly`    | `boolean`                           | `false`  |
+| `maxFractionDigits` | `number`                          | -        |
+| `maxWholeDigitPlaces` | `number`                        | -        |
 | `inputClassName`  | `string`                            | -        |
 | `buttonClassName` | `string`                            | -        |
 
 `inputClassName` targets the number display input. `buttonClassName` targets the increment/decrement buttons.
+
+**The value is a string.** A number cannot hold a half typed "2." or a leading zero, so
+the value stays text and you convert at the edge: `Number(value)`, or `z.coerce.number()`
+in a schema.
 
 ### Pagination
 
@@ -477,14 +589,37 @@ Drawer.dismiss();
 
 ### Toast
 
+GeckoUI's own toasts — `sonner` is gone, and nothing needs installing.
+
 ```tsx
 import { toast } from "@geckoui/geckoui";
 
+toast("Plain message");
 toast.success("Saved!");
 toast.error("Failed");
-toast.info("Info");
-toast.warning("Warning");
+toast.warning("Careful");
+toast.info("Heads up");
+
+const id = toast.success("Saved!", { description: "All changes stored." });
+toast.dismiss(id);   // one toast
+toast.dismiss();     // all of them
+
+toast.promise(save(), {
+  loading: "Saving...",
+  success: (result) => `Saved ${result.name}`,
+  error: (e) => `Failed: ${String(e)}`
+});
 ```
+
+**Per toast options:** `description`, `duration`, `position`, `action`, `cancel`, `id`,
+`icon`, `closeButton`, `onDismiss`, `onAutoClose`, `className`, `style`.
+
+**Defaults, on `GeckoUIProvider toastOptions`:** `position`, `duration`, `closeButton`,
+`visibleToasts`, `gap`, `offset`, `className`, `toastClassName`, `toastStyle`,
+`iconClassName`, `messageClassName`, `descriptionClassName`, `actionClassName`,
+`cancelClassName`, `closeClassName`.
+
+Styled through `--gecko-toast-*` variables rather than props.
 
 ## React Hook Form
 
@@ -520,7 +655,7 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 | Input            | RHFInput          | `transform`, `onChange`, `onBlur`                                                     |
 | Textarea         | RHFTextarea       | `onChange`, `onBlur`                                                                  |
 | Select           | RHFSelect         | `onChange`                                                                            |
-| Checkbox         | RHFCheckbox       | `label`, `labelClassName`, `value`, `uncheckedValue`, `single`, `onChange`, `partial` |
+| Checkbox         | RHFCheckbox       | `label`, `labelClassName`, `value`, `uncheckedValue`, `single`, `onChange`, `indeterminate` |
 | Radio            | RHFRadio          | `label`, `labelClassName`, `value`, `onChange`                                        |
 | Switch           | RHFSwitch         | `value`, `uncheckedValue`, `onChange`                                                 |
 | DateInput        | RHFDateInput      | `onChange`                                                                            |
@@ -555,7 +690,10 @@ Then add styles:
 }
 ```
 
-**Extensible interfaces:** `ButtonVariantMap`, `ButtonColorMap`, `ButtonSizeMap`, `AlertVariantMap`, `SwitchSizeMap`, `CounterInputSizeMap`, `DrawerPlacementMap`.
+**Extensible interfaces:** `ButtonVariantMap`, `ButtonColorMap`, `ButtonSizeMap`,
+`AlertColorMap`, `BadgeVariantMap`, `BadgeColorMap`, `BadgeSizeMap`, `BadgeShapeMap`,
+`TabsVariantMap`, `TabsSizeMap`, `SwitchSizeMap`, `CounterInputSizeMap`,
+`DrawerPlacementMap`.
 
 ## Styling
 
@@ -566,11 +704,49 @@ Components use `data-*` attributes for variants/states. Target with attribute se
 }
 .GeckoUIButton[data-size="lg"] {
 }
-.GeckoUIAlert[data-variant="error"] {
+.GeckoUIAlert[data-color="error"] {
+}
+.GeckoUIBadge[data-variant="soft"][data-color="success"] {
+}
+.GeckoUITabs__tab[data-state="selected"] {
 }
 .GeckoUIDrawer__drawer[data-placement="right"][data-state="open"] {
 }
 ```
+
+## Migrating from v1
+
+Anything below fails silently rather than at build time, so check by hand.
+
+| v1 | v2 |
+| --- | --- |
+| `<GeckoUIPortal />`, self-closing | `<GeckoUIProvider>{children}</GeckoUIProvider>` |
+| `<Alert variant="error">` | `<Alert color="error">` |
+| `<Drawer handleClose>` | `<Drawer onClose>` |
+| `<Checkbox partial>` | `<Checkbox indeterminate>` |
+| `<CounterInput editable>` | `<CounterInput allowTyping>` |
+| `CounterInput value: number` | `value: string` |
+| `dismissOnEsc` | `dismissOnEscape` |
+| `AlertVariantMap` | `AlertColorMap` |
+| `toast` re-exported from sonner | GeckoUI's own, no sonner |
+| `BaseDateRangeInput` exported | removed, use `DateRangeInput` |
+
+Behaviour that changed without a rename:
+
+- `Dialog.dismiss()` and `Drawer.dismiss()` only close their own type. In v1 either closed
+  whatever was on top.
+- Clicking inside a dialog no longer dismisses it.
+- Dialogs sit above drawers, at z-index 2000 rather than 1000.
+- Page scroll locks behind Dialog and Drawer, with the scrollbar width paid back as padding
+  so nothing shifts.
+- `ConfirmDialog` awaits `onConfirm` and `onCancel`, so an async one shows its loading state.
+- `Checkbox` `indeterminate` is independent of `checked`; in v1 the dash needed `checked` too.
+- Calendars size themselves to the month. Pass `fixedWeeks` for the old fixed height.
+- Toast loses `richColors`, `theme` and `expand`; `toastOptions.className` and `.style`
+  become `toastClassName` and `toastStyle`.
+
+New in v2: `Badge`, `Tabs`, and the `--color-success` / `--color-error` / `--color-warning`
+/ `--color-info` semantic tokens.
 
 ## References
 
