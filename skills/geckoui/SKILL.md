@@ -497,65 +497,78 @@ Extends `HTMLAttributes<HTMLSpanElement>`. Uses `data-variant`, `data-color`, `d
 
 ### Tabs
 
+Four parts: `Tabs` holds the state, `TabList` is the strip, each `Tab` is one tab, and each
+`TabPanel` is what its tab reveals — paired by `value`.
+
 ```tsx
 <Tabs defaultValue="profile" variant="underline">
-  <Tab value="profile" label="Profile">
+  <TabList>
+    <Tab value="profile">Profile</Tab>
+    <Tab value="billing">
+      Billing <Badge color="error">2</Badge>
+    </Tab>
+    <Tab value="team" disabled>
+      Team
+    </Tab>
+  </TabList>
+
+  <TabPanel value="profile">
     <ProfileForm />
-  </Tab>
-  <Tab
-    value="billing"
-    label={
-      <>
-        Billing <Badge color="error">2</Badge>
-      </>
-    }>
+  </TabPanel>
+  <TabPanel value="billing">
     <BillingForm />
-  </Tab>
-  <Tab value="team" label="Team" disabled>
+  </TabPanel>
+  <TabPanel value="team">
     <TeamList />
-  </Tab>
+  </TabPanel>
 </Tabs>
 ```
 
-`label` is the tab. `children` is the panel it reveals.
+Whatever sits inside `Tab` is what the tab shows, so an icon needs no prop of its own.
 
-| Prop            | Type                                   | Default        |
-| --------------- | -------------------------------------- | -------------- |
-| `value`         | `string`                               | -              |
-| `defaultValue`  | `string`                               | first enabled  |
-| `onChange`      | `(value: string) => void`              | -              |
-| `variant`       | `"underline" \| "segmented" \| "soft"` | `"underline"`  |
-| `size`          | `"sm" \| "md" \| "lg"`                 | `"md"`         |
-| `orientation`   | `"horizontal" \| "vertical"`           | `"horizontal"` |
-| `fullWidth`     | `boolean`                              | `false`        |
-| `as`            | `"div" \| "nav"`                       | `"div"`        |
-| `keepMounted`   | `boolean`                              | `false`        |
-| `listClassName` | `string`                               | -              |
+| Prop           | Type                                   | Default        |
+| -------------- | -------------------------------------- | -------------- |
+| `value`        | `string`                               | -              |
+| `defaultValue` | `string`                               | first enabled  |
+| `onChange`     | `(value: string) => void`              | -              |
+| `variant`      | `"underline" \| "segmented" \| "soft"` | `"underline"`  |
+| `size`         | `"sm" \| "md" \| "lg"`                 | `"md"`         |
+| `orientation`  | `"horizontal" \| "vertical"`           | `"horizontal"` |
+| `fullWidth`    | `boolean`                              | `false`        |
+| `as`           | `"div" \| "nav"`                       | `"div"`        |
+| `keepMounted`  | `boolean`                              | `false`        |
 
-**Tab props:** `value` (required), `label` (required, node or render function), `disabled`,
-`keepMounted`, `className`, `panelClassName`, `children` (the panel).
+**TabList props:** `children`, plus any div attribute. It owns the keyboard navigation and
+the scrolling, and can sit anywhere in the layout — a sticky header with the panels
+scrolling below, say.
+
+**Tab props:** `value` (required), `disabled`, `asChild`, `children`.
+
+**TabPanel props:** `value` (required), `keepMounted`, `children`. A hidden panel unmounts
+unless `keepMounted` is set here or on `Tabs`, so a half filled form survives.
 
 The strip scrolls sideways when the tabs outgrow it, centring the selected one. Arrow keys
 move focus; Enter or Space selects.
 
 **Navigation tabs.** Tabs that change the URL are not tabs to a screen reader, so pass
 `as="nav"`: it renders a `nav` of links with `aria-current="page"` instead of a tablist,
-and leaves the arrow keys alone. Your router owns the state:
+and leaves the arrow keys alone. Your router owns the state, and `asChild` hands the tab
+wiring to your own link:
 
 ```tsx
 <Tabs as="nav" value={pathname}>
-  <Tab
-    value="/settings/profile"
-    label={({ props }) => (
-      <Link href="/settings/profile" {...props} className="GeckoUITabs__tab">
-        Profile
-      </Link>
-    )}
-  />
+  <TabList>
+    <Tab value="/settings/profile" asChild>
+      <Link href="/settings/profile">Profile</Link>
+    </Tab>
+    <Tab value="/settings/billing" asChild>
+      <Link href="/settings/billing">Billing</Link>
+    </Tab>
+  </TabList>
 </Tabs>
 ```
 
-Spread `props` onto whatever you render, or the keyboard and aria wiring break.
+There are no panels in that case — the page below is the content.
 
 ### Radio
 
