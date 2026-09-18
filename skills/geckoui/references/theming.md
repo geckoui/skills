@@ -454,12 +454,12 @@ RHF classes stack on the **same DOM element** as their base component class (see
 
 | Class                                       | Element      | Targets                                  | Data Attrs                                    |
 | ------------------------------------------- | ------------ | ---------------------------------------- | --------------------------------------------- |
-| `.GeckoUIRHFInput`                          | `<label>`    | Wraps Input                              | `data-error`                                  |
+| `.GeckoUIRHFInput`                          | `<label>`    | Wraps Input                              | — (see below)                                 |
 | `.GeckoUIRHFTextarea`                       | `<textarea>` | Wraps Textarea                           | `data-error`                                  |
 | `.GeckoUIRHFSelect`                         | `<div>`      | Wraps Select outer container             | —                                             |
-| `.GeckoUIRHFSelectButton`                   | `<div>`      | Wraps SelectButton                       | `data-error`                                  |
-| `.GeckoUIRHFOTPInput`                       | `<div>`      | Wraps OTPInput                           | `data-error`                                  |
-| `.GeckoUIRHFCounterInput`                   | `<div>`      | Wraps CounterInput                       | `data-error`                                  |
+| `.GeckoUIRHFSelectButton`                   | `<div>`      | Wraps SelectButton                       | — (see below)                                 |
+| `.GeckoUIRHFOTPInput`                       | `<div>`      | Wraps OTPInput                           | — (see below)                                 |
+| `.GeckoUIRHFCounterInput`                   | `<div>`      | Wraps CounterInput                       | — (see below)                                 |
 | `.GeckoUIRHFSwitch`                         | `<label>`    | Wraps Switch                             | —                                             |
 | `.GeckoUIRHFSwitch__thumb`                  | `<span>`     | Switch thumb                             | —                                             |
 | `.GeckoUIRHFCheckbox`                       | `<label>`    | Checkbox + label wrapper                 | —                                             |
@@ -478,6 +478,30 @@ RHF classes stack on the **same DOM element** as their base component class (see
 | `.GeckoUIRHFFilePicker__file-remove`        | `<button>`   | Remove file button                       | —                                             |
 | `.GeckoUIRHFFilePicker__file-remove-icon`   | `<svg>`      | Remove icon                              | —                                             |
 | `.GeckoUIRHFFilePicker__upload-icon`        | `<svg>`      | Upload icon                              | —                                             |
+
+**`data-error` does not reach most of these in v1.** Only `.GeckoUIRHFTextarea` and
+`.GeckoUIRHFFilePicker` carry it, because those components render the classed element
+themselves. Elsewhere it goes astray:
+
+| Component | Where `data-error` ends up |
+| --- | --- |
+| `RHFInput` | the inner `<input>`, not the `<label>` holding the class |
+| `RHFCounterInput` | the inner `<input>`, not the container |
+| `RHFSelect` | nowhere — `Select` never forwards it to the DOM |
+| `RHFOTPInput` | nowhere — `OTPInput` takes no extra props |
+
+So `.GeckoUIRHFInput[data-error]` matches nothing. To style an error state in v1, reach
+for the inner element or the field's own state:
+
+```css
+/* RHFInput and RHFCounterInput */
+.GeckoUIRHFInput:has(input[data-error]) { border-color: red; }
+
+/* RHFSelect and RHFOTPInput: no attribute at all, so drive it yourself */
+```
+
+Fixed in v2, where `data-error` sits on the element carrying the class in every case.
+
 | `.GeckoUIRHFFilePicker__upload-text`        | `<p>`        | Upload instruction text                  | —                                             |
 | `.GeckoUIRHFFilePicker__upload-buttons`     | `<div>`      | Button container                         | —                                             |
 | `.GeckoUIRHFFilePicker__loading-overlay`    | `<div>`      | Loading spinner overlay                  | —                                             |
