@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -839,6 +839,65 @@ There are no panels in that case — the page below is the content.
 **The value is a string.** A number cannot hold a half typed "2." or a leading zero, so
 the value stays text and you convert at the edge: `Number(value)`, or `z.coerce.number()`
 in a schema.
+
+### Slider / RangeSlider
+
+Pick a number, or a span, by dragging.
+
+```tsx
+<Slider value={volume} onChange={setVolume} />
+<Slider value={volume} onChange={setVolume} onChangeEnd={save} step={5} />
+<Slider value={volume} onChange={setVolume} label={({ value }) => `${value}%`} />
+<Slider
+  value={volume}
+  onChange={setVolume}
+  marks={[{ value: 0, label: "Off" }, { value: 100, label: "Max" }]}
+/>
+
+<RangeSlider value={price} onChange={setPrice} min={0} max={500} step={10} minGap={50} />
+```
+
+| Prop          | Type                                                | Default     |
+| ------------- | --------------------------------------------------- | ----------- |
+| `value`       | `number`, or `[number, number]` for the range        | required    |
+| `onChange`    | called on every move                                | required    |
+| `onChangeEnd` | called once, on release or after a key press        | -           |
+| `min`         | `number`                                            | `0`         |
+| `max`         | `number`                                            | `100`       |
+| `step`        | `number`                                            | `1`         |
+| `marks`       | `{ value: number; label?: ReactNode }[]`            | -           |
+| `label`       | `ReactNode \| ({ value, index }) => ReactNode`      | -           |
+| `color`       | the six semantic colours                            | `"primary"` |
+| `size`        | `"sm" \| "md" \| "lg"`                              | `"md"`      |
+| `minGap`      | `RangeSlider` only: how close the thumbs may get    | `0`         |
+
+Uses `data-color`, `data-size`, `data-disabled`; the thumb carries `data-dragging`.
+
+Two components rather than one with a union value, so the types stay clean at the call
+site. `onChange` fires all the way through a drag and keeps the slider controlled; put
+anything expensive in `onChangeEnd`.
+
+Steps are measured from `min`, not from zero, and rounded to the step's own precision, so
+`step={0.1}` gives `0.3` rather than `0.30000000000000004`.
+
+Range thumbs stop at each other rather than swapping, so `value` is always in order. Each
+thumb reports its own room through `aria-valuemin` and `aria-valuemax`, not the whole
+track.
+
+Keyboard: arrows step, Shift jumps ten steps, Page Up/Down move a tenth of the range, Home
+and End go to the ends. Every press fires `onChangeEnd` too.
+
+There is no vertical orientation.
+
+### RHFSlider / RHFRangeSlider
+
+```tsx
+<RHFSlider name="volume" label={({ value }) => `${value}%`} />
+<RHFRangeSlider name="price" min={0} max={500} step={10} minGap={50} />
+```
+
+The field holds a number, or a `[low, high]` pair. A slider has nowhere to show "not set",
+so an empty field starts at `min`, or `[min, max]` for the range; `defaultValue` moves it.
 
 ### Pagination
 
