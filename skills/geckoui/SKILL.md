@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -206,6 +206,70 @@ development. Give object values a `label` key rather than relying on property or
 **SelectTrigger:** render-props for custom trigger, receives `{ keyword, selectedOptions, handleChange, options, toggleMenu, open, openMenu, closeMenu, hasValue, filteredOptions, handleInputChange, handleKeyboardInteraction }`.
 
 **SelectConsumer:** render-props for accessing full Select context: `<SelectConsumer render={(ctx) => ...} />`.
+
+### TagInput
+
+Turns what you type into tags, with a list of the usual ones to hand.
+
+```tsx
+<TagInput value={tags} onChange={setTags} placeholder="Add a tag" />
+
+<TagInput value={tags} onChange={setTags}>
+  <TagInputOption value="React">React</TagInputOption>
+  <TagInputOption value="Vue">Vue</TagInputOption>
+</TagInput>
+
+<TagInput
+  value={emails}
+  onChange={setEmails}
+  validate={(tag) => tag.includes("@")}
+  onReject={(tags) => toast.error(`${tags.length} were not addresses`)}
+/>
+```
+
+| Prop              | Type                                      | Default            |
+| ----------------- | ----------------------------------------- | ------------------ |
+| `value`           | `string[]`                                | required           |
+| `onChange`        | `(value: string[]) => void`               | required           |
+| `onReject`        | `(tags: string[]) => void`                | -                  |
+| `validate`        | `(tag: string) => boolean`                | -                  |
+| `separators`      | `string[]`                                | `["Enter", ","]`   |
+| `preferOption`    | `boolean`                                 | `true`             |
+| `max`             | `number`                                  | -                  |
+| `allowDuplicates` | `boolean`                                 | `false`            |
+| `addOnBlur`       | `boolean`                                 | `true`             |
+| `renderTag`       | `({ value, index, remove }) => ReactNode` | -                  |
+
+Also `placeholder`, `disabled`, `readOnly`, `hasError`, `prefix`, `suffix`, `className`,
+`wrapperClassName`, `menuClassName`, `menuPlacement`.
+
+**TagInputOption props:** `value` (required), `label`, `disabled`.
+
+There is no size prop: the field's height comes from the tags in it.
+
+Options are declared as children, the way they are for `Select`, and filter as you type.
+Anything that is not an option can still be typed in, which is what separates this from a
+multiple `Select`. An option already added drops out of the list; the chip's own cross is
+how it comes back.
+
+`preferOption` matches what was typed against the options ignoring case and spacing, and
+adds the option's spelling: `vue` becomes `Vue`, `united  state` becomes `United State`.
+Only case and spacing are folded, so `United States` stays separate from `United State`. It
+also catches a differently cased repeat as a duplicate.
+
+A tag `validate` turns down is not added and stays in the field to be corrected, so `value`
+only ever holds tags that passed. `onReject` gets everything turned away, from a rule, a
+duplicate or `max` — which matters on a paste, where some land and some do not. A paste only
+becomes several tags when it holds more than one.
+
+### RHFTagInput
+
+```tsx
+<RHFTagInput name="tags" rules={{ required: "Add at least one tag" }} />
+```
+
+The field holds a `string[]`, and an empty field reads as `[]`. `validate` judges one tag
+before it is added; `rules` judges the whole list on submit.
 
 ### Menu
 
