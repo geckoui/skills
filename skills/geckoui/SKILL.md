@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "CounterInput", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -538,6 +538,60 @@ between months. Pass `fixedWeeks` to always render six, which `DateInput` and
 | `placeholderClassName` | `string`                                                         | -                |
 
 `className` targets the input container. `wrapperClassName` targets the outer wrapper (includes floating calendar). `calendarClassName` targets the calendar popup. `placeholderClassName` targets the placeholder text.
+
+### TimeInput
+
+A time, typed segment by segment or picked from a column for each.
+
+```tsx
+<TimeInput value={time} onChange={setTime} />
+<TimeInput value={time} onChange={setTime} format="hh:mm A" step={30} />
+<TimeInput
+  value={time}
+  onChange={setTime}
+  disabledTime={({ hour }) => hour < 9 || hour >= 17}
+/>
+```
+
+| Prop           | Type                                                        | Default   |
+| -------------- | ----------------------------------------------------------- | --------- |
+| `value`        | `string \| null`                                             | -         |
+| `onChange`     | `(value: string \| null) => void`                            | -         |
+| `onSubmit`     | `() => void`                                                | -         |
+| `format`       | `"HH:mm" \| "hh:mm A" \| "HH:mm:ss" \| "hh:mm:ss A"`          | `"HH:mm"` |
+| `step`         | `number`                                                    | `1`       |
+| `disabledTime` | `({ hour, minute, second }) => boolean`                     | -         |
+
+Also `disabled`, `readOnly`, `hasError`, `prefix`, `suffix`, `placeholder`,
+`hideClearIcon`, `hideClockIcon`, `className`, `wrapperClassName`, `listClassName`,
+`listPlacement`, `floatingStrategy`.
+
+`value` is always 24 hour `HH:mm`, or `HH:mm:ss` when the format asks for seconds, so two
+times compare without being parsed. `format` decides only what is on screen: a 12 hour
+field shows `04:05 PM` and still reports `"16:05"`. `onChange` gets `null` while the time
+is incomplete or ruled out.
+
+Clicking anywhere in the field opens a picker with one scrolling column per segment.
+`step` is the minutes between entries in the minute column, and does not affect typing.
+
+`disabledTime` is given 24 hour numbers whatever the format shows. Cells grey out when
+nothing they could become is allowed, reading the columns to their **left** as settled and
+leaving the ones to their right free — so an hour rule greys hours straight away but leaves
+minutes alone until an hour is picked, and choosing PM never locks the hour column.
+
+There is no combined date and time field. Use `DateInput` and `TimeInput` side by side and
+join the two strings: `` `${date}T${time}` ``.
+
+### RHFTimeInput
+
+```tsx
+<RHFTimeInput name="startsAt" rules={{ required: "Pick a time" }} />
+<RHFTimeInput name="startsAt" format="hh:mm A" step={15} />
+```
+
+Takes everything `TimeInput` does except `hasError`, which the field's own error drives.
+The form holds the 24 hour string, so a resolver can compare `startsAt` and `endsAt`
+directly.
 
 ### Switch
 
