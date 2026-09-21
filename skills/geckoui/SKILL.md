@@ -1183,12 +1183,22 @@ toast.promise(save(), {
 ```
 
 **Per toast options:** `description`, `duration`, `position`, `action`, `cancel`, `id`,
-`icon`, `closeButton`, `onDismiss`, `onAutoClose`, `className`, `style`.
+`icon`, `closeButton`, `dismissible`, `onDismiss`, `onAutoClose`, `className`, `style`.
 
 **Defaults, on `GeckoUIProvider toastOptions`:** `position`, `duration`, `closeButton`,
-`visibleToasts`, `gap`, `offset`, `className`, `toastClassName`, `toastStyle`,
-`iconClassName`, `messageClassName`, `descriptionClassName`, `actionClassName`,
-`cancelClassName`, `closeClassName`.
+`dismissible`, `visibleToasts`, `gap`, `offset`, `className`, `toastClassName`,
+`toastStyle`, `iconClassName`, `messageClassName`, `descriptionClassName`,
+`actionClassName`, `cancelClassName`, `closeClassName`.
+
+Every toast can be swiped away, custom ones included. It leaves by the edges it sits near,
+so `bottom-right` goes right or down and `top-left` goes up or left; a centred one has only
+the one way out. A long drag or a quick flick both work, and dragging back inwards does
+nothing. `dismissible: false` turns it off for a toast that has to be answered.
+
+Buttons inside a toast still work: a press starting on one is never taken as a drag.
+
+`closeButton` is never turned on for you. Swiping is pointer only, so a toast that neither
+closes itself nor can be swiped needs one, or a keyboard user has no way to be rid of it.
 
 Styled through `--gecko-toast-*` variables rather than props.
 
