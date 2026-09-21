@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "Breadcrumb component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "Breadcrumb component", "Stepper component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -1017,6 +1017,46 @@ There is no vertical orientation.
 
 The field holds a number, or a `[low, high]` pair. A slider has nowhere to show "not set",
 so an empty field starts at `min`, or `[min, max]` for the range; `defaultValue` moves it.
+
+### Stepper
+
+How far along a set of steps you are.
+
+```tsx
+<Stepper value={step} onChange={setStep}>
+  <Step value="cart" description="3 items">Cart</Step>
+  <Step value="delivery">Delivery</Step>
+  <Step value="payment">Payment</Step>
+</Stepper>
+
+<Stepper value={step} onChange={setStep} orientation="vertical" linear={false}>…</Stepper>
+```
+
+| Prop          | Type                              | Default        |
+| ------------- | --------------------------------- | -------------- |
+| `value`       | `string`                          | required       |
+| `onChange`    | `(value: string) => void`         | -              |
+| `linear`      | `boolean`                         | `true`         |
+| `orientation` | `"horizontal" \| "vertical"`      | `"horizontal"` |
+| `size`        | `"sm" \| "md" \| "lg"`            | `"md"`         |
+
+**Step props:** `value` (required), `description`, `status`, `icon`, `disabled`, plus any
+button attribute.
+
+It shows progress; **what each step holds is yours to render**. A wizard is usually one form
+with fields shown and hidden rather than separate panels — `Tabs` is the component for
+panels.
+
+Where a step stands comes from where it sits against the current one, so a straight run
+needs nothing said. `status` overrides it, which is how a step already passed shows an
+error rather than a tick.
+
+Steps behind you can be clicked and the ones ahead cannot, since skipping ahead usually
+means arriving somewhere that depends on an unanswered question. `linear={false}` opens it
+up. Without an `onChange` nothing is clickable and the keyboard walks past it, rather than
+tabbing through buttons that do nothing.
+
+Renders a named `nav` around an `ol`; the current step carries `aria-current="step"`.
 
 ### Breadcrumb
 
