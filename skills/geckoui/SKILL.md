@@ -879,11 +879,14 @@ There are no panels in that case — the page below is the content.
 | `icon`      | `ReactNode`                                                             | a star      |
 | `emptyIcon` | `ReactNode`                                                             | `icon`      |
 | `getLabel`  | `(value: number) => string`                                             | `"3 of 5"`  |
-| `color`     | `"default" \| "primary" \| "success" \| "error" \| "warning" \| "info"` | `"warning"` |
+| `color`     | `"gold"` or the six semantic colours                                    | `"gold"`    |
 | `size`      | `"sm" \| "md" \| "lg"`                                                  | `"md"`      |
 
-Also `disabled`, `name`, `aria-label`, `className`. Uses `data-color`, `data-size`,
-`data-readonly`, `data-disabled`.
+Also `disabled`, `name`, `aria-label`, plus any div attribute. Uses `data-color`,
+`data-size`, `data-readonly`, `data-disabled`.
+
+Stars are `gold` by default — a fixed colour rather than a theme token, a shade below a
+true `#FFD700` so the empty star can stay a grey you can see on a light background.
 
 Any fraction is drawn exactly whether it can be picked or not, so `value={4.3}` shows 4.3.
 `precision` only decides what a click lands on: `0.5` for halves, `0.1` for tenths. The
