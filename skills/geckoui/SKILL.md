@@ -55,7 +55,10 @@ document.documentElement.classList.toggle("dark", isDark);
 The class sets CSS variables, so everything beneath it inherits. On a wrapper instead of
 the root, it themes only that subtree.
 
-Wrap your app in `<GeckoUIProvider>` (required for Dialog, Drawer, ConfirmDialog and Toast). Place it **below** your own context providers, so overlays opened imperatively can read them:
+Wrap your app in `<GeckoUIProvider>`. Required for `Toast`, `ConfirmDialog`, and the
+imperative `Dialog.show()` / `Drawer.show()`; the declarative `<Dialog open>` and
+`<Drawer open>` forms work without it. Place it **below** your own context providers, so
+overlays opened imperatively can read them:
 
 ```tsx
 import { GeckoUIProvider } from "@geckoui/geckoui";
@@ -189,8 +192,9 @@ Extends `TextareaAutosizeProps`.
 value itself: a string or number prints as is, an object uses its `label` key if it has
 one, otherwise its first non-nil property. `{ id: null, name: "Ann" }` reads as "Ann".
 Anything that would leave the trigger blank — `null`, `undefined`, `""`, an object whose
-properties are all nil — shows the placeholder instead, and the library warns in
-development. Give object values a `label` key rather than relying on property order.
+properties are all nil — shows the placeholder instead. A non-empty value matching no
+option warns in development. Give object values a `label` key rather than relying on
+property order.
 
 **SelectTrigger:** render-props for custom trigger, receives `{ keyword, selectedOptions, handleChange, options, toggleMenu, open, openMenu, closeMenu, hasValue, filteredOptions, handleInputChange, handleKeyboardInteraction }`.
 
@@ -357,7 +361,24 @@ opens. Disabled items are skipped, and the arrow keys are left alone inside a pa
 
 ### Dialog
 
-`Dialog.show()` pushes onto the overlay stack and returns an `id`. Dialogs stack, and only the topmost responds to Escape or a backdrop click. Dialogs always sit above drawers.
+Two forms. Declarative when the dialog belongs to a component's state; imperative when it
+is fired from anywhere.
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<Dialog open={open} onClose={() => setOpen(false)} className="max-w-md">
+  <h3>Title</h3>
+  <Button onClick={() => setOpen(false)}>Close</Button>
+</Dialog>;
+```
+
+**Declarative props:** `open` (required), `onClose`, `children`, `className`,
+`dismissOnEscape`, `dismissOnOutsideClick`, plus `data-*`. Needs no provider.
+
+`Dialog.show()` pushes onto the overlay stack and returns an `id`, and requires
+`<GeckoUIProvider>`. Dialogs stack, and only the topmost responds to Escape or a backdrop
+click. Dialogs always sit above drawers.
 
 ```tsx
 const id = Dialog.show({
@@ -550,6 +571,23 @@ open that can hold a form, `Menu` for a list of actions with arrow key navigatio
 <Calendar fixedWeeks selectedDate={date} onSelectDate={setDate} />
 ```
 
+| Prop            | Type                                     | Default    |
+| --------------- | ---------------------------------------- | ---------- |
+| `mode`          | `"single" \| "range"`                    | `"single"` |
+| `selectedDate`  | `string \| null`                         | -          |
+| `onSelectDate`  | `(date: string) => void`                 | -          |
+| `selectedRange` | `DateRange`                              | -          |
+| `onSelectRange` | `(range: DateRange \| null) => void`     | -          |
+| `disableDate`   | `(date: string) => boolean`              | -          |
+| `renderDayCell` | `(props: DayCellRenderProps) => ReactNode` | -        |
+| `calendarRef`   | `Ref<CalendarRef>`                       | -          |
+| `fixedWeeks`    | `boolean`                                | `false`    |
+
+Every date in and out is `YYYY-MM-DD`. `DateRange` is `{ from: string \| null; to?: string \| null }`.
+
+`DayCellRenderProps` gives `{ day, month, year, date, isDisabled, isSelected }` and more.
+`CalendarRef` gives `{ moveTo(month, year), clearSelection() }`.
+
 A month renders the four to six weeks it needs, so the height changes between months.
 `fixedWeeks` always renders six; `DateInput` and `DateRangeInput` take it too.
 
@@ -583,6 +621,13 @@ A month renders the four to six weeks it needs, so the height changes between mo
 | `wrapperClassName`     | `string`                                                         | -                |
 | `calendarClassName`    | `string`                                                         | -                |
 | `placeholderClassName` | `string`                                                         | -                |
+
+`value` and `onChange` are always ISO `YYYY-MM-DD`, whatever `format` shows — the same
+split as `TimeInput`. `DateRange` is `{ from: string | null; to?: string | null }`, and
+`DateRangeInputProps.value` is a `DateRange`, not `DateRange | null`.
+
+`onSubmit` fires when a segment finishes, for moving focus on. `onStateUpdate` reports the
+segments as they are typed.
 
 `className` targets the input container. `wrapperClassName` targets the outer wrapper (includes floating calendar). `calendarClassName` targets the calendar popup. `placeholderClassName` targets the placeholder text.
 
@@ -853,7 +898,7 @@ wiring to your own link:
 | `readOnly`  | `boolean`                                                               | `false`     |
 | `icon`      | `ReactNode`                                                             | a star      |
 | `emptyIcon` | `ReactNode`                                                             | `icon`      |
-| `getLabel`  | `(value: number) => string`                                             | `"3 of 5"`  |
+| `getLabel`  | `(value: number) => string`                                             | `"1 of 5"`… |
 | `color`     | `"gold"` or the six semantic colours                                    | `"gold"`    |
 | `size`      | `"sm" \| "md" \| "lg"`                                                  | `"md"`      |
 
@@ -931,6 +976,9 @@ catch an untouched rating — use `min` instead.
 **The value is a string**, so a half typed `2.` and a leading zero survive. Convert at the
 edge: `Number(value)`, or `z.coerce.number()` in a schema.
 
+`strict` drops leading zeros and normalises the whole part; it does not clamp to
+`min`/`max`.
+
 ### Slider / RangeSlider
 
 Pick a number, or a span, by dragging.
@@ -981,6 +1029,9 @@ and End go to the ends. Every press fires `onChangeEnd` too.
 `renderThumb` draws inside the thumb: the drag, the keys and the `role="slider"` stay on
 the positioned element, and the component's own circle is dropped.
 
+`aria-label` names a single slider; `thumbLabels` is `[string, string]` for a range,
+defaulting to `["Minimum", "Maximum"]`.
+
 ### RHFSlider / RHFRangeSlider
 
 ```tsx
@@ -1019,8 +1070,9 @@ plus any button attribute.
 
 It shows progress; what each step holds is yours to render.
 
-A step's status comes from where it sits against the current one. `status` overrides it, so
-a step already passed can show an error instead of a tick.
+A step's status comes from where it sits against the current one: `StepStatus` is
+`"complete" | "current" | "upcoming" | "error"`. `status` overrides it, so a step already
+passed can show an error instead of a tick.
 
 Steps behind the current one can be clicked, the ones ahead cannot; `linear={false}` opens
 them up. Without an `onChange` nothing is clickable and the keyboard walks past it.
@@ -1066,6 +1118,8 @@ const [color, setColor] = useState("#3b82f6");
 | `swatches`         | `string[]`                | -                       |
 | `eyeDropper`       | `boolean`                 | `false`                 |
 | `disabled`         | `boolean`                 | `false`                 |
+| `footer`           | `ReactNode`               | -                       |
+| `swatchesLabel`    | `string`                  | `"Preset colours"`      |
 
 **ColorInput also takes:** `placeholder`, `render`, `readOnly`, `hasError`, `onOpenChange`,
 `pickerPlacement`, `floatingStrategy`, `wrapperClassName`, `pickerClassName`.
@@ -1157,7 +1211,11 @@ current page the quieter `--gecko-breadcrumb-current`.
 <Pagination currentPage={page} totalPages={10} onChange={setPage} />
 ```
 
+Renders nothing when `totalPages <= 1`.
+
 ### Spinner
+
+Takes every SVG attribute, `stroke` included.
 
 ```tsx
 <Spinner />
@@ -1253,6 +1311,10 @@ toast.success("Saved!");
 toast.error("Failed");
 toast.warning("Careful");
 toast.info("Heads up");
+toast.custom(<MyToast />);
+
+const id = toast.loading("Uploading…"); // stays until you replace or dismiss it
+toast.success("Uploaded", { id }); // reuses the same toast
 
 const id = toast.success("Saved!", { description: "All changes stored." });
 toast.dismiss(id); // one toast
@@ -1267,6 +1329,9 @@ toast.promise(save(), {
 
 **Per toast options:** `description`, `duration`, `position`, `action`, `cancel`, `id`,
 `icon`, `closeButton`, `dismissible`, `onDismiss`, `onAutoClose`, `className`, `style`.
+
+`action` and `cancel` are `{ label: string; onClick: () => void }`. `position` is one of
+`top-left`, `top-center`, `top-right`, `bottom-left`, `bottom-center`, `bottom-right`.
 
 **Defaults, on `GeckoUIProvider toastOptions`:** `position`, `duration`, `closeButton`,
 `dismissible`, `visibleToasts`, `gap`, `offset`, `className`, `toastClassName`,
@@ -1287,7 +1352,10 @@ Styled through `--gecko-toast-*` variables, not props.
 
 ## React Hook Form
 
-All RHF components accept `name` (required), `rules`, `control`, and `disabled`. Use inside `<FormProvider>` or pass `control` explicitly.
+RHF field components accept `name` (required), `rules` and `control`. Use inside
+`<FormProvider>` or pass `control` explicitly. `RHFError` and `RHFInputGroup` are the
+exceptions: neither takes `name`, `rules` or `control`. `disabled` comes from each
+component's own base props, not from all of them.
 
 ```tsx
 import { FormProvider, useForm } from "react-hook-form";
@@ -1316,7 +1384,7 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 
 | Base Component   | RHF Component     | Extra Props                                                                                 |
 | ---------------- | ----------------- | ------------------------------------------------------------------------------------------- |
-| Input            | RHFInput          | `transform`, `onChange`, `onBlur`                                                           |
+| Input            | RHFInput          | `transform`, `onChange`, `onBlur`, `prefix`, `suffix`                                       |
 | Textarea         | RHFTextarea       | `onChange`, `onBlur`                                                                        |
 | Select           | RHFSelect         | `onChange`                                                                                  |
 | Checkbox         | RHFCheckbox       | `label`, `labelClassName`, `value`, `uncheckedValue`, `single`, `onChange`, `indeterminate` |
@@ -1329,9 +1397,54 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 | Input (number)   | RHFNumberInput    | `positiveOnly`, `strict`, `maxFractionDigits`, `maxWholeDigitPlaces`                        |
 | Input (currency) | RHFCurrencyInput  | `currency: { symbol, code }`                                                                |
 | -                | RHFFileInput      | `multiple`, `render`, `inputClassName`                                                      |
-| -                | RHFFilePicker     | `render` (drag & drop)                                                                      |
-| -                | RHFError          | `render`                                                                                    |
-| -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName` (wraps label + input + error)                   |
+| -                | RHFFilePicker     | `render`, plus every `useFilePicker` option                                                 |
+| -                | RHFError          | `render`. No `name`/`rules`/`control`                                                       |
+| -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName`. No `name`/`rules`/`control`                    |
+
+Shapes for the props above that are not what their name suggests:
+
+- `RHFInput transform` is `{ input?: (v: string) => string; output?: (v: string) => string }`,
+  not a function.
+- `onChange` and `onBlur` on every RHF component receive the **value**, not the event.
+- `RHFInput prefix` / `suffix` take a ReactNode, a string, or a render function given
+  `{ field, fieldState, formState }`.
+- `RHFCheckbox indeterminate` is `boolean | (({ field }) => boolean)`, which is how a
+  select-all box reads its group.
+- `RHFFileInput onChange` gets `FileWithPreview | FileWithPreview[] | null`.
+- `RHFFilePicker` extends `UseFilePickerOptions` — `accept`, `multiple`, `directory`,
+  `keepOldFiles`, `removeDuplicates`, `transform`, `onError` — and its `render` is given the
+  `useFilePicker` return plus the RHF render args.
+
+`RHFInputGroup` finds its field by walking its children for an RHF input and reading that
+input's `name`. It warns if it finds none.
+
+### RHFController
+
+The escape hatch: wires any component to the form, taking `control` from context.
+
+```tsx
+<RHFController
+  name="email"
+  render={({ field, fieldState, formState }) => <MyInput {...field} />}
+/>
+```
+
+Takes everything React Hook Form's `Controller` takes. `control` is optional; pass it to
+target a specific form when `FormProvider`s are nested.
+
+## Hooks
+
+```tsx
+import { useFilePicker, useSelect, usePopover } from "@geckoui/geckoui";
+```
+
+`useFilePicker(options)` is the file picking surface outside RHF. Options: `accept`,
+`multiple`, `directory`, `keepOldFiles`, `removeDuplicates`, `transform`, `onChange`,
+`onError`. Returns `{ dropzoneRef, dragging, loading, openFilePicker, files }` — put
+`dropzoneRef` on the drop target and call `openFilePicker()` from a button.
+
+`useSelect()` reads the `Select` context from inside a custom option or trigger.
+`usePopover()` does the same for `Popover`.
 
 ## Development Warnings
 
@@ -1350,7 +1463,7 @@ overlays above them — Drawer `1000`, Dialog `2000`, Toast `3000`.
 Each is a variable: `--gecko-select-menu-z`, `--gecko-breadcrumb-z`,
 `--gecko-tag-input-z`, `--gecko-time-input-z`, `--gecko-tooltip-z`, `--gecko-menu-z`,
 `--gecko-popover-z`, `--gecko-date-input-z`, `--gecko-date-range-input-z`,
-`--gecko-toast-z`.
+`--gecko-color-input-z`, `--gecko-toast-z`.
 
 Keep the app's own chrome below `1000`; above it, a sticky header covers drawers, dialogs
 and toasts.
@@ -1376,10 +1489,14 @@ Then add styles:
 }
 ```
 
-**Extensible interfaces:** `ButtonVariantMap`, `ButtonColorMap`, `ButtonSizeMap`,
-`AlertColorMap`, `BadgeVariantMap`, `BadgeColorMap`, `BadgeSizeMap`, `BadgeShapeMap`,
-`TabsVariantMap`, `TabsSizeMap`, `SwitchSizeMap`, `CounterInputSizeMap`,
-`DrawerPlacementMap`.
+**Extensible interfaces (29):** `AccordionSizeMap`, `AccordionVariantMap`,
+`AlertColorMap`, `AvatarColorMap`, `AvatarShapeMap`, `AvatarSizeMap`, `BadgeColorMap`,
+`BadgeShapeMap`, `BadgeSizeMap`, `BadgeVariantMap`, `BreadcrumbSizeMap`, `ButtonColorMap`,
+`ButtonSizeMap`, `ButtonVariantMap`, `CounterInputSizeMap`, `DrawerPlacementMap`,
+`ProgressColorMap`, `ProgressSizeMap`, `RatingColorMap`, `RatingSizeMap`,
+`SkeletonAnimationMap`, `SkeletonShapeMap`, `SliderColorMap`, `SliderSizeMap`,
+`StepperOrientationMap`, `StepperSizeMap`, `SwitchSizeMap`, `TabsSizeMap`,
+`TabsVariantMap`.
 
 ## Styling
 
