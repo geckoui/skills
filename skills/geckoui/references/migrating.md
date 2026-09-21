@@ -12,7 +12,7 @@ Anything below fails silently rather than at build time, so check by hand.
 | `CounterInput value: number`      | `value: string`                                 |
 | `dismissOnEsc`                    | `dismissOnEscape`                               |
 | `AlertVariantMap`                 | `AlertColorMap`                                 |
-| `toast` re-exported from sonner   | GeckoUI's own, no sonner                        |
+| `toast` from another package      | `import { toast } from "@geckoui/geckoui"`      |
 | `BaseDateRangeInput` exported     | removed, use `DateRangeInput`                   |
 
 Behaviour that changed without a rename:

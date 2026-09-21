@@ -12,9 +12,8 @@ React component library with Tailwind CSS v4, OKLCH theming, and React Hook Form
 `npx skills add https://github.com/geckoui/skills/tree/v1/skills/geckoui`.
 
 v2 renamed several props. If code uses `GeckoUIPortal`, `Alert variant`,
-`Drawer handleClose`, `Checkbox partial`, `CounterInput editable`, a numeric
-`CounterInput value`, or imports `toast` expecting sonner, it is written for v1 — see
-Migrating from v1 at the end.
+`Drawer handleClose`, `Checkbox partial`, `CounterInput editable` or a numeric
+`CounterInput value`, it is written for v1 — see Migrating from v1 at the end.
 
 ## Setup
 
@@ -53,18 +52,8 @@ Toggling it:
 document.documentElement.classList.toggle("dark", isDark);
 ```
 
-Or let `next-themes` write it:
-
-```tsx
-<ThemeProvider attribute="class">{children}</ThemeProvider>
-```
-
-The class sets CSS variables, so everything beneath it inherits. Putting it on a wrapper
-instead of the root themes only that subtree, which is occasionally what you want and
-usually not.
-
-When a dark themed app renders GeckoUI components in light colours, this class is the
-first thing to check.
+The class sets CSS variables, so everything beneath it inherits. On a wrapper instead of
+the root, it themes only that subtree.
 
 Wrap your app in `<GeckoUIProvider>` (required for Dialog, Drawer, ConfirmDialog and Toast). Place it **below** your own context providers, so overlays opened imperatively can read them:
 
@@ -245,11 +234,8 @@ Also `placeholder`, `disabled`, `readOnly`, `hasError`, `prefix`, `suffix`, `cla
 
 **TagInputOption props:** `value` (required), `label`, `disabled`.
 
-The field's height comes from the tags in it.
-
-Options are declared as children, the way they are for `Select`, and filter as you type.
-Anything that is not an option can still be typed in, which is what separates this from a
-multiple `Select`. An option already added drops out of the list; the chip's own cross is
+Options are declared as children and filter as you type. Anything that is not an option can
+still be typed in. An option already added drops out of the list; the chip's own cross is
 how it comes back.
 
 `preferOption` matches what was typed against the options ignoring case and spacing, and
@@ -262,10 +248,8 @@ only ever holds tags that passed. `onReject` gets everything turned away, from a
 duplicate or `max` — which matters on a paste, where some land and some do not. A paste only
 becomes several tags when it holds more than one.
 
-At `max` the list stays away and the field carries `data-full`, for showing a limit however
-the app likes; nothing is drawn by default. Text turned away for want of room is cleared
-rather than kept, since correcting it cannot help, and the field stays editable so Backspace
-still removes a tag.
+At `max` the list stays away and the field carries `data-full`; nothing is drawn by
+default. Text turned away for want of room is cleared, and the field stays editable.
 
 ### RHFTagInput
 
@@ -303,7 +287,7 @@ before it is added; `rules` judges the whole list on submit.
 
 ### Accordion
 
-Four parts. The header and the panel sit inside their item, so nothing is paired by hand.
+Four parts. The header and the panel sit inside their item.
 
 ```tsx
 <Accordion defaultValue="shipping">
@@ -333,8 +317,8 @@ Four parts. The header and the panel sit inside their item, so nothing is paired
 
 **AccordionItem props:** `value` (required), `disabled`, `children`.
 
-**AccordionHeader props:** `hideIcon`, `icon`, `children`. Whatever is inside is what the
-header shows, so an icon or a badge needs no prop of its own.
+**AccordionHeader props:** `hideIcon`, `icon`, `children`. Children are what the header
+shows.
 
 **AccordionPanel props:** `keepMounted`, `children`.
 
@@ -343,9 +327,8 @@ One item opens at a time unless `multiple` is set, and `value`, `defaultValue` a
 closes, so `setOpen("")` closes everything. `collapsible={false}` keeps one open at all
 times.
 
-Closed panels stay in the DOM, which is what makes the open and close animate and keeps a
-half filled form alive while its panel is shut. `keepMounted={false}` trades the closing
-animation for a lighter DOM.
+Closed panels stay in the DOM, which is what the open and close animation needs.
+`keepMounted={false}` drops them, and the closing animation with them.
 
 Arrow up and down move between headers, Home and End jump to the ends, and Enter or Space
 opens. Disabled items are skipped, and the arrow keys are left alone inside a panel.
@@ -408,8 +391,8 @@ Dialog.show({
 });
 ```
 
-Clicking inside a dialog never dismisses it. Only a press and release both landing on the
-backdrop does, so a `Select` or `Menu` popup inside a dialog is safe.
+Clicking inside a dialog never dismisses it; only a press and release both landing on the
+backdrop does.
 
 | Prop                    | Type                           | Default |
 | ----------------------- | ------------------------------ | ------- |
@@ -567,9 +550,8 @@ open that can hold a form, `Menu` for a list of actions with arrow key navigatio
 <Calendar fixedWeeks selectedDate={date} onSelectDate={setDate} />
 ```
 
-A month takes the four to six weeks it needs, so the calendar changes height as you page
-between months. Pass `fixedWeeks` to always render six, which `DateInput` and
-`DateRangeInput` also accept.
+A month renders the four to six weeks it needs, so the height changes between months.
+`fixedWeeks` always renders six; `DateInput` and `DateRangeInput` take it too.
 
 ### DateInput / DateRangeInput
 
@@ -763,9 +745,7 @@ attempt. `onClick` makes it `role="button"` with a tab stop and Enter/Space.
 overlap, each over the one after it, and `max` counts the rest as `+2`.
 
 Hovering an avatar lifts it and names it. Hovering the count opens an overlay listing the
-rest. `renderOverflow` fills that overlay — `avatars` holds the props of everyone past
-`max`, so it can show anything, not only avatars. The overlay is placed for you; where and
-how it opens is not configurable.
+rest. `renderOverflow` fills that overlay; `avatars` holds the props of everyone past `max`.
 
 `interactive={false}` drops the lift, the names and the overlay, keeping the count.
 
@@ -802,7 +782,7 @@ Four parts: `Tabs` holds the state, `TabList` is the strip, each `Tab` is one ta
 </Tabs>
 ```
 
-Whatever sits inside `Tab` is what the tab shows, so an icon needs no prop of its own.
+Children are what the tab shows.
 
 | Prop           | Type                                   | Default        |
 | -------------- | -------------------------------------- | -------------- |
@@ -817,13 +797,12 @@ Whatever sits inside `Tab` is what the tab shows, so an icon needs no prop of it
 | `keepMounted`  | `boolean`                              | `false`        |
 
 **TabList props:** `children`, plus any div attribute. It owns the keyboard navigation and
-the scrolling, and can sit anywhere in the layout — a sticky header with the panels
-scrolling below, say.
+the scrolling, and can sit anywhere in the layout.
 
 **Tab props:** `value` (required), `disabled`, `asChild`, `children`.
 
 **TabPanel props:** `value` (required), `keepMounted`, `children`. A hidden panel unmounts
-unless `keepMounted` is set here or on `Tabs`, so a half filled form survives.
+unless `keepMounted` is set here or on `Tabs`.
 
 The strip scrolls sideways when the tabs outgrow it, centring the selected one. Arrow keys
 move focus; Enter or Space selects.
@@ -846,7 +825,7 @@ wiring to your own link:
 </Tabs>
 ```
 
-There are no panels in that case — the page below is the content.
+`as="nav"` takes no panels.
 
 ### Radio
 
@@ -949,9 +928,8 @@ catch an untouched rating — use `min` instead.
 
 `inputClassName` targets the number display input. `buttonClassName` targets the increment/decrement buttons.
 
-**The value is a string.** A number cannot hold a half typed "2." or a leading zero, so
-the value stays text and you convert at the edge: `Number(value)`, or `z.coerce.number()`
-in a schema.
+**The value is a string**, so a half typed `2.` and a leading zero survive. Convert at the
+edge: `Number(value)`, or `z.coerce.number()` in a schema.
 
 ### Slider / RangeSlider
 
@@ -1010,8 +988,8 @@ the positioned element, and the component's own circle is dropped.
 <RHFRangeSlider name="price" min={0} max={500} step={10} minGap={50} />
 ```
 
-The field holds a number, or a `[low, high]` pair. A slider has nowhere to show "not set",
-so an empty field starts at `min`, or `[min, max]` for the range; `defaultValue` moves it.
+The field holds a number, or a `[low, high]` pair. An empty field starts at `min`, or
+`[min, max]` for the range; `defaultValue` moves it.
 
 ### Stepper
 
@@ -1039,18 +1017,13 @@ How far along a set of steps you are.
 **Step props:** `value` (required), `description`, `status`, `icon`, `disabled`, `render`,
 plus any button attribute.
 
-It shows progress; **what each step holds is yours to render**. A wizard is usually one form
-with fields shown and hidden rather than separate panels — `Tabs` is the component for
-panels.
+It shows progress; what each step holds is yours to render.
 
-Where a step stands comes from where it sits against the current one, so a straight run
-needs nothing said. `status` overrides it, which is how a step already passed shows an
-error rather than a tick.
+A step's status comes from where it sits against the current one. `status` overrides it, so
+a step already passed can show an error instead of a tick.
 
-Steps behind you can be clicked and the ones ahead cannot, since skipping ahead usually
-means arriving somewhere that depends on an unanswered question. `linear={false}` opens it
-up. Without an `onChange` nothing is clickable and the keyboard walks past it, rather than
-tabbing through buttons that do nothing.
+Steps behind the current one can be clicked, the ones ahead cannot; `linear={false}` opens
+them up. Without an `onChange` nothing is clickable and the keyboard walks past it.
 
 Renders a named `nav` around an `ol`; the current step carries `aria-current="step"`.
 
@@ -1121,8 +1094,8 @@ and returns `null` for anything else. `formatColor(hsva, format, withAlpha)` wri
 
 The trail of pages above the one you are on.
 
-**Always reach for `asChild` with the app's own router link.** Client routing is a must in
-almost every app, and `href` renders a plain anchor that reloads the page.
+**Use `asChild` with the app's own router link.** `href` renders a plain anchor and
+reloads the page.
 
 ```tsx
 import Link from "next/link";
@@ -1172,13 +1145,11 @@ The last crumb is the page you are on: it is drawn as text rather than a link ev
 given an `href`, and carries `aria-current="page"`. `current` on another crumb **moves**
 that marker rather than adding a second, and the last one goes back to being a link.
 
-Past `maxItems` the middle folds away behind an ellipsis that opens it as a list, not by
-unfolding in place — on a narrow screen unfolding a deep trail only wraps it over three
-lines. The ends are what is kept.
+Past `maxItems` the middle folds away behind an ellipsis that opens it as a list. The ends
+are what is kept: `itemsBeforeCollapse` and `itemsAfterCollapse` set how many.
 
-An icon is part of the crumb's children. The links are the loud ones and the
-current page is quiet, which is the reverse of what most libraries do: you already know
-where you are, and the trail is for the way back.
+An icon is part of the crumb's children. The links take `--gecko-breadcrumb-link`, the
+current page the quieter `--gecko-breadcrumb-current`.
 
 ### Pagination
 
@@ -1219,18 +1190,13 @@ Leaving `value` out runs the bar end to end until you have a number, and drops
 `aria-valuenow` so the value reads as unknown rather than zero. `value={0}` is a known
 value and draws an empty bar.
 
-`value` is clamped into range, and the `label` function is handed the clamped number.
-`percent` is rounded and drives the bar width too, so the number and the bar never
-disagree. A `label` node shows while the value is unknown; a `label` function is only
-called when there is a value.
-
-**Which one to reach for:** `Spinner` for work with no length, `Progress` when you can
-count it, `Skeleton` when you know the shape of what is coming.
+`value` is clamped into range and the `label` function is handed the clamped number.
+`percent` is rounded and drives the bar width. A `label` node shows while the value is
+unknown; a `label` function is only called when there is a value.
 
 ### Skeleton
 
-A placeholder that holds the space content will take while it loads. Size it with
-`className` the way you would size the real thing.
+A placeholder holding the space content will take while it loads.
 
 ```tsx
 <Skeleton />
@@ -1250,7 +1216,7 @@ A placeholder that holds the space content will take while it loads. Size it wit
 Extends `HTMLAttributes<HTMLDivElement>`. Uses `data-shape` and `data-animation`.
 
 Size it through `className`. A `text` skeleton takes its height from the current font
-size, and `lines` draws a paragraph with the last line short.
+size; `lines` draws a paragraph with the last line short.
 
 `loading` renders `children` in place of the placeholder:
 
@@ -1260,14 +1226,13 @@ size, and `lines` draws a paragraph with the last line short.
 </Skeleton>
 ```
 
-Children are never rendered while loading, so nothing inside has to guard against data
-that has not arrived. Once loading is over the wrapper is gone too, leaving only your own
-markup.
+Children are not rendered while loading. Once it is over the wrapper is gone too, leaving
+only your own markup.
 
 Both animations are dropped under `prefers-reduced-motion`.
 
-**Which one to reach for:** `Spinner` for work with no shape to hold, like a button that is
-submitting. `Skeleton` when you know the shape of what is coming.
+**Which one to reach for:** `Spinner` for work with no length, `Progress` when you can
+count it, `Skeleton` when you know the shape of what is coming.
 
 ### Label / InputError
 
@@ -1278,7 +1243,7 @@ submitting. `Skeleton` when you know the shape of what is coming.
 
 ### Toast
 
-GeckoUI's own toasts — `sonner` is gone, and nothing needs installing.
+Nothing needs installing; `GeckoUIProvider` mounts the toaster.
 
 ```tsx
 import { toast } from "@geckoui/geckoui";
@@ -1315,8 +1280,8 @@ nothing. `dismissible: false` turns it off for a toast that has to be answered.
 
 Buttons inside a toast still work: a press starting on one is never taken as a drag.
 
-`closeButton` is never turned on for you. Swiping is pointer only, so a toast that neither
-closes itself nor can be swiped needs one, or a keyboard user has no way to be rid of it.
+`closeButton` is never turned on for you. Swiping is pointer only, so a toast with
+`duration: Infinity` and `dismissible: false` needs one.
 
 Styled through `--gecko-toast-*` variables, not props.
 
@@ -1443,7 +1408,7 @@ props are dropped silently, not flagged at build time.
 The short version: `GeckoUIPortal` becomes `GeckoUIProvider`, `Alert variant` becomes
 `color`, `Drawer handleClose` becomes `onClose`, `Checkbox partial` becomes
 `indeterminate`, `CounterInput editable` becomes `allowTyping` and its value becomes a
-string, and `toast` is GeckoUI's own, not sonner's.
+string, and `toast` is imported from `@geckoui/geckoui`.
 
 ## References
 
