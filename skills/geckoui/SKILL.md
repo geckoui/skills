@@ -262,6 +262,11 @@ only ever holds tags that passed. `onReject` gets everything turned away, from a
 duplicate or `max` — which matters on a paste, where some land and some do not. A paste only
 becomes several tags when it holds more than one.
 
+At `max` the list stays away and the field carries `data-full`, for showing a limit however
+the app likes; nothing is drawn by default. Text turned away for want of room is cleared
+rather than kept, since correcting it cannot help, and the field stays editable so Backspace
+still removes a tag.
+
 ### RHFTagInput
 
 ```tsx
