@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "Breadcrumb component", "Stepper component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "Breadcrumb component", "ColorPicker", "ColorInput", "RHFColorInput", "Stepper component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -1069,6 +1069,67 @@ disabled, select, children, description }` — and draws nothing of its own, so 
 is not a marker beside a label needs no fighting with the component's styles. The list item,
 the joint and the reachability rules stay. Reach for it rather than overriding the
 component's CSS.
+
+### ColorPicker
+
+A saturation square, a hue slider and an opacity slider. `ColorPicker` is the panel,
+`ColorInput` is a field that opens it in a popover — the same split as `Calendar` and
+`DateInput`.
+
+```tsx
+const [color, setColor] = useState("#3b82f6");
+
+<ColorPicker value={color} onChange={setColor} />
+<ColorInput value={color} onChange={setColor} swatches={PALETTE} />
+
+<ColorPicker
+  value={color}
+  onChange={setColor}
+  onChangeComplete={save}
+  formats={["rgb", "hex"]}
+  swatches={PALETTE}
+  eyeDropper
+/>
+
+<RHFColorInput name="brand" rules={{ required: "Pick a colour" }} />
+```
+
+| Prop               | Type                       | Default                    |
+| ------------------ | -------------------------- | -------------------------- |
+| `value`            | `string`                   | -                          |
+| `defaultValue`     | `string`                   | `"#000000"`                |
+| `onChange`         | `(color: string) => void`  | -                          |
+| `onChangeComplete` | `(color: string) => void`  | -                          |
+| `formats`          | `("hex"\|"rgb"\|"hsl")[]`  | `["hex", "rgb", "hsl"]`    |
+| `showInput`        | `boolean`                  | `true`                     |
+| `swatches`         | `string[]`                 | -                          |
+| `eyeDropper`       | `boolean`                  | `false`                    |
+| `disabled`         | `boolean`                  | `false`                    |
+
+**ColorInput also takes:** `placeholder`, `render`, `readOnly`, `hasError`, `onOpenChange`,
+`pickerPlacement`, `wrapperClassName`, `pickerClassName`.
+
+**There is no `size` and no `format` prop.** `formats` is the whole format story: what the
+dropdown offers, in what order, and what it starts on — the first entry. Pass a single
+format to pin it and drop the dropdown.
+
+`onChange` fires on every pointer move, for the live preview. `onChangeComplete` fires once
+the drag ends, and on a keyboard move, a committed text edit or a picked swatch. Put the
+save there, not in `onChange`.
+
+The opacity slider is always there and there is no `alpha` prop. Alpha reaches the value
+only when it is below 1, so a solid colour stays `#3b82f6` rather than `#3b82f6ff`.
+
+There is no default palette; `swatches` shows nothing until you pass one. The eyedropper
+button renders only where the browser has the `EyeDropper` API.
+
+`renderSaturation`, `renderHueThumb` and `renderAlphaThumb` draw **inside** the handle that
+moves, so the drag, the keyboard and the aria stay with the component. `render` on
+`ColorInput` does the same inside the trigger, which is how you get a bare colour square
+that still opens. Reach for these rather than overriding the component's CSS.
+
+`parseColor` and `formatColor` are exported. `parseColor` reads 3, 4, 6 and 8 digit hex,
+`rgb()`, `rgba()`, `hsl()` and `hsla()`, and returns `null` rather than guessing.
 
 ### Breadcrumb
 
