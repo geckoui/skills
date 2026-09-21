@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -858,6 +858,53 @@ There are no panels in that case — the page below is the content.
 <label><Radio name="plan" value="free" /> Free</label>
 <label><Radio name="plan" value="pro" /> Pro</label>
 ```
+
+### Rating
+
+```tsx
+<Rating value={score} onChange={setScore} aria-label="Score" />
+<Rating value={score} onChange={setScore} precision={0.5} />
+<Rating value={4.3} readOnly aria-label="4.3 out of 5" />
+<Rating value={hearts} onChange={setHearts} color="error" icon={<HeartIcon />} />
+```
+
+| Prop        | Type                                                                    | Default     |
+| ----------- | ----------------------------------------------------------------------- | ----------- |
+| `value`     | `number`                                                                | required    |
+| `onChange`  | `(value: number) => void`                                               | -           |
+| `max`       | `number`                                                                | `5`         |
+| `precision` | `number`                                                                | `1`         |
+| `clearable` | `boolean`                                                               | `true`      |
+| `readOnly`  | `boolean`                                                               | `false`     |
+| `icon`      | `ReactNode`                                                             | a star      |
+| `emptyIcon` | `ReactNode`                                                             | `icon`      |
+| `getLabel`  | `(value: number) => string`                                             | `"3 of 5"`  |
+| `color`     | `"default" \| "primary" \| "success" \| "error" \| "warning" \| "info"` | `"warning"` |
+| `size`      | `"sm" \| "md" \| "lg"`                                                  | `"md"`      |
+
+Also `disabled`, `name`, `aria-label`, `className`. Uses `data-color`, `data-size`,
+`data-readonly`, `data-disabled`.
+
+Any fraction is drawn exactly whether it can be picked or not, so `value={4.3}` shows 4.3.
+`precision` only decides what a click lands on: `0.5` for halves, `0.1` for tenths. The
+arrow keys step by it too. `readOnly` takes the interaction away, nothing else.
+
+Picking the rating it already has sets it to `0`, which is the only way to undo a mis-click
+with a mouse; `clearable={false}` turns that off.
+
+Built as a radio group — visually hidden radios carry the semantics, the arrow keys and the
+form posting, and the icons are what is seen. `icon` alone is used for both halves of each,
+filled and empty, with only the colour between them; add `emptyIcon` when the empty state is
+a different shape.
+
+### RHFRating
+
+```tsx
+<RHFRating name="score" rules={{ min: { value: 1, message: "Pick a rating" } }} />
+```
+
+The field holds a number. Nothing picked is `0`, not `undefined`, so `required` will not
+catch an untouched rating — use `min` instead.
 
 ### OTPInput
 
