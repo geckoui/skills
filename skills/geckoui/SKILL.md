@@ -986,6 +986,7 @@ Pick a number, or a span, by dragging.
 | `step`        | `number`                                            | `1`         |
 | `marks`       | `{ value: number; label?: ReactNode }[]`            | -           |
 | `label`       | `ReactNode \| ({ value, index }) => ReactNode`      | -           |
+| `renderThumb` | `({ value, index, percent, dragging, focused }) => ReactNode` | -   |
 | `color`       | the six semantic colours                            | `"primary"` |
 | `size`        | `"sm" \| "md" \| "lg"`                              | `"md"`      |
 | `minGap`      | `RangeSlider` only: how close the thumbs may get    | `0`         |
@@ -1005,6 +1006,10 @@ track.
 
 Keyboard: arrows step, Shift jumps ten steps, Page Up/Down move a tenth of the range, Home
 and End go to the ends. Every press fires `onChangeEnd` too.
+
+`renderThumb` draws inside the thumb rather than in place of it: the drag, the keys and the
+`role="slider"` stay on the element that is positioned, and the component's own circle is
+dropped. Reach for it rather than overriding the thumb's CSS.
 
 There is no vertical orientation.
 
@@ -1038,10 +1043,11 @@ How far along a set of steps you are.
 | `onChange`    | `(value: string) => void`         | -              |
 | `linear`      | `boolean`                         | `true`         |
 | `orientation` | `"horizontal" \| "vertical"`      | `"horizontal"` |
+| `separator`   | `ReactNode`                       | a line         |
 | `size`        | `"sm" \| "md" \| "lg"`            | `"md"`         |
 
-**Step props:** `value` (required), `description`, `status`, `icon`, `disabled`, plus any
-button attribute.
+**Step props:** `value` (required), `description`, `status`, `icon`, `disabled`, `render`,
+plus any button attribute.
 
 It shows progress; **what each step holds is yours to render**. A wizard is usually one form
 with fields shown and hidden rather than separate panels — `Tabs` is the component for
@@ -1057,6 +1063,12 @@ up. Without an `onChange` nothing is clickable and the keyboard walks past it, r
 tabbing through buttons that do nothing.
 
 Renders a named `nav` around an `ol`; the current step carries `aria-current="step"`.
+
+`render` on a step hands the whole thing over — `{ value, index, status, reachable,
+disabled, select, children, description }` — and draws nothing of its own, so a design that
+is not a marker beside a label needs no fighting with the component's styles. The list item,
+the joint and the reachability rules stay. Reach for it rather than overriding the
+component's CSS.
 
 ### Breadcrumb
 
