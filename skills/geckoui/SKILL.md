@@ -188,6 +188,13 @@ Extends `TextareaAutosizeProps`.
 
 **SelectOption props:** `value` (required), `label` (required), `disabled`, `visibility`, `hideCheckIcon`, `onClick`, `onRemove`, `className` (string or render fn), `children` (ReactNode or render fn).
 
+`visibility` is `"default" | "always" | "empty" | "filtered-and-empty"`. `className` and
+`children` as functions receive `{ value, selected, focused }`; `onClick` and `onRemove`
+receive `{ preventDefault, selectCurrentOption, closeMenu, filteredKeyword }`.
+
+**Also exported:** `SelectEmpty` for the no-results slot, `SelectDropdownSearch` for a
+search box inside the menu.
+
 **A value that matches no option.** The trigger falls back to text worked out from the
 value itself: a string or number prints as is, an object uses its `label` key if it has
 one, otherwise its first non-nil property. `{ id: null, name: "Ann" }` reads as "Ann".
@@ -201,8 +208,6 @@ property order.
 **SelectConsumer:** render-props for accessing full Select context: `<SelectConsumer render={(ctx) => ...} />`.
 
 ### TagInput
-
-Turns what you type into tags, with a list of the usual ones to hand.
 
 ```tsx
 <TagInput value={tags} onChange={setTags} placeholder="Add a tag" />
@@ -357,8 +362,6 @@ opens. Disabled items are skipped, and the arrow keys are left alone inside a pa
 
 `iconClassName` targets the icon element. Uses `data-color`, `data-condensed` attributes.
 
-`variant` is how a thing looks, `color` is what it means.
-
 ### Dialog
 
 Two forms. Declarative when the dialog belongs to a component's state; imperative when it
@@ -400,8 +403,8 @@ Dialog.dismiss(); // close the topmost dialog
 
 `Dialog.dismiss()` only closes dialogs. Use `Drawer.dismiss()` for drawers.
 
-Dialog content renders inside your tree, so it can read React context provided above
-`GeckoUIProvider`:
+Dialog content stays in your React tree, so it reads context provided above
+`GeckoUIProvider`, while the DOM node is portalled to `document.body`:
 
 ```tsx
 Dialog.show({
@@ -538,9 +541,6 @@ Focus moves into the panel on open and back to the trigger on close. Escape clos
 from inside a text field; `Dialog` and `Drawer` leave Escape alone while you type. The
 panel renders inline, not in a portal, so it keeps React context.
 
-**Which one to reach for:** `Tooltip` for a label on hover, `Popover` for a panel you click
-open that can hold a form, `Menu` for a list of actions with arrow key navigation.
-
 ### Tooltip
 
 ```tsx
@@ -632,8 +632,6 @@ segments as they are typed.
 `className` targets the input container. `wrapperClassName` targets the outer wrapper (includes floating calendar). `calendarClassName` targets the calendar popup. `placeholderClassName` targets the placeholder text.
 
 ### TimeInput
-
-A time, typed segment by segment or picked from a column for each.
 
 ```tsx
 <TimeInput value={time} onChange={setTime} />
@@ -740,8 +738,6 @@ Extends `HTMLAttributes<HTMLSpanElement>`. Uses `data-variant`, `data-color`, `d
 `data-shape`.
 
 ### Avatar
-
-A picture of someone, falling back to their initials.
 
 ```tsx
 <Avatar name="Ada Lovelace" src={user.image} />
@@ -898,7 +894,7 @@ wiring to your own link:
 | `readOnly`  | `boolean`                                                               | `false`     |
 | `icon`      | `ReactNode`                                                             | a star      |
 | `emptyIcon` | `ReactNode`                                                             | `icon`      |
-| `getLabel`  | `(value: number) => string`                                             | `"1 of 5"`… |
+| `getLabel`  | `(value: number) => string`                                             | `${value} of ${max}` |
 | `color`     | `"gold"` or the six semantic colours                                    | `"gold"`    |
 | `size`      | `"sm" \| "md" \| "lg"`                                                  | `"md"`      |
 
@@ -981,8 +977,6 @@ edge: `Number(value)`, or `z.coerce.number()` in a schema.
 
 ### Slider / RangeSlider
 
-Pick a number, or a span, by dragging.
-
 ```tsx
 <Slider value={volume} onChange={setVolume} />
 <Slider value={volume} onChange={setVolume} onChangeEnd={save} step={5} />
@@ -1044,8 +1038,6 @@ The field holds a number, or a `[low, high]` pair. An empty field starts at `min
 
 ### Stepper
 
-How far along a set of steps you are.
-
 ```tsx
 <Stepper value={step} onChange={setStep}>
   <Step value="cart" description="3 items">Cart</Step>
@@ -1066,9 +1058,8 @@ How far along a set of steps you are.
 | `size`        | `"sm" \| "md" \| "lg"`            | `"md"`         |
 
 **Step props:** `value` (required), `description`, `status`, `icon`, `disabled`, `render`,
-plus any button attribute.
-
-It shows progress; what each step holds is yours to render.
+plus any `HTMLAttributes<HTMLButtonElement>`. Not `ButtonHTMLAttributes`, so `type` is not
+among them.
 
 A step's status comes from where it sits against the current one: `StepStatus` is
 `"complete" | "current" | "upcoming" | "error"`. `status` overrides it, so a step already
@@ -1080,7 +1071,8 @@ them up. Without an `onChange` nothing is clickable and the keyboard walks past 
 Renders a named `nav` around an `ol`; the current step carries `aria-current="step"`.
 
 `render` on a step hands over the whole step — `{ value, index, status, reachable,
-disabled, select, children, description }` — and draws nothing of its own. The list item,
+disabled, select, children, description }`, where `index` counts from one — and draws
+nothing of its own. The list item,
 the joint and the reachability rules stay.
 
 ### ColorPicker
@@ -1135,8 +1127,9 @@ Alpha is in the value only when below 1: `#3b82f6` solid, `#3b82f680` at half.
 `swatches` shows nothing until passed. The eyedropper button renders only where the browser
 has the `EyeDropper` API.
 
-`renderSaturation`, `renderHueThumb` and `renderAlphaThumb` draw inside the handle that
-moves; `render` on `ColorInput` draws inside the trigger. Dragging, keyboard and aria stay
+`renderSaturation`, `renderHueThumb` and `renderAlphaThumb` are given
+`{ color, hsva, dragging }` and draw inside the handle that moves; `render` on `ColorInput`
+is given `{ color, open }` and draws inside the trigger. Dragging, keyboard and aria stay
 with the component.
 
 `parseColor(input)` reads 3, 4, 6 and 8 digit hex, `rgb()`, `rgba()`, `hsl()`, `hsla()`,
@@ -1145,8 +1138,6 @@ and returns `null` for anything else. `formatColor(hsva, format, withAlpha)` wri
 `readOnly` shows the value without opening. `ColorInput` opens at `z-index: 10`.
 
 ### Breadcrumb
-
-The trail of pages above the one you are on.
 
 **Use `asChild` with the app's own router link.** `href` renders a plain anchor and
 reloads the page.
@@ -1224,8 +1215,6 @@ Takes every SVG attribute, `stroke` included.
 
 ### Progress
 
-How far along something is.
-
 ```tsx
 <Progress value={40} />
 <Progress value={3} max={7} label={({ value, max }) => `${value} of ${max} files`} />
@@ -1253,8 +1242,6 @@ value and draws an empty bar.
 unknown; a `label` function is only called when there is a value.
 
 ### Skeleton
-
-A placeholder holding the space content will take while it loads.
 
 ```tsx
 <Skeleton />
@@ -1289,9 +1276,6 @@ only your own markup.
 
 Both animations are dropped under `prefers-reduced-motion`.
 
-**Which one to reach for:** `Spinner` for work with no length, `Progress` when you can
-count it, `Skeleton` when you know the shape of what is coming.
-
 ### Label / InputError
 
 ```tsx
@@ -1300,8 +1284,6 @@ count it, `Skeleton` when you know the shape of what is coming.
 ```
 
 ### Toast
-
-Nothing needs installing; `GeckoUIProvider` mounts the toaster.
 
 ```tsx
 import { toast } from "@geckoui/geckoui";
@@ -1332,6 +1314,10 @@ toast.promise(save(), {
 
 `action` and `cancel` are `{ label: string; onClick: () => void }`. `position` is one of
 `top-left`, `top-center`, `top-right`, `bottom-left`, `bottom-center`, `bottom-right`.
+`onDismiss` and `onAutoClose` take no arguments.
+
+On `toastOptions`, `className` styles each stack; `toastClassName` and `toastStyle` style
+every toast.
 
 **Defaults, on `GeckoUIProvider toastOptions`:** `position`, `duration`, `closeButton`,
 `dismissible`, `visibleToasts`, `gap`, `offset`, `className`, `toastClassName`,
@@ -1410,7 +1396,12 @@ Shapes for the props above that are not what their name suggests:
   `{ field, fieldState, formState }`.
 - `RHFCheckbox indeterminate` is `boolean | (({ field }) => boolean)`, which is how a
   select-all box reads its group.
-- `RHFFileInput onChange` gets `FileWithPreview | FileWithPreview[] | null`.
+- `RHFFileInput onChange` gets `FileWithPreview | FileWithPreview[] | null`, and its
+  `render` receives the normal controller render props.
+- `RHFError render` receives `ControllerFieldState`, so the message is `error?.message`.
+- `RHFTextarea` takes `transform` too, the same object shape.
+- `RHFCurrencyInput` omits `strict` — passing it is a type error.
+- `RHFRadio` throws if `value` is `null` or `undefined`.
 - `RHFFilePicker` extends `UseFilePickerOptions` — `accept`, `multiple`, `directory`,
   `keepOldFiles`, `removeDuplicates`, `transform`, `onError` — and its `render` is given the
   `useFilePicker` return plus the RHF render args.
@@ -1521,11 +1512,6 @@ Components use `data-*` attributes for variants/states. Target with attribute se
 
 If the code predates v2, read `references/migrating.md` before changing anything. Renamed
 props are dropped silently, not flagged at build time.
-
-The short version: `GeckoUIPortal` becomes `GeckoUIProvider`, `Alert variant` becomes
-`color`, `Drawer handleClose` becomes `onClose`, `Checkbox partial` becomes
-`indeterminate`, `CounterInput editable` becomes `allowTyping` and its value becomes a
-string, and `toast` is imported from `@geckoui/geckoui`.
 
 ## References
 

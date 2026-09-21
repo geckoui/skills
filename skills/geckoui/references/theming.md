@@ -181,15 +181,12 @@ rule rather than a block per variant:
 `--gecko-scrollbar-width` is set by the library while an overlay locks page scroll, so
 fixed elements pinned to the right edge can compensate.
 
-## OKLCH Primer
+## OKLCH
 
-`oklch(lightness chroma hue)`:
+Use chroma `0` and hue `none` for neutral greys.
 
-- **Lightness**: 0 (black) to 1 (white)
-- **Chroma**: 0 (gray) to ~0.4 (vivid). Use 0 for neutral grays.
-- **Hue**: 0-360 degrees. Use `none` for achromatic (gray/black/white).
-
-Common hue angles: red ~25, orange ~70, yellow ~100, green ~145, cyan ~200, blue ~260, purple ~300, pink ~350.
+Hue angles: red ~25, orange ~70, yellow ~100, green ~145, cyan ~200, blue ~260,
+purple ~300, pink ~350.
 
 ## Output Format
 
@@ -528,11 +525,9 @@ Checked state: use `.GeckoUISwitch:has(input:checked)` selector.
 
 | Class                      | Element    | Targets                        |
 | -------------------------- | ---------- | ------------------------------ |
-| `.GeckoUICheckbox`         | `<div>`    | Outer wrapper                  |
-| `.GeckoUICheckbox__button` | `<button>` | Clickable area (role=checkbox) |
-| `.GeckoUICheckbox__box`    | `<div>`    | The visible checkbox square    |
-| `.GeckoUICheckbox__input`  | `<input>`  | Hidden native checkbox         |
-| `.GeckoUICheckbox__icon`   | `<svg>`    | Check/indeterminate icon       |
+| `.GeckoUICheckbox`        | `<div>`   | Outer wrapper                                    |
+| `.GeckoUICheckbox__input` | `<input>` | The native checkbox, `appearance-none`, is the box |
+| `.GeckoUICheckbox__icon`  | `<svg>`   | Check/indeterminate icon                         |
 
 ### Radio
 
