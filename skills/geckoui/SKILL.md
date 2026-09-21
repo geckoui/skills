@@ -1259,6 +1259,20 @@ value matching no option. Every message is prefixed `[GeckoUI]`.
 They are stripped from production builds, so they cost nothing at runtime. If one appears,
 it is pointing at a real wiring problem rather than noise to ignore.
 
+## Stacking Order
+
+Overlays sit in three tiers: inline dropdowns at `10` (Select, Breadcrumb, TagInput,
+TimeInput), floating panels at `50` (Tooltip, Menu, Popover, the date calendars), and full
+overlays above them — Drawer `1000`, Dialog `2000`, Toast `3000`.
+
+Each is a variable: `--gecko-select-menu-z`, `--gecko-breadcrumb-z`,
+`--gecko-tag-input-z`, `--gecko-time-input-z`, `--gecko-tooltip-z`, `--gecko-menu-z`,
+`--gecko-popover-z`, `--gecko-date-input-z`, `--gecko-date-range-input-z`,
+`--gecko-toast-z`.
+
+**Keep the app's own chrome below `1000`.** A sticky header at a higher z-index covers
+drawers, dialogs and toasts, and a toast nobody can reach is how it usually shows up.
+
 ## Module Augmentation
 
 Extend built-in variant/color/size maps:
