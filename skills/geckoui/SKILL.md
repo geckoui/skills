@@ -245,7 +245,7 @@ Also `placeholder`, `disabled`, `readOnly`, `hasError`, `prefix`, `suffix`, `cla
 
 **TagInputOption props:** `value` (required), `label`, `disabled`.
 
-There is no size prop: the field's height comes from the tags in it.
+The field's height comes from the tags in it.
 
 Options are declared as children, the way they are for `Select`, and filter as you type.
 Anything that is not an option can still be typed in, which is what separates this from a
@@ -370,9 +370,7 @@ opens. Disabled items are skipped, and the arrow keys are left alone inside a pa
 
 `iconClassName` targets the icon element. Uses `data-color`, `data-condensed` attributes.
 
-`variant` meant the visual treatment on Button and the meaning on Alert. v2 settles it:
-**`variant` is how a thing looks, `color` is what it means.** Alert took the rename because
-it was the odd one out.
+`variant` is how a thing looks, `color` is what it means.
 
 ### Dialog
 
@@ -494,8 +492,8 @@ Drawer.dismiss(); // close the topmost drawer
 
 ### Popover
 
-A panel anchored to whatever opens it. `PopoverTrigger` uses its child as the trigger
-rather than wrapping it, so the button keeps its own tag, styling and click handler.
+A panel anchored to whatever opens it. `PopoverTrigger` uses its child as the trigger, so
+the child keeps its own tag, styling and click handler.
 
 ```tsx
 <Popover placement="bottom-start" arrow>
@@ -526,17 +524,15 @@ rather than wrapping it, so the button keeps its own tag, styling and click hand
 
 **PopoverContent props:** `children`, plus any div attribute.
 
-`offset` is the gap between the trigger and the nearest part of the popover, which is the
-arrow's tip when `arrow` is on rather than the panel edge, so the spacing looks the same
-either way.
+`offset` is the gap from the trigger to the nearest part of the popover: the arrow's tip
+when `arrow` is on, otherwise the panel edge.
 
 `usePopover()` gives anything inside the panel `open`, `close()`, `toggle()` and
 `setOpen()`, so a Cancel button or a form submit can shut it.
 
-Focus moves into the panel when it opens and returns to the trigger when it closes.
-Escape closes it even from inside a text field, unlike `Dialog` and `Drawer`, which leave
-Escape alone while you type. The panel renders inline rather than in a portal, so it stays
-inside a dialog and keeps React context.
+Focus moves into the panel on open and back to the trigger on close. Escape closes it even
+from inside a text field; `Dialog` and `Drawer` leave Escape alone while you type. The
+panel renders inline, not in a portal, so it keeps React context.
 
 **Which one to reach for:** `Tooltip` for a label on hover, `Popover` for a panel you click
 open that can hold a form, `Menu` for a list of actions with arrow key navigation.
@@ -648,8 +644,8 @@ nothing they could become is allowed, reading the columns to their **left** as s
 leaving the ones to their right free — so an hour rule greys hours straight away but leaves
 minutes alone until an hour is picked, and choosing PM never locks the hour column.
 
-There is no combined date and time field. Use `DateInput` and `TimeInput` side by side and
-join the two strings: `` `${date}T${time}` ``.
+For date and time together, use `DateInput` and `TimeInput` side by side and join the
+strings: `` `${date}T${time}` ``.
 
 ### RHFTimeInput
 
@@ -885,18 +881,16 @@ There are no panels in that case — the page below is the content.
 Also `disabled`, `name`, `aria-label`, plus any div attribute. Uses `data-color`,
 `data-size`, `data-readonly`, `data-disabled`.
 
-Stars are `gold` by default — a fixed colour rather than a theme token, a shade below a
-true `#FFD700` so the empty star can stay a grey you can see on a light background.
+Stars are `gold` by default, a fixed colour rather than a theme token.
 
-Any fraction is drawn exactly whether it can be picked or not, so `value={4.3}` shows 4.3.
-`precision` only decides what a click lands on: `0.5` for halves, `0.1` for tenths. The
+Any fraction is drawn exactly whether it can be picked or not: `value={4.3}` shows 4.3.
+`precision` decides only what a click lands on: `0.5` for halves, `0.1` for tenths. The
 arrow keys step by it too. `readOnly` takes the interaction away, nothing else.
 
-Picking the rating it already has sets it to `0`, which is the only way to undo a mis-click
-with a mouse; `clearable={false}` turns that off.
+Picking the rating it already has sets it to `0`; `clearable={false}` turns that off.
 
-Built as a radio group — visually hidden radios carry the semantics, the arrow keys and the
-form posting, and the icons are what is seen. `icon` alone is used for both halves of each,
+Built as a radio group: visually hidden radios carry the semantics, the arrow keys and the
+form posting. `icon` alone is used for both halves of each,
 filled and empty, with only the colour between them; add `emptyIcon` when the empty state is
 a different shape.
 
@@ -993,8 +987,7 @@ Pick a number, or a span, by dragging.
 
 Uses `data-color`, `data-size`, `data-disabled`; the thumb carries `data-dragging`.
 
-Two components rather than one with a union value, so the types stay clean at the call
-site. `onChange` fires all the way through a drag and keeps the slider controlled; put
+`onChange` fires all the way through a drag and keeps the slider controlled; put
 anything expensive in `onChangeEnd`.
 
 Steps are measured from `min`, not from zero, and rounded to the step's own precision, so
@@ -1007,11 +1000,8 @@ track.
 Keyboard: arrows step, Shift jumps ten steps, Page Up/Down move a tenth of the range, Home
 and End go to the ends. Every press fires `onChangeEnd` too.
 
-`renderThumb` draws inside the thumb rather than in place of it: the drag, the keys and the
-`role="slider"` stay on the element that is positioned, and the component's own circle is
-dropped. Reach for it rather than overriding the thumb's CSS.
-
-There is no vertical orientation.
+`renderThumb` draws inside the thumb: the drag, the keys and the `role="slider"` stay on
+the positioned element, and the component's own circle is dropped.
 
 ### RHFSlider / RHFRangeSlider
 
@@ -1064,17 +1054,14 @@ tabbing through buttons that do nothing.
 
 Renders a named `nav` around an `ol`; the current step carries `aria-current="step"`.
 
-`render` on a step hands the whole thing over — `{ value, index, status, reachable,
-disabled, select, children, description }` — and draws nothing of its own, so a design that
-is not a marker beside a label needs no fighting with the component's styles. The list item,
-the joint and the reachability rules stay. Reach for it rather than overriding the
-component's CSS.
+`render` on a step hands over the whole step — `{ value, index, status, reachable,
+disabled, select, children, description }` — and draws nothing of its own. The list item,
+the joint and the reachability rules stay.
 
 ### ColorPicker
 
-A saturation square, a hue slider and an opacity slider. `ColorPicker` is the panel,
-`ColorInput` is a field that opens it in a popover — the same split as `Calendar` and
-`DateInput`.
+`ColorPicker` is the panel: saturation square, hue slider, opacity slider, value field.
+`ColorInput` is a field that opens it in a popover.
 
 ```tsx
 const [color, setColor] = useState("#3b82f6");
@@ -1094,42 +1081,41 @@ const [color, setColor] = useState("#3b82f6");
 <RHFColorInput name="brand" rules={{ required: "Pick a colour" }} />
 ```
 
-| Prop               | Type                       | Default                    |
-| ------------------ | -------------------------- | -------------------------- |
-| `value`            | `string`                   | -                          |
-| `defaultValue`     | `string`                   | `"#000000"`                |
-| `onChange`         | `(color: string) => void`  | -                          |
-| `onChangeComplete` | `(color: string) => void`  | -                          |
-| `formats`          | `("hex"\|"rgb"\|"hsl")[]`  | `["hex", "rgb", "hsl"]`    |
-| `showInput`        | `boolean`                  | `true`                     |
-| `swatches`         | `string[]`                 | -                          |
-| `eyeDropper`       | `boolean`                  | `false`                    |
-| `disabled`         | `boolean`                  | `false`                    |
+| Prop               | Type                      | Default                 |
+| ------------------ | ------------------------- | ----------------------- |
+| `value`            | `string`                  | -                       |
+| `defaultValue`     | `string`                  | `"#000000"`             |
+| `onChange`         | `(color: string) => void` | -                       |
+| `onChangeComplete` | `(color: string) => void` | -                       |
+| `formats`          | `("hex"\|"rgb"\|"hsl")[]` | `["hex", "rgb", "hsl"]` |
+| `onFormatChange`   | `(format, color) => void` | -                       |
+| `showInput`        | `boolean`                 | `true`                  |
+| `swatches`         | `string[]`                | -                       |
+| `eyeDropper`       | `boolean`                 | `false`                 |
+| `disabled`         | `boolean`                 | `false`                 |
 
 **ColorInput also takes:** `placeholder`, `render`, `readOnly`, `hasError`, `onOpenChange`,
-`pickerPlacement`, `wrapperClassName`, `pickerClassName`.
+`pickerPlacement`, `floatingStrategy`, `wrapperClassName`, `pickerClassName`.
 
-**There is no `size` and no `format` prop.** `formats` is the whole format story: what the
-dropdown offers, in what order, and what it starts on — the first entry. Pass a single
-format to pin it and drop the dropdown.
+`formats` sets what the format dropdown offers, in what order, and the starting format —
+the first entry. A single entry pins the format and hides the dropdown.
 
-`onChange` fires on every pointer move, for the live preview. `onChangeComplete` fires once
-the drag ends, and on a keyboard move, a committed text edit or a picked swatch. Put the
-save there, not in `onChange`.
+`onChange` fires on every pointer move. `onChangeComplete` fires once the drag ends, and on
+a keyboard move, a committed text edit or a picked swatch.
 
-The opacity slider is always there and there is no `alpha` prop. Alpha reaches the value
-only when it is below 1, so a solid colour stays `#3b82f6` rather than `#3b82f6ff`.
+Alpha is in the value only when below 1: `#3b82f6` solid, `#3b82f680` at half.
 
-There is no default palette; `swatches` shows nothing until you pass one. The eyedropper
-button renders only where the browser has the `EyeDropper` API.
+`swatches` shows nothing until passed. The eyedropper button renders only where the browser
+has the `EyeDropper` API.
 
-`renderSaturation`, `renderHueThumb` and `renderAlphaThumb` draw **inside** the handle that
-moves, so the drag, the keyboard and the aria stay with the component. `render` on
-`ColorInput` does the same inside the trigger, which is how you get a bare colour square
-that still opens. Reach for these rather than overriding the component's CSS.
+`renderSaturation`, `renderHueThumb` and `renderAlphaThumb` draw inside the handle that
+moves; `render` on `ColorInput` draws inside the trigger. Dragging, keyboard and aria stay
+with the component.
 
-`parseColor` and `formatColor` are exported. `parseColor` reads 3, 4, 6 and 8 digit hex,
-`rgb()`, `rgba()`, `hsl()` and `hsla()`, and returns `null` rather than guessing.
+`parseColor(input)` reads 3, 4, 6 and 8 digit hex, `rgb()`, `rgba()`, `hsl()`, `hsla()`,
+and returns `null` for anything else. `formatColor(hsva, format, withAlpha)` writes it back.
+
+`readOnly` shows the value without opening. `ColorInput` opens at `z-index: 10`.
 
 ### Breadcrumb
 
@@ -1190,7 +1176,7 @@ Past `maxItems` the middle folds away behind an ellipsis that opens it as a list
 unfolding in place — on a narrow screen unfolding a deep trail only wraps it over three
 lines. The ends are what is kept.
 
-There is no icon prop; an icon is part of the crumb. The links are the loud ones and the
+An icon is part of the crumb's children. The links are the loud ones and the
 current page is quiet, which is the reverse of what most libraries do: you already know
 where you are, and the trail is for the way back.
 
@@ -1332,7 +1318,7 @@ Buttons inside a toast still work: a press starting on one is never taken as a d
 `closeButton` is never turned on for you. Swiping is pointer only, so a toast that neither
 closes itself nor can be swiped needs one, or a keyboard user has no way to be rid of it.
 
-Styled through `--gecko-toast-*` variables rather than props.
+Styled through `--gecko-toast-*` variables, not props.
 
 ## React Hook Form
 
@@ -1388,8 +1374,7 @@ The library warns in the console about mistakes only a developer can fix — no 
 mounted, several providers, an invalid calendar date, `RHFInputGroup` misuse, a `Select`
 value matching no option. Every message is prefixed `[GeckoUI]`.
 
-They are stripped from production builds, so they cost nothing at runtime. If one appears,
-it is pointing at a real wiring problem rather than noise to ignore.
+They are stripped from production builds.
 
 ## Stacking Order
 
@@ -1402,8 +1387,8 @@ Each is a variable: `--gecko-select-menu-z`, `--gecko-breadcrumb-z`,
 `--gecko-popover-z`, `--gecko-date-input-z`, `--gecko-date-range-input-z`,
 `--gecko-toast-z`.
 
-**Keep the app's own chrome below `1000`.** A sticky header at a higher z-index covers
-drawers, dialogs and toasts, and a toast nobody can reach is how it usually shows up.
+Keep the app's own chrome below `1000`; above it, a sticky header covers drawers, dialogs
+and toasts.
 
 ## Module Augmentation
 
@@ -1452,14 +1437,13 @@ Components use `data-*` attributes for variants/states. Target with attribute se
 
 ## Migrating from v1
 
-If the code predates v2, read `references/migrating.md` before changing anything. Most of
-the differences fail silently rather than at build time — renamed props are dropped, not
-flagged.
+If the code predates v2, read `references/migrating.md` before changing anything. Renamed
+props are dropped silently, not flagged at build time.
 
 The short version: `GeckoUIPortal` becomes `GeckoUIProvider`, `Alert variant` becomes
 `color`, `Drawer handleClose` becomes `onClose`, `Checkbox partial` becomes
 `indeterminate`, `CounterInput editable` becomes `allowTyping` and its value becomes a
-string, and `toast` is GeckoUI's own rather than sonner's.
+string, and `toast` is GeckoUI's own, not sonner's.
 
 ## References
 
