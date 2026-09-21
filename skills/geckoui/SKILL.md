@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "Breadcrumb component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -1014,6 +1014,50 @@ There is no vertical orientation.
 
 The field holds a number, or a `[low, high]` pair. A slider has nowhere to show "not set",
 so an empty field starts at `min`, or `[min, max]` for the range; `defaultValue` moves it.
+
+### Breadcrumb
+
+The trail of pages above the one you are on.
+
+```tsx
+<Breadcrumb>
+  <BreadcrumbItem href="/">Home</BreadcrumbItem>
+  <BreadcrumbItem href="/settings">Settings</BreadcrumbItem>
+  <BreadcrumbItem>Profile</BreadcrumbItem>
+</Breadcrumb>
+
+<Breadcrumb maxItems={3} separator="/">…</Breadcrumb>
+
+<BreadcrumbItem asChild>
+  <Link href="/settings">Settings</Link>
+</BreadcrumbItem>
+```
+
+| Prop                  | Type                      | Default         |
+| --------------------- | ------------------------- | --------------- |
+| `separator`           | `ReactNode`               | a chevron       |
+| `maxItems`            | `number`                  | -               |
+| `itemsBeforeCollapse` | `number`                  | `1`             |
+| `itemsAfterCollapse`  | `number`                  | `1`             |
+| `expandLabel`         | `string`                  | `"Show the rest"` |
+| `menuPlacement`       | `Placement`               | `"bottom-start"` |
+| `size`                | `"sm" \| "md" \| "lg"`    | `"md"`          |
+
+**BreadcrumbItem props:** `href`, `current`, `asChild`, plus any anchor attribute.
+
+Renders a named `nav` around an `ol`, with the separators hidden from a reader.
+
+The last crumb is the page you are on: it is drawn as text rather than a link even when
+given an `href`, and carries `aria-current="page"`. `current` on another crumb **moves**
+that marker rather than adding a second, and the last one goes back to being a link.
+
+Past `maxItems` the middle folds away behind an ellipsis that opens it as a list, not by
+unfolding in place — on a narrow screen unfolding a deep trail only wraps it over three
+lines. The ends are what is kept.
+
+There is no icon prop; an icon is part of the crumb. The links are the loud ones and the
+current page is quiet, which is the reverse of what most libraries do: you already know
+where you are, and the trail is for the way back.
 
 ### Pagination
 
