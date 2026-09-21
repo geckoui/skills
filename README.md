@@ -5,7 +5,7 @@ Skills for building UIs with the GeckoUI component libraries (web + React Native
 ## Installation
 
 ```
-npx skills add GeckoUI/skills
+npx skills add geckoui/skills
 ```
 
 ## Versions
