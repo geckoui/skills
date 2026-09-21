@@ -555,7 +555,7 @@ open that can hold a form, `Menu` for a list of actions with arrow key navigatio
 | `placement`        | `Placement`                 | `"top"` |
 | `sideOffset`       | `number`                    | `12`    |
 | `triggerAsChild`   | `boolean`                   | `false` |
-| `delayDuration`    | `number`                    | `700`   |
+| `delayDuration`    | `number`                    | `200`   |
 | `backgroundColor`  | `string`                    | -       |
 | `className`        | `string`                    | -       |
 | `triggerClassName` | `string`                    | -       |
