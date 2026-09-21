@@ -1074,18 +1074,36 @@ component's CSS.
 
 The trail of pages above the one you are on.
 
+**Always reach for `asChild` with the app's own router link.** Client routing is a must in
+almost every app, and `href` renders a plain anchor that reloads the page.
+
 ```tsx
+import Link from "next/link";
+
 <Breadcrumb>
-  <BreadcrumbItem href="/">Home</BreadcrumbItem>
-  <BreadcrumbItem href="/settings">Settings</BreadcrumbItem>
+  <BreadcrumbItem asChild>
+    <Link href="/">Home</Link>
+  </BreadcrumbItem>
+  <BreadcrumbItem asChild>
+    <Link href="/settings">Settings</Link>
+  </BreadcrumbItem>
   <BreadcrumbItem>Profile</BreadcrumbItem>
 </Breadcrumb>
 
 <Breadcrumb maxItems={3} separator="/">…</Breadcrumb>
+```
 
-<BreadcrumbItem asChild>
-  <Link href="/settings">Settings</Link>
-</BreadcrumbItem>
+Only use `href` when there is no router — a static site or a multi page app:
+
+```tsx
+<BreadcrumbItem href="/settings">Settings</BreadcrumbItem>
+```
+
+With no link to hand, `onClick` makes the crumb a real `<button>`, in the tab order and
+answering the keyboard:
+
+```tsx
+<BreadcrumbItem onClick={() => router.push("/settings")}>Settings</BreadcrumbItem>
 ```
 
 | Prop                  | Type                      | Default         |
@@ -1098,7 +1116,8 @@ The trail of pages above the one you are on.
 | `menuPlacement`       | `Placement`               | `"bottom-start"` |
 | `size`                | `"sm" \| "md" \| "lg"`    | `"md"`          |
 
-**BreadcrumbItem props:** `href`, `current`, `asChild`, plus any anchor attribute.
+**BreadcrumbItem props:** `asChild` (the router path), `href` (plain anchor, reloads),
+`onClick` (renders a `button` when there is no `href`), `current`, plus any anchor attribute.
 
 Renders a named `nav` around an `ol`, with the separators hidden from a reader.
 
