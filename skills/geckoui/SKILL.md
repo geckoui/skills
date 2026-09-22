@@ -1383,7 +1383,7 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 | Input (number)   | RHFNumberInput    | `positiveOnly`, `strict`, `maxFractionDigits`, `maxWholeDigitPlaces`                        |
 | Input (currency) | RHFCurrencyInput  | `currency: { symbol, code }`                                                                |
 | -                | RHFFileInput      | `multiple`, `render`, `inputClassName`                                                      |
-| -                | RHFFilePicker     | `render`, plus every `useFilePicker` option                                                 |
+| -                | RHFFilePicker     | `render`, `accept`, `multiple`, `directory`, `keepOldFiles`, `removeDuplicates`, `transform`, `onError` |
 | -                | RHFError          | `render`. No `name`/`rules`/`control`                                                       |
 | -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName`. No `name`/`rules`/`control`                    |
 
@@ -1402,9 +1402,9 @@ Shapes for the props above that are not what their name suggests:
 - `RHFTextarea` takes `transform` too, the same object shape.
 - `RHFCurrencyInput` omits `strict` — passing it is a type error.
 - `RHFRadio` throws if `value` is `null` or `undefined`.
-- `RHFFilePicker` extends `UseFilePickerOptions` — `accept`, `multiple`, `directory`,
-  `keepOldFiles`, `removeDuplicates`, `transform`, `onError` — and its `render` is given the
-  `useFilePicker` return plus the RHF render args.
+- `RHFFilePicker` holds `FilePickerFile[]`, and its `render` is given
+  `{ dropzoneRef, dragging, loading, openFilePicker, files }` plus the RHF render args. Put
+  `dropzoneRef` on the drop target and call `openFilePicker()` from a button.
 
 `RHFInputGroup` finds its field by walking its children for an RHF input and reading that
 input's `name`. It warns if it finds none.
@@ -1424,15 +1424,6 @@ Takes everything React Hook Form's `Controller` takes. `control` is optional; pa
 target a specific form when `FormProvider`s are nested.
 
 ## Hooks
-
-```tsx
-import { useFilePicker, useSelect, usePopover } from "@geckoui/geckoui";
-```
-
-`useFilePicker(options)` is the file picking surface outside RHF. Options: `accept`,
-`multiple`, `directory`, `keepOldFiles`, `removeDuplicates`, `transform`, `onChange`,
-`onError`. Returns `{ dropzoneRef, dragging, loading, openFilePicker, files }` — put
-`dropzoneRef` on the drop target and call `openFilePicker()` from a button.
 
 `useSelect()` reads the `Select` context from inside a custom option or trigger.
 `usePopover()` does the same for `Popover`.
