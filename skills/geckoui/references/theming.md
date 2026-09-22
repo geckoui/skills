@@ -75,6 +75,21 @@ These control buttons, focus rings, active states, and all accent colors.
   --color-border-focus: oklch(0.7155 0 none); /* focus state */
   --color-border-hover: oklch(0.8699 0 none); /* hover state */
   --color-border-disabled: oklch(0.9401 0 none); /* disabled border */
+  --color-border-invalid: oklch(0.6368 0.2078 25.33); /* a field in error */
+  --color-border-invalid-hover: oklch(0.5168 0.2178 25.33); /* ...under the pointer */
+}
+```
+
+### Semantic Colors
+
+Status colours, shared by Toast, Alert and Badge. New in v2.
+
+```css
+:root {
+  --color-success: oklch(0.6271 0.1699 149.21);
+  --color-error: oklch(0.6368 0.2078 25.33);
+  --color-warning: oklch(0.6685 0.1626 58.32);
+  --color-info: oklch(0.6231 0.188 259.81);
 }
 ```
 
@@ -129,82 +144,111 @@ Apply `.dark` class to root element. Override the same variables:
 
 **Note:** Primary colors (50-950) are NOT overridden in dark mode by default. Override them if your brand color needs dark mode adjustment.
 
-## OKLCH Primer
+## Component Variables
 
-`oklch(lightness chroma hue)`:
-
-- **Lightness**: 0 (black) to 1 (white)
-- **Chroma**: 0 (gray) to ~0.4 (vivid). Use 0 for neutral grays.
-- **Hue**: 0-360 degrees. Use `none` for achromatic (gray/black/white).
-
-Common hue angles: red ~25, orange ~70, yellow ~100, green ~145, cyan ~200, blue ~260, purple ~300, pink ~350.
-
-## Output Format
-
-When generating a custom theme, output a single CSS file with this exact structure:
+Some components expose their own `--gecko-*` variables, so you can retheme them without
+touching their rules. Set them on the component's class, or globally on `:root`.
 
 ```css
-/* theme-name.css */
-:root {
-  /* Primary — adjust hue for brand color */
-  --color-primary-50: oklch(/* L */ /* C */ /* H */);
-  --color-primary-100: oklch(/* L */ /* C */ /* H */);
-  --color-primary-200: oklch(/* L */ /* C */ /* H */);
-  --color-primary-300: oklch(/* L */ /* C */ /* H */);
-  --color-primary-400: oklch(/* L */ /* C */ /* H */);
-  --color-primary-500: oklch(/* L */ /* C */ /* H */);
-  --color-primary-600: oklch(/* L */ /* C */ /* H */);
-  --color-primary-700: oklch(/* L */ /* C */ /* H */);
-  --color-primary-800: oklch(/* L */ /* C */ /* H */);
-  --color-primary-900: oklch(/* L */ /* C */ /* H */);
-  --color-primary-950: oklch(/* L */ /* C */ /* H */);
+/* Alert */
+--gecko-alert-accent   --gecko-alert-bg   --gecko-alert-border   --gecko-alert-radius
 
-  /* Surface — adjust lightness for overall brightness */
-  --color-surface-primary: oklch(/* ... */);
-  --color-surface-secondary: oklch(/* ... */);
-  --color-surface-tertiary: oklch(/* ... */);
-  --color-surface-hover: oklch(/* ... */);
-  --color-surface-hover-strong: oklch(/* ... */);
-  --color-surface-active: oklch(/* ... */);
-  --color-surface-disabled: oklch(/* ... */);
-  --color-surface-overlay: oklch(/* ... */);
-  --color-surface-autofill: oklch(/* ... */);
-  --color-surface-emphasis: oklch(/* ... */);
+/* Badge */
+--gecko-badge-accent   --gecko-badge-on-accent   --gecko-badge-radius
+--gecko-badge-soft-mix   --gecko-badge-outline-mix
 
-  /* Text */
-  --color-text-primary: oklch(/* ... */);
-  --color-text-secondary: oklch(/* ... */);
-  --color-text-tertiary: oklch(/* ... */);
-  --color-text-disabled: oklch(/* ... */);
-  --color-text-placeholder: oklch(/* ... */);
-  --color-text-inverse: oklch(/* ... */);
-  --color-text-muted: oklch(/* ... */);
-  --color-text-on-primary: oklch(/* ... */);
+/* Tabs */
+--gecko-tabs-accent   --gecko-tabs-muted   --gecko-tabs-indicator   --gecko-tabs-radius
+--gecko-tabs-gap   --gecko-tabs-padding-x   --gecko-tabs-padding-y   --gecko-tabs-font-size
 
-  /* Border */
-  --color-border-primary: oklch(/* ... */);
-  --color-border-secondary: oklch(/* ... */);
-  --color-border-focus: oklch(/* ... */);
-  --color-border-hover: oklch(/* ... */);
-  --color-border-disabled: oklch(/* ... */);
-}
+/* Toast */
+--gecko-toast-accent   --gecko-toast-bg   --gecko-toast-fg   --gecko-toast-border
+--gecko-toast-muted   --gecko-toast-radius   --gecko-toast-shadow   --gecko-toast-width
+--gecko-toast-gap   --gecko-toast-offset   --gecko-toast-padding   --gecko-toast-duration
+--gecko-toast-z
 
-.dark {
-  /* Override surface, text, border for dark mode */
-  --color-surface-primary: oklch(/* ... */);
-  /* ... all surface, text, border variables ... */
+/* Accordion */
+--gecko-accordion-radius   --gecko-accordion-gap   --gecko-accordion-padding-x
+--gecko-accordion-padding-y   --gecko-accordion-font-size   --gecko-accordion-duration
+
+/* Avatar */
+--gecko-avatar-accent   --gecko-avatar-size   --gecko-avatar-radius
+--gecko-avatar-font-size   --gecko-avatar-bg-base   --gecko-avatar-bg-mix
+
+/* AvatarGroup */
+--gecko-avatar-group-overlap   --gecko-avatar-group-lift   --gecko-avatar-group-ring
+--gecko-avatar-group-ring-width
+
+/* Breadcrumb */
+--gecko-breadcrumb-gap   --gecko-breadcrumb-link   --gecko-breadcrumb-current
+--gecko-breadcrumb-separator   --gecko-breadcrumb-separator-size   --gecko-breadcrumb-z
+
+/* ColorPicker */
+--gecko-color-picker-width   --gecko-color-picker-radius   --gecko-color-picker-gap
+--gecko-color-picker-saturation-height   --gecko-color-picker-slider-height
+--gecko-color-picker-thumb-size   --gecko-color-picker-thumb-ring
+--gecko-color-picker-preview-size   --gecko-color-picker-swatch-size
+--gecko-color-picker-checker   --gecko-color-picker-checker-size
+
+/* ColorInput */
+--gecko-color-input-height   --gecko-color-input-radius   --gecko-color-input-swatch-size
+--gecko-color-input-checker   --gecko-color-input-checker-size   --gecko-color-input-z
+
+/* Popover */
+--gecko-popover-bg   --gecko-popover-border   --gecko-popover-radius
+--gecko-popover-padding   --gecko-popover-width   --gecko-popover-max-width
+--gecko-popover-z
+
+/* Progress */
+--gecko-progress-accent   --gecko-progress-track   --gecko-progress-height
+--gecko-progress-radius   --gecko-progress-duration   --gecko-progress-label-gap
+
+/* Rating */
+--gecko-rating-accent   --gecko-rating-empty   --gecko-rating-gold   --gecko-rating-size
+--gecko-rating-gap
+
+/* Skeleton */
+--gecko-skeleton-bg   --gecko-skeleton-highlight   --gecko-skeleton-radius
+--gecko-skeleton-duration   --gecko-skeleton-line-height   --gecko-skeleton-line-gap
+--gecko-skeleton-last-line-width
+
+/* Slider, RangeSlider */
+--gecko-slider-accent   --gecko-slider-track   --gecko-slider-track-height
+--gecko-slider-thumb-size   --gecko-slider-thumb-bg   --gecko-slider-radius
+--gecko-slider-mark-size
+
+/* Stepper */
+--gecko-stepper-marker-size   --gecko-stepper-marker-bg   --gecko-stepper-marker-text
+--gecko-stepper-marker-border   --gecko-stepper-gap   --gecko-stepper-line
+--gecko-stepper-line-done   --gecko-stepper-line-width   --gecko-stepper-upcoming
+--gecko-stepper-current   --gecko-stepper-complete   --gecko-stepper-error
+
+/* TagInput */
+--gecko-tag-input-menu-max-height   --gecko-tag-input-z
+
+/* TimeInput */
+--gecko-time-input-column-height   --gecko-time-input-column-width   --gecko-time-input-z
+
+/* Tooltip */
+--gecko-tooltip-bg   --gecko-tooltip-text   --gecko-tooltip-radius   --gecko-tooltip-z
+
+/* Select, Menu, DateInput, DateRangeInput, Drawer, Dialog — stacking only */
+--gecko-select-menu-z   --gecko-menu-z   --gecko-date-input-z
+--gecko-date-range-input-z   --gecko-drawer-z   --gecko-dialog-z
+```
+
+`--gecko-*-accent` takes one colour and the variants work out the rest, so a new colour is
+one declaration.
+
+```css
+.GeckoUITabs {
+  --gecko-tabs-accent: rebeccapurple;
+  --gecko-tabs-indicator: 3px;
 }
 ```
 
-## Rules for Generating Themes
-
-1. **Primary scale**: Keep lightness descending from ~0.97 (50) to ~0.28 (950). Keep chroma consistent. Change only the hue for a new brand color.
-2. **Surface grays**: Use chroma 0 and hue `none` for neutral grays. Lightness descends from 1.0 (primary) to 0.87 (active).
-3. **Text grays**: Use chroma 0 and hue `none`. Lightness range: 0.20 (primary/darkest) to 0.72 (disabled/lightest).
-4. **Border grays**: Use chroma 0 and hue `none`. Lightness range: 0.87 to 0.94.
-5. **Dark mode**: Invert lightness — surfaces go dark (0.20-0.37), text goes light (0.55-0.99), borders mid-range (0.30-0.72).
-6. **text-on-primary**: Should contrast with primary-600. Usually white `oklch(1 0 none)` for dark primaries, dark `oklch(0.2 0 none)` for light primaries.
-7. **Any CSS color format works**: `oklch()`, `#hex`, `rgb()`, `hsl()` are all valid.
+`--gecko-scrollbar-width` is set by the library while an overlay locks page scroll, so
+fixed elements pinned to the right edge can compensate.
 
 ## Class Stacking
 
@@ -297,17 +341,76 @@ Built-in panel: `border`, `rounded-md`, `p-1`, `shadow-xl`. Built-in item: `px-3
 
 ### Alert
 
-| Class                                | Element    | Targets                            | Data Attrs                       |
-| ------------------------------------ | ---------- | ---------------------------------- | -------------------------------- |
-| `.GeckoUIAlert`                      | `<div>`    | Alert container                    | `data-variant`, `data-condensed` |
-| `.GeckoUIAlert__icon`                | `<div>`    | Variant icon                       | `data-variant`                   |
-| `.GeckoUIAlert__body`                | `<div>`    | Header area (icon + title + close) | —                                |
-| `.GeckoUIAlert__title`               | `<div>`    | Title text                         | —                                |
-| `.GeckoUIAlert__description`         | `<div>`    | Description text                   | —                                |
-| `.GeckoUIAlert__remove-button`       | `<button>` | Close/dismiss button               | —                                |
-| `.GeckoUIAlert__remove-button__icon` | `<span>`   | Close icon                         | —                                |
+| Class                                | Element    | Targets                            | Data Attrs                     |
+| ------------------------------------ | ---------- | ---------------------------------- | ------------------------------ |
+| `.GeckoUIAlert`                      | `<div>`    | Alert container                    | `data-color`, `data-condensed` |
+| `.GeckoUIAlert__icon`                | `<div>`    | Colour icon                        | `data-color`                   |
+| `.GeckoUIAlert__body`                | `<div>`    | Header area (icon + title + close) | —                              |
+| `.GeckoUIAlert__title`               | `<div>`    | Title text                         | —                              |
+| `.GeckoUIAlert__description`         | `<div>`    | Description text                   | —                              |
+| `.GeckoUIAlert__remove-button`       | `<button>` | Close/dismiss button               | —                              |
+| `.GeckoUIAlert__remove-button__icon` | `<span>`   | Close icon                         | —                              |
 
 Built-in: `border`, `rounded-lg`, `px-4`, `py-3`.
+
+### Accordion
+
+| Class                                | Element    | Targets           | Data Attrs                                   |
+| ------------------------------------ | ---------- | ----------------- | -------------------------------------------- |
+| `.GeckoUIAccordion`                  | `<div>`    | `Accordion`       | `data-variant`, `data-size`                  |
+| `.GeckoUIAccordion__item`            | `<div>`    | `AccordionItem`   | `data-state="open\|closed"`, `data-disabled` |
+| `.GeckoUIAccordion__header`          | `<button>` | `AccordionHeader` | `data-state`, `data-disabled`                |
+| `.GeckoUIAccordion__header__content` | `<span>`   | Header contents   | —                                            |
+| `.GeckoUIAccordion__header__icon`    | `<span>`   | The chevron       | —                                            |
+| `.GeckoUIAccordion__panel`           | `<div>`    | `AccordionPanel`  | `data-state`                                 |
+| `.GeckoUIAccordion__panel__content`  | `<div>`    | Panel contents    | —                                            |
+
+Variables: `--gecko-accordion-radius`, `--gecko-accordion-gap`,
+`--gecko-accordion-padding-x`, `--gecko-accordion-padding-y`,
+`--gecko-accordion-font-size`, `--gecko-accordion-duration`.
+
+### Badge
+
+| Class                 | Element  | Targets         | Data Attrs                                              |
+| --------------------- | -------- | --------------- | ------------------------------------------------------- |
+| `.GeckoUIBadge`       | `<span>` | Badge container | `data-variant`, `data-color`, `data-size`, `data-shape` |
+| `.GeckoUIBadge__dot`  | `<span>` | Status dot      | —                                                       |
+
+Variables: `--gecko-badge-accent`, `--gecko-badge-on-accent`, `--gecko-badge-radius`,
+`--gecko-badge-soft-mix`, `--gecko-badge-outline-mix`.
+
+### Tabs
+
+| Class                 | Element             | Targets    | Data Attrs                                                         |
+| --------------------- | ------------------- | ---------- | ------------------------------------------------------------------ |
+| `.GeckoUITabs`        | `<div>`             | `Tabs`     | `data-variant`, `data-size`, `data-orientation`, `data-full-width` |
+| `.GeckoUITabs__list`  | `<div>` or `<nav>`  | `TabList`  | —                                                                  |
+| `.GeckoUITabs__tab`   | `<button>` or yours | `Tab`      | `data-state="selected\|unselected"`, `data-disabled`               |
+| `.GeckoUITabs__panel` | `<div>`             | `TabPanel` | —                                                                  |
+
+Variables: `--gecko-tabs-accent`, `--gecko-tabs-muted`, `--gecko-tabs-indicator`,
+`--gecko-tabs-radius`, `--gecko-tabs-gap`, `--gecko-tabs-padding-x`,
+`--gecko-tabs-padding-y`, `--gecko-tabs-font-size`.
+
+### Toast
+
+| Class                        | Element    | Targets               | Data Attrs                   |
+| ---------------------------- | ---------- | --------------------- | ---------------------------- |
+| `.GeckoUIToaster`            | `<div>`    | A corner stack        | —                            |
+| `.GeckoUIToaster__item`      | `<div>`    | Slot holding a toast  | —                            |
+| `.GeckoUIToast`              | `<div>`    | One toast             | `data-variant`, `data-state` |
+| `.GeckoUIToast__icon`        | `<div>`    | Variant icon          | —                            |
+| `.GeckoUIToast__spinner`     | `<div>`    | Loading spinner       | —                            |
+| `.GeckoUIToast__body`        | `<div>`    | Message + description | —                            |
+| `.GeckoUIToast__message`     | `<div>`    | Message text          | —                            |
+| `.GeckoUIToast__description` | `<div>`    | Description text      | —                            |
+| `.GeckoUIToast__actions`     | `<div>`    | Button row            | —                            |
+| `.GeckoUIToast__action`      | `<button>` | Action button         | —                            |
+| `.GeckoUIToast__cancel`      | `<button>` | Cancel button         | —                            |
+| `.GeckoUIToast__close`       | `<button>` | Close button          | —                            |
+| `.GeckoUIToast__custom`      | `<div>`    | Fully custom content  | —                            |
+
+Variables: the `--gecko-toast-*` set listed under Component Variables.
 
 ### Dialog
 
@@ -316,8 +419,6 @@ Built-in: `border`, `rounded-lg`, `px-4`, `py-3`.
 | `.GeckoUIDialog`           | `<div>` | Root fixed overlay        | `data-state` |
 | `.GeckoUIDialog__backdrop` | `<div>` | Semi-transparent backdrop | —            |
 | `.GeckoUIDialog__dialog`   | `<div>` | The modal panel           | —            |
-
-Built-in panel: `bg-surface-primary`, `p-6`, `rounded-md`, `shadow-xl`, `max-w-[400px]`. Override via `className`.
 
 ### ConfirmDialog
 
@@ -336,7 +437,20 @@ Built-in panel: `bg-surface-primary`, `p-6`, `rounded-md`, `shadow-xl`, `max-w-[
 | `.GeckoUIDrawer__backdrop` | `<div>` | Backdrop overlay  | `data-state="visible" \| "hidden"`, `data-clickthrough` |
 | `.GeckoUIDrawer__drawer`   | `<div>` | The sliding panel | `data-placement`, `data-state`                          |
 
-Built-in panel: `bg-surface-primary`, `shadow-xl`, no padding. Override via `className`.
+### Popover
+
+| Class                      | Element | Targets                       | Data Attrs                  |
+| -------------------------- | ------- | ----------------------------- | --------------------------- |
+| `.GeckoUIPopover`          | `<div>` | Wraps the trigger             | —                           |
+| `.GeckoUIPopover__content` | `<div>` | `PopoverContent`              | `data-state="open\|closed"` |
+| `.GeckoUIPopover__arrow`   | `<svg>` | The arrow, when `arrow` is on | —                           |
+
+Variables: `--gecko-popover-bg`, `--gecko-popover-border`, `--gecko-popover-radius`,
+`--gecko-popover-padding`, `--gecko-popover-width`, `--gecko-popover-max-width`,
+`--gecko-popover-z`.
+
+The trigger is the caller's own element, so it carries no class of ours — style it however
+you already style that button.
 
 ### Tooltip
 
@@ -350,7 +464,7 @@ Built-in panel: `bg-surface-primary`, `shadow-xl`, no padding. Override via `cla
 
 | Class                                    | Element    | Targets                            | Data Attrs                                                                                                                                                                                             |
 | ---------------------------------------- | ---------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `.GeckoUICalendar`                       | `<div>`    | Calendar wrapper                   | `data-mode`, `data-selection`, `data-calendars`                                                                                                                                                        |
+| `.GeckoUICalendar`                       | `<div>`    | Calendar wrapper                   | `data-mode`, `data-selection`                                                                                                                                                        |
 | `.GeckoUICalendar__header`               | `<div>`    | Month/year header with arrows      | —                                                                                                                                                                                                      |
 | `.GeckoUICalendar__header__title`        | `<button>` | Month/year title (clickable)       | `data-clickable`                                                                                                                                                                                       |
 | `.GeckoUICalendar__header__arrow-button` | `<button>` | Navigation arrow                   | —                                                                                                                                                                                                      |
@@ -361,15 +475,13 @@ Built-in panel: `bg-surface-primary`, `shadow-xl`, no padding. Override via `cla
 | `.GeckoUICalendar__month-picker__button` | `<button>` | Month cell                         | `data-selected`                                                                                                                                                                                        |
 | `.GeckoUICalendar__year-picker`          | `<div>`    | Year grid                          | —                                                                                                                                                                                                      |
 | `.GeckoUICalendar__year-picker__button`  | `<button>` | Year cell                          | `data-selected`, `data-prev-next`                                                                                                                                                                      |
-| `.GeckoUICalendar__dual`                 | `<div>`    | Flex container for dual calendars  | —                                                                                                                                                                                                      |
-| `.GeckoUICalendar__dual__item`           | `<div>`    | Individual calendar in dual view   | `data-position`                                                                                                                                                                                        |
 
 ### DateInput / DateRangeInput
 
 | Class                                     | Element    | Targets                             | Data Attrs                                             |
 | ----------------------------------------- | ---------- | ----------------------------------- | ------------------------------------------------------ |
 | `.GeckoUIDateInputWrapper`                | `<div>`    | Outer wrapper (includes calendar)   | `data-calendar-open`                                   |
-| `.GeckoUIDateInput`                       | `<div>`    | Input container (border, flex)      | `data-state`, `data-error`, `data-empty`, `data-focus` |
+| `.GeckoUIDateInput`                       | `<div>`    | Input container (border, flex)      | `data-state`, `aria-invalid`, `data-empty`, `data-focus` |
 | `.GeckoUIDateInput__placeholder`          | `<span>`   | Placeholder text                    | —                                                      |
 | `.GeckoUIDateInput__display-container`    | `<div>`    | Date segments container             | —                                                      |
 | `.GeckoUIDateInput__segment`              | `<label>`  | Individual segment (day/month/year) | `data-empty`                                           |
@@ -398,11 +510,9 @@ Checked state: use `.GeckoUISwitch:has(input:checked)` selector.
 
 | Class                      | Element    | Targets                        |
 | -------------------------- | ---------- | ------------------------------ |
-| `.GeckoUICheckbox`         | `<div>`    | Outer wrapper                  |
-| `.GeckoUICheckbox__button` | `<button>` | Clickable area (role=checkbox) |
-| `.GeckoUICheckbox__box`    | `<div>`    | The visible checkbox square    |
-| `.GeckoUICheckbox__input`  | `<input>`  | Hidden native checkbox         |
-| `.GeckoUICheckbox__icon`   | `<svg>`    | Check/indeterminate icon       |
+| `.GeckoUICheckbox`        | `<div>`   | Outer wrapper                                    |
+| `.GeckoUICheckbox__input` | `<input>` | The native checkbox, `appearance-none`, is the box |
+| `.GeckoUICheckbox__icon`  | `<svg>`   | Check/indeterminate icon                         |
 
 ### Radio
 
@@ -448,67 +558,188 @@ Checked state: use `.GeckoUISwitch:has(input:checked)` selector.
 | `.GeckoUIInputError`                | `<div>`   | Error message text |
 | `.GeckoUISpinnerIcon`               | `<svg>`   | Animated spinner   |
 
+### Avatar / AvatarGroup
+
+| Class                             | Element   | Targets                                  | Data Attrs                                                          |
+| --------------------------------- | --------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| `.GeckoUIAvatar`                  | `<span>`  | One avatar                               | `data-size`, `data-shape`, `data-color`, `data-clickable`           |
+| `.GeckoUIAvatar__image`           | `<img>`   | The picture                              | —                                                                    |
+| `.GeckoUIAvatar__fallback`        | `<span>`  | Initials or icon when there is no picture | —                                                                   |
+| `.GeckoUIAvatarGroup`             | `<div>`   | The group                                | `data-size`, `data-shape`, `data-interactive`                       |
+| `.GeckoUIAvatarGroup__list`       | `<ul>`    | The overlapping row                      | —                                                                    |
+| `.GeckoUIAvatarGroup__slot`       | `<span>`  | Holds an avatar's place while it lifts   | —                                                                    |
+| `.GeckoUIAvatarGroup__list__item` | `<li>`    | One entry in the row                     | —                                                                    |
+| `.GeckoUIAvatarGroup__overflow`   | `<span>`  | The `+N` avatar                         | —                                                                    |
+
+Style `.GeckoUIAvatarGroup__slot > .GeckoUIAvatar`, not `.GeckoUIAvatarGroup > .GeckoUIAvatar`.
+
+### Rating
+
+| Class                          | Element  | Targets                       | Data Attrs                                                  |
+| ------------------------------ | -------- | ----------------------------- | ------------------------------------------------------------ |
+| `.GeckoUIRating`               | `<div>`  | The row of icons              | `data-color`, `data-size`, `data-readonly`, `data-disabled`  |
+| `.GeckoUIRating__inputs`       | `<span>` | The visually hidden radios    | —                                                             |
+| `.GeckoUIRating__icon`         | `<span>` | One icon                      | `data-filled`                                                |
+| `.GeckoUIRating__icon__fill`   | `<span>` | The filled layer, clipped to the value | —                                                   |
+| `.GeckoUIRating__icon__empty`  | `<span>` | The empty layer underneath    | —                                                             |
+
+### Slider / RangeSlider
+
+Both render the same classes; a `RangeSlider` has two `__thumb` elements.
+
+| Class                          | Element    | Targets                      | Data Attrs                                                     |
+| ------------------------------ | ---------- | ---------------------------- | --------------------------------------------------------------- |
+| `.GeckoUISlider`               | `<div>`    | The whole control            | `data-color`, `data-size`, `data-disabled`                      |
+| `.GeckoUISlider__track`        | `<div>`    | The unfilled bar             | —                                                                |
+| `.GeckoUISlider__fill`         | `<div>`    | The filled part              | —                                                                |
+| `.GeckoUISlider__thumb`        | `<div>`    | The handle                   | `data-dragging`, `data-custom`                                  |
+| `.GeckoUISlider__label`        | `<span>`   | The value bubble             | —                                                                |
+| `.GeckoUISlider__mark`         | `<span>`   | One tick                     | `data-filled`                                                   |
+| `.GeckoUISlider__mark-labels`  | `<div>`    | The row of tick labels       | —                                                                |
+| `.GeckoUISlider__mark-label`   | `<span>`   | One tick label               | `data-filled`                                                   |
+
+### Stepper
+
+| Class                          | Element  | Targets                      | Data Attrs                                       |
+| ------------------------------ | -------- | ---------------------------- | -------------------------------------------------- |
+| `.GeckoUIStepper`              | `<nav>`  | The whole stepper            | `data-orientation`, `data-size`, `data-current`   |
+| `.GeckoUIStepper__list`        | `<ol>`   | The steps                    | —                                                  |
+| `.GeckoUIStepper__step`        | `<li>`   | One step                     | `data-status`                                     |
+| `.GeckoUIStepper__button`      | `<button>` | A clickable step           | —                                                  |
+| `.GeckoUIStepper__marker`      | `<span>` | The number or tick           | —                                                  |
+| `.GeckoUIStepper__body`        | `<span>` | Label and description        | —                                                  |
+| `.GeckoUIStepper__label`       | `<span>` | The step title               | —                                                  |
+| `.GeckoUIStepper__description` | `<span>` | The step subtitle            | —                                                  |
+| `.GeckoUIStepper__separator`   | `<span>` | The gap between steps        | —                                                  |
+| `.GeckoUIStepper__line`        | `<span>` | The line inside it           | —                                                  |
+
+`data-status` is `"complete" | "current" | "upcoming"`.
+
+### Breadcrumb
+
+| Class                             | Element   | Targets                        | Data Attrs  |
+| --------------------------------- | --------- | ------------------------------ | ----------- |
+| `.GeckoUIBreadcrumb`              | `<nav>`   | The whole trail                | `data-size` |
+| `.GeckoUIBreadcrumb__list`        | `<ol>`    | The crumbs                     | —           |
+| `.GeckoUIBreadcrumb__crumb`       | `<li>`    | One crumb                      | —           |
+| `.GeckoUIBreadcrumb__link`        | `<a>` / `<button>` / `<span>` | The crumb's own content | — |
+| `.GeckoUIBreadcrumb__separator`   | `<li>`    | Between crumbs                 | —           |
+| `.GeckoUIBreadcrumb__expand`      | `<button>` | The `…` shown past `maxItems` | —          |
+| `.GeckoUIBreadcrumb__menu`        | `<ul>`    | The collapsed crumbs' dropdown | —           |
+| `.GeckoUIBreadcrumb__menu__item`  | `<li>`    | One entry in it                | —           |
+
+### Progress
+
+| Class                      | Element  | Targets             | Data Attrs                                         |
+| -------------------------- | -------- | ------------------- | ---------------------------------------------------- |
+| `.GeckoUIProgress`         | `<div>`  | The whole control   | `data-color`, `data-size`, `data-indeterminate`     |
+| `.GeckoUIProgress__track`  | `<div>`  | The empty bar       | —                                                    |
+| `.GeckoUIProgress__bar`    | `<div>`  | The filled part     | —                                                    |
+| `.GeckoUIProgress__label`  | `<div>`  | The text beside it  | —                                                    |
+
+### Skeleton
+
+| Class                    | Element  | Targets             | Data Attrs                     |
+| ------------------------ | -------- | ------------------- | -------------------------------- |
+| `.GeckoUISkeleton`       | `<div>`  | The placeholder     | `data-shape`, `data-animation`  |
+| `.GeckoUISkeleton__bar`  | `<span>` | One line of text    | —                                |
+
+### TagInput
+
+| Class                             | Element    | Targets                          | Data Attrs                                    |
+| --------------------------------- | ---------- | -------------------------------- | ----------------------------------------------- |
+| `.GeckoUITagInputWrapper`         | `<div>`    | Outer wrapper                    | —                                               |
+| `.GeckoUITagInput`                | `<div>`    | The field                        | `data-state`, `data-empty`, `data-full`         |
+| `.GeckoUITagInput__tags`          | `<div>`    | The tags and the input           | —                                               |
+| `.GeckoUITagInput__field`         | `<div>`    | Sizes the input to what is typed | `data-keyword`                                  |
+| `.GeckoUITagInput__tag`           | `<span>`   | One tag                          | —                                               |
+| `.GeckoUITagInput__tag__remove`   | `<button>` | Its remove button                | —                                               |
+| `.GeckoUITagInput__input`         | `<input>`  | What is being typed              | `data-initial`, `aria-invalid`                  |
+| `.GeckoUITagInput__placeholder`   | `<span>`   | Shown while empty                | —                                               |
+| `.GeckoUITagInput__prefix`        | `<div>`    | Leading slot                     | —                                               |
+| `.GeckoUITagInput__suffix`        | `<div>`    | Trailing slot                    | —                                               |
+| `.GeckoUITagInput__menu`          | `<div>`    | The options dropdown             | `data-hidden`                                   |
+| `.GeckoUITagInput__option`        | `<button>` | One option                       | `data-focused`                                  |
+
+### TimeInput
+
+| Class                              | Element    | Targets                      | Data Attrs                            |
+| ---------------------------------- | ---------- | ---------------------------- | --------------------------------------- |
+| `.GeckoUITimeInputWrapper`         | `<div>`    | Outer wrapper                | —                                       |
+| `.GeckoUITimeInput`                | `<div>`    | The field                    | `data-state`, `data-empty`, `data-focus`, `aria-invalid` |
+| `.GeckoUITimeInput__segments`      | `<div>`    | The hh:mm:ss row             | —                                       |
+| `.GeckoUITimeInput__segment`       | `<label>`  | One editable segment         | `data-segment`, `data-empty`            |
+| `.GeckoUITimeInput__separator`     | `<span>`   | The colon                    | —                                       |
+| `.GeckoUITimeInput__placeholder`   | `<span>`   | Shown while empty            | —                                       |
+| `.GeckoUITimeInput__prefix`        | `<div>`    | Leading slot                 | —                                       |
+| `.GeckoUITimeInput__suffix`        | `<div>`    | Trailing slot                | —                                       |
+| `.GeckoUITimeInput__icons`         | `<div>`    | Clock and clear together     | —                                       |
+| `.GeckoUITimeInput__clock-icon`    | `<svg>`    | Opens the picker             | —                                       |
+| `.GeckoUITimeInput__clear-button`  | `<button>` | Clears the value             | —                                       |
+| `.GeckoUITimeInput__hidden-input`  | `<input>`  | Carries the value for a form | —                                       |
+| `.GeckoUITimeInput__picker`        | `<div>`    | The dropdown                 | —                                       |
+| `.GeckoUITimeInput__columns`       | `<div>`    | The scrolling columns        | —                                       |
+| `.GeckoUITimeInput__column`        | `<ul>`     | One column                   | —                                       |
+| `.GeckoUITimeInput__cell`          | `<button>` | One value in a column        | `data-state`                            |
+
+### ColorPicker / ColorInput
+
+| Class                                    | Element    | Targets                             | Data Attrs                                      |
+| ---------------------------------------- | ---------- | ----------------------------------- | ------------------------------------------------- |
+| `.GeckoUIColorPicker`                    | `<div>`    | The panel                           | `data-disabled`                                  |
+| `.GeckoUIColorPicker__saturation`        | `<div>`    | The saturation square               | `data-dragging`                                  |
+| `.GeckoUIColorPicker__saturation__thumb` | `<div>`    | Its handle                          | `data-custom`                                    |
+| `.GeckoUIColorPicker__sliders`           | `<div>`    | Hue and opacity together            | —                                                 |
+| `.GeckoUIColorPicker__preview`           | `<div>`    | The current colour beside them      | —                                                 |
+| `.GeckoUIColorPicker__slider`            | `<div>`    | One slider                          | `data-kind` (`hue`/`alpha`), `data-dragging`     |
+| `.GeckoUIColorPicker__slider__track`     | `<div>`    | Its bar                             | —                                                 |
+| `.GeckoUIColorPicker__slider__thumb`     | `<div>`    | Its handle                          | `data-custom`                                    |
+| `.GeckoUIColorPicker__controls`          | `<div>`    | Format dropdown, field, eyedropper  | —                                                 |
+| `.GeckoUIColorPicker__format`            | `<div>`    | The format dropdown                 | `data-open`                                      |
+| `.GeckoUIColorPicker__format__trigger`   | `<button>` | Opens it                            | —                                                 |
+| `.GeckoUIColorPicker__format__caret`     | `<span>`   | Its arrow                           | —                                                 |
+| `.GeckoUIColorPicker__format__list`      | `<ul>`     | The options                         | —                                                 |
+| `.GeckoUIColorPicker__format__option`    | `<li>`     | One format                          | `data-active`                                    |
+| `.GeckoUIColorPicker__field`             | `<div>`    | Wraps the text input                | —                                                 |
+| `.GeckoUIColorPicker__input`             | `<input>`  | The value field                     | —                                                 |
+| `.GeckoUIColorPicker__dropper`           | `<button>` | The eyedropper                      | —                                                 |
+| `.GeckoUIColorPicker__swatches`          | `<div>`    | The preset row                      | —                                                 |
+| `.GeckoUIColorPicker__swatch`            | `<button>` | One preset                          | `data-active`                                    |
+| `.GeckoUIColorInputWrapper`              | `<div>`    | Outer wrapper                       | `data-custom`                                    |
+| `.GeckoUIColorInput`                     | `<button>` | The field that opens the picker     | `data-state`, `data-open`, `data-custom`, `aria-invalid` |
+| `.GeckoUIColorInput__swatch`             | `<span>`   | The colour square in the field      | —                                                 |
+| `.GeckoUIColorInput__value`              | `<span>`   | The formatted value                 | —                                                 |
+| `.GeckoUIColorInput__placeholder`        | `<span>`   | Shown while empty                   | —                                                 |
+| `.GeckoUIColorInput__caret`              | `<span>`   | The arrow                           | —                                                 |
+| `.GeckoUIColorInput__panel`              | `<div>`    | The popover holding the picker      | —                                                 |
+
 ### RHF Components
 
-RHF classes stack on the **same DOM element** as their base component class (see Class Stacking section above). Styling `.GeckoUIInput` also affects `.GeckoUIRHFInput`.
+See [Class Stacking](#class-stacking).
 
-| Class                                     | Element      | Targets                      | Data Attrs                                    |
-| ----------------------------------------- | ------------ | ---------------------------- | --------------------------------------------- |
-| `.GeckoUIRHFInput`                        | `<label>`    | Wraps Input                  | — (see below)                                 |
-| `.GeckoUIRHFTextarea`                     | `<textarea>` | Wraps Textarea               | `data-error`                                  |
-| `.GeckoUIRHFSelect`                       | `<div>`      | Wraps Select outer container | —                                             |
-| `.GeckoUIRHFSelectButton`                 | `<div>`      | Wraps SelectButton           | — (see below)                                 |
-| `.GeckoUIRHFOTPInput`                     | `<div>`      | Wraps OTPInput               | — (see below)                                 |
-| `.GeckoUIRHFCounterInput`                 | `<div>`      | Wraps CounterInput           | — (see below)                                 |
-| `.GeckoUIRHFSwitch`                       | `<label>`    | Wraps Switch                 | —                                             |
-| `.GeckoUIRHFSwitch__thumb`                | `<span>`     | Switch thumb                 | —                                             |
-| `.GeckoUIRHFCheckbox`                     | `<label>`    | Checkbox + label wrapper     | —                                             |
-| `.GeckoUIRHFCheckbox__label`              | `<span>`     | Label text                   | —                                             |
-| `.GeckoUIRHFRadio`                        | `<label>`    | Radio + label wrapper        | —                                             |
-| `.GeckoUIRHFRadio__label`                 | `<span>`     | Label text                   | —                                             |
-| `.GeckoUIRHFFileInput`                    | `<label>`    | File input wrapper           | —                                             |
-| `.GeckoUIRHFFileInput__input`             | `<input>`    | Hidden file input            | `data-custom`                                 |
-| `.GeckoUIRHFFilePicker`                   | `<div>`      | Drag & drop container        | `data-loading`, `data-dragging`, `data-error` |
-| `.GeckoUIRHFFilePicker__upload-area`      | `<div>`      | Drop zone (dashed border)    | —                                             |
-| `.GeckoUIRHFFilePicker__browse-button`    | `<button>`   | Browse files button          | —                                             |
-| `.GeckoUIRHFFilePicker__file-list`        | `<div>`      | Selected files list          | —                                             |
-| `.GeckoUIRHFFilePicker__file-row`         | `<div>`      | Individual file row          | —                                             |
-| `.GeckoUIRHFFilePicker__file-name`        | `<span>`     | File name                    | —                                             |
-| `.GeckoUIRHFFilePicker__file-size`        | `<span>`     | File size                    | —                                             |
-| `.GeckoUIRHFFilePicker__file-remove`      | `<button>`   | Remove file button           | —                                             |
-| `.GeckoUIRHFFilePicker__file-remove-icon` | `<svg>`      | Remove icon                  | —                                             |
-| `.GeckoUIRHFFilePicker__upload-icon`      | `<svg>`      | Upload icon                  | —                                             |
-
-**`data-error` does not reach most of these in v1.** Only `.GeckoUIRHFTextarea` and
-`.GeckoUIRHFFilePicker` carry it, because those components render the classed element
-themselves. Elsewhere it goes astray:
-
-| Component         | Where `data-error` ends up                               |
-| ----------------- | -------------------------------------------------------- |
-| `RHFInput`        | the inner `<input>`, not the `<label>` holding the class |
-| `RHFCounterInput` | the inner `<input>`, not the container                   |
-| `RHFSelect`       | nowhere — `Select` never forwards it to the DOM          |
-| `RHFOTPInput`     | nowhere — `OTPInput` takes no extra props                |
-
-So `.GeckoUIRHFInput[data-error]` matches nothing. To style an error state in v1, reach
-for the inner element or the field's own state:
-
-```css
-/* RHFInput and RHFCounterInput */
-.GeckoUIRHFInput:has(input[data-error]) {
-  border-color: red;
-}
-
-/* RHFSelect and RHFOTPInput: no attribute at all, so drive it yourself */
-```
-
-Fixed in v2, where `data-error` sits on the element carrying the class in every case.
-
-| `.GeckoUIRHFFilePicker__upload-text` | `<p>` | Upload instruction text | — |
-| `.GeckoUIRHFFilePicker__upload-buttons` | `<div>` | Button container | — |
-| `.GeckoUIRHFFilePicker__loading-overlay` | `<div>` | Loading spinner overlay | — |
-| `.GeckoUIRHFCurrencyInput` | `<label>` | Currency input wrapper | — |
-| `.GeckoUIRHFCurrencyInput__currency-symbol` | `<span>` | Currency symbol ($ € £) | — |
-| `.GeckoUIRHFCurrencyInput__currency-code` | `<span>` | Currency code (USD, EUR) | — |
-| `.GeckoUIRHFError` | `<div>` | Error message | — |
-| `.GeckoUIRHFInputGroup` | `<div>` | Form field group (label + input + error) | — |
+| Class                                       | Element      | Targets                                  | Data Attrs                                    |
+| ------------------------------------------- | ------------ | ---------------------------------------- | --------------------------------------------- |
+| `.GeckoUIRHFInput`                          | `<label>`    | Wraps Input                              | —                                             |
+| `.GeckoUIRHFTextarea`                       | `<textarea>` | Wraps Textarea                           | —                                             |
+| `.GeckoUIRHFSelect`                         | `<div>`      | Wraps Select outer container             | —                                             |
+| `.GeckoUIRHFSelectButton`                   | `<div>`      | Wraps SelectButton                       | —                                             |
+| `.GeckoUIRHFOTPInput`                       | `<div>`      | Wraps OTPInput                           | —                                             |
+| `.GeckoUIRHFCounterInput`                   | `<div>`      | Wraps CounterInput                       | —                                             |
+| `.GeckoUIRHFSwitch`                         | `<label>`    | Wraps Switch                             | —                                             |
+| `.GeckoUIRHFSwitch__thumb`                  | `<span>`     | Switch thumb                             | —                                             |
+| `.GeckoUIRHFCheckbox`                       | `<label>`    | Checkbox + label wrapper                 | —                                             |
+| `.GeckoUIRHFCheckbox__label`                | `<span>`     | Label text                               | —                                             |
+| `.GeckoUIRHFRadio`                          | `<label>`    | Radio + label wrapper                    | —                                             |
+| `.GeckoUIRHFRadio__label`                   | `<span>`     | Label text                               | —                                             |
+| `.GeckoUIFileInputWrapper`                  | `<div>`      | Outer wrapper                            | —                                             |
+| `.GeckoUIFileInput`                         | `<div>`      | The field, and the drop target           | `data-state`, `data-dragging`, `data-empty`, `data-custom`   |
+| `.GeckoUIFileInput__trigger`                | `<button>`   | Fills the row, opens the dialog          | `aria-invalid`                                |
+| `.GeckoUIFileInput__value`                  | `<span>`     | The file name, or the count              | —                                             |
+| `.GeckoUIFileInput__placeholder`            | `<span>`     | Shown while empty                        | —                                             |
+| `.GeckoUIFileInput__icons`                  | `<div>`      | Clear button and the file icon           | —                                             |
+| `.GeckoUIFileInput__clear`                  | `<button>`   | Empties the field                        | —                                             |
+| `.GeckoUIRHFCurrencyInput`                  | `<label>`    | Currency input wrapper                   | —                                             |
+| `.GeckoUIRHFCurrencyInput__currency-symbol` | `<span>`     | Currency symbol ($ € £)                  | —                                             |
+| `.GeckoUIRHFCurrencyInput__currency-code`   | `<span>`     | Currency code (USD, EUR)                 | —                                             |
+| `.GeckoUIRHFError`                          | `<div>`      | Error message                            | —                                             |
+| `.GeckoUIRHFInputGroup`                     | `<div>`      | Form field group (label + input + error) | —                                             |
