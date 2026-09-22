@@ -1,6 +1,6 @@
 ---
 name: geckoui
-description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "Breadcrumb component", "ColorPicker", "ColorInput", "RHFColorInput", "Stepper component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "RHFFilePicker", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
+description: Use this skill when the user asks about "GeckoUI", "geckoui", "@geckoui/geckoui", "Gecko UI components", "Button component", "Input component", "Select component", "TagInput", "RHFTagInput", "Menu component", "Alert component", "Dialog component", "Drawer component", "Calendar component", "Switch component", "Checkbox component", "Radio component", "Rating component", "RHFRating", "Tooltip component", "Pagination component", "Breadcrumb component", "ColorPicker", "ColorInput", "RHFColorInput", "Stepper component", "OTPInput", "DateInput", "DateRangeInput", "TimeInput", "RHFTimeInput", "CounterInput", "Slider", "RangeSlider", "RHFSlider", "LoadingButton", "Spinner", "Skeleton component", "Progress component", "Textarea", "Label", "InputError", "ConfirmDialog", "GeckoUIProvider", "Toast", "Badge component", "Avatar component", "AvatarGroup", "Tabs component", "RHFInput", "RHFSelect", "RHFCheckbox", "RHFRadio", "RHFSwitch", "RHFTextarea", "RHFDateInput", "FileInput", "RHFFileInput", "RHFError", "GeckoUI theming", "oklch theme", "--color-primary", "--color-surface", "--color-text", "--color-border", "data-variant", "data-color", "data-size", "module augmentation", or needs to build React UIs with GeckoUI components.
 version: "2.0.0"
 ---
 
@@ -1137,6 +1137,76 @@ and returns `null` for anything else. `formatColor(hsva, format, withAlpha)` wri
 
 `readOnly` shows the value without opening. `ColorInput` opens at `z-index: 10`.
 
+### FileInput
+
+A file field: click to browse, or drop onto it. One file unless `multiple`, and a new pick
+replaces what is held unless `append` — both as a native file input behaves.
+
+```tsx
+const [file, setFile] = useState<PickedFile | null>(null);
+
+<FileInput value={file} onChange={setFile} accept="image/*" />
+
+<FileInput
+  multiple
+  append
+  unique
+  preview
+  max={5}
+  value={files}
+  onChange={setFiles}
+  onReject={(rejected) => toast.error(`${rejected.length} turned away`)}
+/>
+
+<RHFFileInput name="avatar" accept="image/*" rules={{ required: "Pick a file" }} />
+```
+
+| Prop            | Type                                 | Default          |
+| --------------- | ------------------------------------ | ---------------- |
+| `value`         | `PickedFile \| null` / `PickedFile[]` | -                |
+| `onChange`      | `(value) => void`                    | -                |
+| `multiple`      | `boolean`                            | `false`          |
+| `append`        | `boolean`                            | `false`          |
+| `unique`        | `boolean`                            | `false`          |
+| `max`           | `number`                             | -                |
+| `preview`       | `boolean`                            | `false`          |
+| `accept`        | `string`                             | `"*"`            |
+| `onReject`      | `(rejected: FileRejection[]) => void` | -               |
+| `placeholder`   | `ReactNode`                          | `"Choose a file"` |
+| `hideClearIcon` | `boolean`                            | `false`          |
+| `disabled` / `readOnly` / `hasError` | `boolean`       | `false`          |
+| `render`        | `(state) => ReactNode`               | -                |
+
+`append`, `unique` and `max` are only accepted alongside `multiple`; TypeScript rejects
+them on a single field. `multiple` also decides the value: `PickedFile | null` against
+`PickedFile[]`.
+
+```ts
+type PickedFile = File & { path: string };
+type PreviewFile = PickedFile & { preview: string };
+type FileRejection = { file: File; reason: "type" | "duplicate" | "max" };
+```
+
+Files are real `File` objects, so they go straight into a `FormData`. `path` holds the
+folder a dropped file came from, `""` otherwise.
+
+`preview` is off by default, and `file.preview` is typed only when it is on. The object URLs
+are revoked as files leave the field and when it unmounts.
+
+`accept` is enforced on a drop as well as in the dialog, unlike the native attribute.
+Anything turned away reaches `onReject`: `"type"` for `accept`, `"duplicate"` for `unique`,
+`"max"` for no room.
+
+`unique` compares by size, then samples the start, middle and end.
+
+`render` draws inside the field, so browsing, dropping, the drag state and the keyboard stay
+with the component. It is given `{ files, dragging, loading, disabled, readOnly, browse,
+clear, remove }`.
+
+**RHFFileInput** takes all of it except `value` and `hasError`. A single field holds `null`
+until something is picked, so `required` catches it; a multiple field holds `[]`, which
+`required` does not catch — use `validate`.
+
 ### Breadcrumb
 
 **Use `asChild` with the app's own router link.** `href` renders a plain anchor and
@@ -1382,8 +1452,7 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 | CounterInput     | RHFCounterInput   | `onChange`                                                                                  |
 | Input (number)   | RHFNumberInput    | `positiveOnly`, `strict`, `maxFractionDigits`, `maxWholeDigitPlaces`                        |
 | Input (currency) | RHFCurrencyInput  | `currency: { symbol, code }`                                                                |
-| -                | RHFFileInput      | `multiple`, `render`, `inputClassName`                                                      |
-| -                | RHFFilePicker     | `render`, `accept`, `multiple`, `directory`, `keepOldFiles`, `removeDuplicates`, `transform`, `onError` |
+| FileInput        | RHFFileInput      | everything `FileInput` takes, except `value` and `hasError`                                 |
 | -                | RHFError          | `render`. No `name`/`rules`/`control`                                                       |
 | -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName`. No `name`/`rules`/`control`                    |
 
@@ -1396,15 +1465,10 @@ Shapes for the props above that are not what their name suggests:
   `{ field, fieldState, formState }`.
 - `RHFCheckbox indeterminate` is `boolean | (({ field }) => boolean)`, which is how a
   select-all box reads its group.
-- `RHFFileInput onChange` gets `FileWithPreview | FileWithPreview[] | null`, and its
-  `render` receives the normal controller render props.
 - `RHFError render` receives `ControllerFieldState`, so the message is `error?.message`.
 - `RHFTextarea` takes `transform` too, the same object shape.
 - `RHFCurrencyInput` omits `strict` — passing it is a type error.
 - `RHFRadio` throws if `value` is `null` or `undefined`.
-- `RHFFilePicker` holds `FilePickerFile[]`, and its `render` is given
-  `{ dropzoneRef, dragging, loading, openFilePicker, files }` plus the RHF render args. Put
-  `dropzoneRef` on the drop target and call `openFilePicker()` from a button.
 
 `RHFInputGroup` finds its field by walking its children for an RHF input and reading that
 input's `name`. It warns if it finds none.

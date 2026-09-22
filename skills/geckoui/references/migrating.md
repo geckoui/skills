@@ -14,6 +14,20 @@ Anything below fails silently rather than at build time, so check by hand.
 | `AlertVariantMap`                 | `AlertColorMap`                                 |
 | `toast` from another package      | `import { toast } from "@geckoui/geckoui"`      |
 | `BaseDateRangeInput` exported     | removed, use `DateRangeInput`                   |
+| `RHFFilePicker`                   | removed, use `FileInput` / `RHFFileInput`       |
+| `RHFFileInput` (the old one)      | rewritten on top of the new `FileInput`         |
+
+The file components were rebuilt as one. `FileInput` is the field and `RHFFileInput` wraps
+it, the way every other pair in the library works:
+
+- One file by default. Pass `multiple` for a list, which also decides whether the value is
+  a `PickedFile` or a `PickedFile[]`.
+- `keepOldFiles` is now `append`, and `removeDuplicates` is `unique`. Both are only
+  accepted alongside `multiple`.
+- `preview` is off by default. `FileWithPreview` and `FilePickerFile` are both now
+  `PickedFile`, with `path` always present and `preview` only when asked for.
+- Drag and drop, directory picking and `accept` enforcement come with the one component.
+- Files turned away reach `onReject` rather than disappearing.
 
 Behaviour that changed without a rename:
 
