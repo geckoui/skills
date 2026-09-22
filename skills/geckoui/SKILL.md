@@ -211,13 +211,15 @@ with the same shape.
 value itself: a string or number prints as is, an object uses its `label` key if it has
 one, otherwise its first non-nil property. `{ id: null, name: "Ann" }` reads as "Ann".
 Anything that would leave the trigger blank — `null`, `undefined`, `""`, an object whose
-properties are all nil — shows the placeholder instead. A non-empty value matching no
+properties are all nil — shows the placeholder instead. A single `Select`'s `value` is
+typed `T`, so `null` has to be part of `T`: `<Select<string | null>>`, not
+`<Select<string>>`. A non-empty value matching no
 option warns in development. Give object values a `label` key rather than relying on
 property order.
 
 **SelectTrigger:** render-props for custom trigger, receives `{ keyword, selectedOptions, handleChange, options, toggleMenu, open, openMenu, closeMenu, hasValue, filteredOptions, handleInputChange, handleKeyboardInteraction }`. `selectedOptions` is `{ label, value }` on a single `Select` and an array of them on a `multiple` one.
 
-**SelectConsumer:** render-props for accessing full Select context: `<SelectConsumer render={(ctx) => ...} />`.
+**SelectConsumer:** render-props for the `Select` context: `<SelectConsumer render={(ctx) => ...} />`. It does not carry `filteredOptions` — only `SelectTrigger` gets that.
 
 ### TagInput
 
@@ -595,6 +597,8 @@ panel renders inline, not in a portal, so it keeps React context.
 | `renderDayCell` | `(props: DayCellRenderProps) => ReactNode` | -        |
 | `calendarRef`   | `Ref<CalendarRef>`                       | -          |
 | `fixedWeeks`    | `boolean`                                | `false`    |
+| `className`     | `string`                                 | -          |
+| `style`         | `CSSProperties`                          | -          |
 
 Every date in and out is `YYYY-MM-DD`. `DateRange` is `{ from: string \| null; to?: string \| null }`.
 
@@ -959,7 +963,7 @@ catch an untouched rating — use `min` instead.
 | `onOTPComplete`  | `(value: string) => void` | -        |
 | `disabled`       | `boolean`                 | -        |
 | `aria-invalid`   | `boolean`                 | -        |
-| `onBlur`         | `() => void`              | -        |
+| `onBlur`         | `(e: FocusEvent) => void` | -        |
 | `className`      | `string`                  | -        |
 | `inputClassName` | `string`                  | -        |
 
@@ -1216,8 +1220,16 @@ type FileRejection = { file: File; reason: "type" | "duplicate" | "max" };
 Files are real `File` objects, so they go straight into a `FormData`. `path` holds the
 folder a dropped file came from, `""` otherwise.
 
-`preview` is off by default, and `file.preview` is typed only when it is on. The object URLs
-are revoked as files leave the field and when it unmounts.
+`preview` is off by default, and `file.preview` is typed only when it is on — so the state
+holding the value has to follow:
+
+```tsx
+const [file, setFile] = useState<PickedFile | null>(null);    // no preview
+const [file, setFile] = useState<PreviewFile | null>(null);   // preview
+const [files, setFiles] = useState<PreviewFile[]>([]);        // multiple preview
+```
+
+The object URLs are revoked as files leave the field and when it unmounts.
 
 `accept` is enforced on a drop as well as in the dialog, unlike the native attribute.
 Anything turned away reaches `onReject`: `"type"` for `accept`, `"duplicate"` for `unique`,
@@ -1427,12 +1439,9 @@ every toast. Its defaults: `position: "bottom-right"`, `duration: 4000`,
 `toastStyle`, `iconClassName`, `messageClassName`, `descriptionClassName`,
 `actionClassName`, `cancelClassName`, `closeClassName`.
 
-Every toast can be swiped away, custom ones included. It leaves by the edges it sits near,
-so `bottom-right` goes right or down and `top-left` goes up or left; a centred one has only
-the one way out. A long drag or a quick flick both work, and dragging back inwards does
-nothing. `dismissible: false` turns it off for a toast that has to be answered.
-
-Buttons inside a toast still work: a press starting on one is never taken as a drag.
+Every toast can be swiped away, custom ones included, by the edges it sits near.
+`dismissible: false` turns that off for a toast that has to be answered. A press starting
+on a button inside a toast is never taken as a drag.
 
 `closeButton` is never turned on for you. Swiping is pointer only, so a toast with
 `duration: Infinity` and `dismissible: false` needs one.
@@ -1504,9 +1513,12 @@ Shapes for the props above that are not what their name suggests:
 
 - `RHFInput transform` is `{ input?: (v: string) => string; output?: (v: string) => string }`,
   not a function.
-- `onChange` and `onBlur` on every RHF component receive the **value**, not the event.
+- `onChange` on every RHF component receives the **value**, not the event. So does
+  `onBlur`, except on `RHFCheckbox`, `RHFRadio`, `RHFSwitch` and `RHFOTPInput`, where it
+  takes no argument at all.
 - `RHFInput prefix` / `suffix` take a ReactNode, a string, or a render function given
-  `{ field, fieldState, formState }`.
+  `{ field, fieldState, formState }`. That function is `ControllerProps["render"]`, so it
+  must return an element — a bare string does not compile.
 - `RHFCheckbox indeterminate` is `boolean | (({ field }) => boolean)`, which is how a
   select-all box reads its group.
 - `RHFCheckbox` holds three shapes. No `value`: a boolean. `value` with `single`: `value`

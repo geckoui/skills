@@ -38,6 +38,8 @@ Behaviour that changed without a rename:
 - Page scroll locks behind Dialog and Drawer, with the scrollbar width paid back as padding
   so nothing shifts.
 - `ConfirmDialog` awaits `onConfirm` and `onCancel`, so an async one shows its loading state.
+- `RHFCheckbox`, `RHFRadio` and `RHFSwitch` call `onBlur` with no arguments rather than
+  the native `FocusEvent`. Read the value from the form.
 - `Checkbox` `indeterminate` is independent of `checked`; in v1 the dash needed `checked` too.
 - `hasError` is gone from every component. Pass `aria-invalid` instead, which is what a
   screen reader reads and what the red border now hangs off. The RHF wrappers set it for you.

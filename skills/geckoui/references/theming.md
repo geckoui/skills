@@ -166,7 +166,79 @@ touching their rules. Set them on the component's class, or globally on `:root`.
 --gecko-toast-muted   --gecko-toast-radius   --gecko-toast-shadow   --gecko-toast-width
 --gecko-toast-gap   --gecko-toast-offset   --gecko-toast-padding   --gecko-toast-duration
 --gecko-toast-z
+
+/* Accordion */
+--gecko-accordion-radius   --gecko-accordion-gap   --gecko-accordion-padding-x
+--gecko-accordion-padding-y   --gecko-accordion-font-size   --gecko-accordion-duration
+
+/* Avatar */
+--gecko-avatar-accent   --gecko-avatar-size   --gecko-avatar-radius
+--gecko-avatar-font-size   --gecko-avatar-bg-base   --gecko-avatar-bg-mix
+
+/* AvatarGroup */
+--gecko-avatar-group-overlap   --gecko-avatar-group-lift   --gecko-avatar-group-ring
+--gecko-avatar-group-ring-width
+
+/* Breadcrumb */
+--gecko-breadcrumb-gap   --gecko-breadcrumb-link   --gecko-breadcrumb-current
+--gecko-breadcrumb-separator   --gecko-breadcrumb-separator-size   --gecko-breadcrumb-z
+
+/* ColorPicker */
+--gecko-color-picker-width   --gecko-color-picker-radius   --gecko-color-picker-gap
+--gecko-color-picker-saturation-height   --gecko-color-picker-slider-height
+--gecko-color-picker-thumb-size   --gecko-color-picker-thumb-ring
+--gecko-color-picker-preview-size   --gecko-color-picker-swatch-size
+--gecko-color-picker-checker   --gecko-color-picker-checker-size
+
+/* ColorInput */
+--gecko-color-input-height   --gecko-color-input-radius   --gecko-color-input-swatch-size
+--gecko-color-input-checker   --gecko-color-input-checker-size   --gecko-color-input-z
+
+/* Popover */
+--gecko-popover-bg   --gecko-popover-border   --gecko-popover-radius
+--gecko-popover-padding   --gecko-popover-width   --gecko-popover-max-width
+--gecko-popover-z
+
+/* Progress */
+--gecko-progress-accent   --gecko-progress-track   --gecko-progress-height
+--gecko-progress-radius   --gecko-progress-duration   --gecko-progress-label-gap
+
+/* Rating */
+--gecko-rating-accent   --gecko-rating-empty   --gecko-rating-gold   --gecko-rating-size
+--gecko-rating-gap
+
+/* Skeleton */
+--gecko-skeleton-bg   --gecko-skeleton-highlight   --gecko-skeleton-radius
+--gecko-skeleton-duration   --gecko-skeleton-line-height   --gecko-skeleton-line-gap
+--gecko-skeleton-last-line-width
+
+/* Slider, RangeSlider */
+--gecko-slider-accent   --gecko-slider-track   --gecko-slider-track-height
+--gecko-slider-thumb-size   --gecko-slider-thumb-bg   --gecko-slider-radius
+--gecko-slider-mark-size
+
+/* Stepper */
+--gecko-stepper-marker-size   --gecko-stepper-marker-bg   --gecko-stepper-marker-text
+--gecko-stepper-marker-border   --gecko-stepper-gap   --gecko-stepper-line
+--gecko-stepper-line-done   --gecko-stepper-line-width   --gecko-stepper-upcoming
+--gecko-stepper-current   --gecko-stepper-complete   --gecko-stepper-error
+
+/* TagInput */
+--gecko-tag-input-menu-max-height   --gecko-tag-input-z
+
+/* TimeInput */
+--gecko-time-input-column-height   --gecko-time-input-column-width   --gecko-time-input-z
+
+/* Tooltip */
+--gecko-tooltip-bg   --gecko-tooltip-text   --gecko-tooltip-radius   --gecko-tooltip-z
+
+/* Select, Menu, DateInput, DateRangeInput, Drawer, Dialog — stacking only */
+--gecko-select-menu-z   --gecko-menu-z   --gecko-date-input-z
+--gecko-date-range-input-z   --gecko-drawer-z   --gecko-dialog-z
 ```
+
+`--gecko-*-accent` takes one colour and the variants work out the rest, so a new colour is
+one declaration.
 
 ```css
 .GeckoUITabs {
@@ -296,9 +368,6 @@ Built-in: `border`, `rounded-lg`, `px-4`, `py-3`.
 Variables: `--gecko-accordion-radius`, `--gecko-accordion-gap`,
 `--gecko-accordion-padding-x`, `--gecko-accordion-padding-y`,
 `--gecko-accordion-font-size`, `--gecko-accordion-duration`.
-
-The open and close animates a grid row from `0fr` to `1fr` rather than a height, so it
-reaches the content's real height with nothing measured in JavaScript.
 
 ### Badge
 
