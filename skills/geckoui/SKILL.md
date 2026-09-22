@@ -247,7 +247,7 @@ property order.
 | `addOnBlur`       | `boolean`                                 | `true`             |
 | `renderTag`       | `({ value, index, remove }) => ReactNode` | -                  |
 
-Also `placeholder`, `disabled`, `readOnly`, `hasError`, `prefix`, `suffix`, `className`,
+Also `placeholder`, `disabled`, `readOnly`, `aria-invalid`, `prefix`, `suffix`, `className`,
 `wrapperClassName`, `menuClassName`, `menuPlacement`.
 
 **TagInputOption props:** `value` (required), `label`, `disabled`.
@@ -618,7 +618,7 @@ A month renders the four to six weeks it needs, so the height changes between mo
 | `placeholder`          | `string`                                                         | -                |
 | `disabled`             | `boolean`                                                        | -                |
 | `readOnly`             | `boolean`                                                        | -                |
-| `hasError`             | `boolean`                                                        | -                |
+| `aria-invalid`         | `boolean`                                                        | -                |
 | `prefix`               | `ReactNode \| FC`                                                | -                |
 | `suffix`               | `ReactNode \| FC`                                                | -                |
 | `hideCalendarIcon`     | `boolean`                                                        | -                |
@@ -661,7 +661,7 @@ segments as they are typed.
 | `step`         | `number`                                                    | `1`       |
 | `disabledTime` | `({ hour, minute, second }) => boolean`                     | -         |
 
-Also `disabled`, `readOnly`, `hasError`, `prefix`, `suffix`, `placeholder`,
+Also `disabled`, `readOnly`, `aria-invalid`, `prefix`, `suffix`, `placeholder`,
 `hideClearIcon`, `hideClockIcon`, `className`, `wrapperClassName`, `listClassName`,
 `listPlacement`, `floatingStrategy`.
 
@@ -688,7 +688,7 @@ strings: `` `${date}T${time}` ``.
 <RHFTimeInput name="startsAt" format="hh:mm A" step={15} />
 ```
 
-Takes everything `TimeInput` does except `hasError`, which the field's own error drives.
+Takes everything `TimeInput` does except `aria-invalid`, which the field's own error drives.
 The form holds the 24 hour string, so a resolver can compare `startsAt` and `endsAt`
 directly.
 
@@ -1122,7 +1122,7 @@ const [color, setColor] = useState("#3b82f6");
 | `footer`           | `ReactNode`               | -                       |
 | `swatchesLabel`    | `string`                  | `"Preset colours"`      |
 
-**ColorInput also takes:** `placeholder`, `render`, `readOnly`, `hasError`, `onOpenChange`,
+**ColorInput also takes:** `placeholder`, `render`, `readOnly`, `aria-invalid`, `onOpenChange`,
 `pickerPlacement`, `floatingStrategy`, `wrapperClassName`, `pickerClassName`.
 
 `formats` sets what the format dropdown offers, in what order, and the starting format —
@@ -1183,7 +1183,7 @@ const [file, setFile] = useState<PickedFile | null>(null);
 | `onReject`      | `(rejected: FileRejection[]) => void` | -               |
 | `placeholder`   | `ReactNode`                          | `"Choose a file"` |
 | `hideClearIcon` | `boolean`                            | `false`          |
-| `disabled` / `readOnly` / `hasError` | `boolean`       | `false`          |
+| `disabled` / `readOnly` / `aria-invalid` | `boolean`   | `false`          |
 | `render`        | `(state) => ReactNode`               | -                |
 
 `append`, `unique` and `max` are only accepted alongside `multiple`; TypeScript rejects
@@ -1212,7 +1212,7 @@ Anything turned away reaches `onReject`: `"type"` for `accept`, `"duplicate"` fo
 with the component. It is given `{ files, dragging, loading, disabled, readOnly, browse,
 clear, remove }`.
 
-**RHFFileInput** takes all of it except `value` and `hasError`. A single field holds `null`
+**RHFFileInput** takes all of it except `value` and `aria-invalid`. A single field holds `null`
 until something is picked, so `required` catches it; a multiple field holds `[]`, which
 `required` does not catch — use `validate`.
 
@@ -1422,6 +1422,11 @@ RHF field components accept `name` (required), `rules` and `control`. Use inside
 exceptions: neither takes `name`, `rules` or `control`. `disabled` comes from each
 component's own base props, not from all of them.
 
+Every wrapper sets `aria-invalid` on its field from that field's own error, so the red
+border and what a screen reader announces come from the one standard attribute. It is not
+yours to pass on an `RHF*` component; on a base component it is, and it is how you show an
+error outside React Hook Form.
+
 ```tsx
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -1461,7 +1466,7 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 | CounterInput     | RHFCounterInput   | `onChange`                                                                                  |
 | Input (number)   | RHFNumberInput    | `positiveOnly`, `strict`, `maxFractionDigits`, `maxWholeDigitPlaces`                        |
 | Input (currency) | RHFCurrencyInput  | `currency: { symbol, code }`                                                                |
-| FileInput        | RHFFileInput      | everything `FileInput` takes, except `value` and `hasError`                                 |
+| FileInput        | RHFFileInput      | everything `FileInput` takes, except `value` and `aria-invalid`                             |
 | -                | RHFError          | `render`. No `name`/`rules`/`control`                                                       |
 | -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName`. No `name`/`rules`/`control`                    |
 

@@ -39,6 +39,8 @@ Behaviour that changed without a rename:
   so nothing shifts.
 - `ConfirmDialog` awaits `onConfirm` and `onCancel`, so an async one shows its loading state.
 - `Checkbox` `indeterminate` is independent of `checked`; in v1 the dash needed `checked` too.
+- `hasError` is gone from every component. Pass `aria-invalid` instead, which is what a
+  screen reader reads and what the red border now hangs off. The RHF wrappers set it for you.
 - Tooltips open after 200ms rather than 700ms. Pass `delayDuration={700}` for the old timing.
 - `Textarea` no longer writes an inline height, so CSS can size one again. With `autoResize`
   it has `resize: none`, since the component owns the height.
