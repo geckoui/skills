@@ -140,14 +140,23 @@ Extends `ButtonProps`.
 
 ```tsx
 <Textarea placeholder="Message" rows={4} />
-<Textarea autoResize />
+<Textarea autoResize rows={2} maxRows={8} />
 ```
 
 | Prop         | Type      | Default |
 | ------------ | --------- | ------- |
 | `autoResize` | `boolean` | `false` |
+| `rows`       | `number`  | `2`     |
+| `maxRows`    | `number`  | -       |
 
-Extends `TextareaAutosizeProps`.
+Extends `TextareaHTMLAttributes`.
+
+`autoResize` grows it between `rows` and `maxRows`, then scrolls. It reads the element's own
+font, size, line height and padding, so it follows whatever you style it with.
+
+A field that sizes itself carries `data-auto-resize` and has `resize: none`, since a manual
+drag would be undone by the next keystroke. Without `autoResize` it is a plain `textarea`:
+`rows` sets the height, nothing is written to its `style`, and CSS can size it.
 
 ### Select
 
