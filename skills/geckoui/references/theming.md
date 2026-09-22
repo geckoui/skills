@@ -498,7 +498,7 @@ you already style that button.
 | Class                                     | Element    | Targets                             | Data Attrs                                             |
 | ----------------------------------------- | ---------- | ----------------------------------- | ------------------------------------------------------ |
 | `.GeckoUIDateInputWrapper`                | `<div>`    | Outer wrapper (includes calendar)   | `data-calendar-open`                                   |
-| `.GeckoUIDateInput`                       | `<div>`    | Input container (border, flex)      | `data-state`, `data-error`, `data-empty`, `data-focus` |
+| `.GeckoUIDateInput`                       | `<div>`    | Input container (border, flex)      | `data-state`, `aria-invalid`, `data-empty`, `data-focus` |
 | `.GeckoUIDateInput__placeholder`          | `<span>`   | Placeholder text                    | —                                                      |
 | `.GeckoUIDateInput__display-container`    | `<div>`    | Date segments container             | —                                                      |
 | `.GeckoUIDateInput__segment`              | `<label>`  | Individual segment (day/month/year) | `data-empty`                                           |
@@ -581,33 +581,25 @@ RHF classes stack on the **same DOM element** as their base component class (see
 
 | Class                                       | Element      | Targets                                  | Data Attrs                                    |
 | ------------------------------------------- | ------------ | ---------------------------------------- | --------------------------------------------- |
-| `.GeckoUIRHFInput`                          | `<label>`    | Wraps Input                              | `data-error`                                  |
-| `.GeckoUIRHFTextarea`                       | `<textarea>` | Wraps Textarea                           | `data-error`                                  |
+| `.GeckoUIRHFInput`                          | `<label>`    | Wraps Input                              | —                                             |
+| `.GeckoUIRHFTextarea`                       | `<textarea>` | Wraps Textarea                           | —                                             |
 | `.GeckoUIRHFSelect`                         | `<div>`      | Wraps Select outer container             | —                                             |
-| `.GeckoUIRHFSelectButton`                   | `<div>`      | Wraps SelectButton                       | `data-error`                                  |
-| `.GeckoUIRHFOTPInput`                       | `<div>`      | Wraps OTPInput                           | `data-error`                                  |
-| `.GeckoUIRHFCounterInput`                   | `<div>`      | Wraps CounterInput                       | `data-error`                                  |
+| `.GeckoUIRHFSelectButton`                   | `<div>`      | Wraps SelectButton                       | —                                             |
+| `.GeckoUIRHFOTPInput`                       | `<div>`      | Wraps OTPInput                           | —                                             |
+| `.GeckoUIRHFCounterInput`                   | `<div>`      | Wraps CounterInput                       | —                                             |
 | `.GeckoUIRHFSwitch`                         | `<label>`    | Wraps Switch                             | —                                             |
 | `.GeckoUIRHFSwitch__thumb`                  | `<span>`     | Switch thumb                             | —                                             |
 | `.GeckoUIRHFCheckbox`                       | `<label>`    | Checkbox + label wrapper                 | —                                             |
 | `.GeckoUIRHFCheckbox__label`                | `<span>`     | Label text                               | —                                             |
 | `.GeckoUIRHFRadio`                          | `<label>`    | Radio + label wrapper                    | —                                             |
 | `.GeckoUIRHFRadio__label`                   | `<span>`     | Label text                               | —                                             |
-| `.GeckoUIRHFFileInput`                      | `<label>`    | File input wrapper                       | —                                             |
-| `.GeckoUIRHFFileInput__input`               | `<input>`    | Hidden file input                        | `data-custom`                                 |
-| `.GeckoUIRHFFilePicker`                     | `<div>`      | Drag & drop container                    | `data-loading`, `data-dragging`, `data-error` |
-| `.GeckoUIRHFFilePicker__upload-area`        | `<div>`      | Drop zone (dashed border)                | —                                             |
-| `.GeckoUIRHFFilePicker__browse-button`      | `<button>`   | Browse files button                      | —                                             |
-| `.GeckoUIRHFFilePicker__file-list`          | `<div>`      | Selected files list                      | —                                             |
-| `.GeckoUIRHFFilePicker__file-row`           | `<div>`      | Individual file row                      | —                                             |
-| `.GeckoUIRHFFilePicker__file-name`          | `<span>`     | File name                                | —                                             |
-| `.GeckoUIRHFFilePicker__file-size`          | `<span>`     | File size                                | —                                             |
-| `.GeckoUIRHFFilePicker__file-remove`        | `<button>`   | Remove file button                       | —                                             |
-| `.GeckoUIRHFFilePicker__file-remove-icon`   | `<svg>`      | Remove icon                              | —                                             |
-| `.GeckoUIRHFFilePicker__upload-icon`        | `<svg>`      | Upload icon                              | —                                             |
-| `.GeckoUIRHFFilePicker__upload-text`        | `<p>`        | Upload instruction text                  | —                                             |
-| `.GeckoUIRHFFilePicker__upload-buttons`     | `<div>`      | Button container                         | —                                             |
-| `.GeckoUIRHFFilePicker__loading-overlay`    | `<div>`      | Loading spinner overlay                  | —                                             |
+| `.GeckoUIFileInputWrapper`                  | `<div>`      | Outer wrapper                            | `data-custom`                                 |
+| `.GeckoUIFileInput`                         | `<div>`      | The field, and the drop target           | `data-state`, `data-dragging`, `data-empty`   |
+| `.GeckoUIFileInput__trigger`                | `<button>`   | Fills the row, opens the dialog          | `aria-invalid`                                |
+| `.GeckoUIFileInput__value`                  | `<span>`     | The file name, or the count              | —                                             |
+| `.GeckoUIFileInput__placeholder`            | `<span>`     | Shown while empty                        | —                                             |
+| `.GeckoUIFileInput__icons`                  | `<div>`      | Clear button and the file icon           | —                                             |
+| `.GeckoUIFileInput__clear`                  | `<button>`   | Empties the field                        | —                                             |
 | `.GeckoUIRHFCurrencyInput`                  | `<label>`    | Currency input wrapper                   | —                                             |
 | `.GeckoUIRHFCurrencyInput__currency-symbol` | `<span>`     | Currency symbol ($ € £)                  | —                                             |
 | `.GeckoUIRHFCurrencyInput__currency-code`   | `<span>`     | Currency code (USD, EUR)                 | —                                             |
