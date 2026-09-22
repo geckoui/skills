@@ -75,6 +75,8 @@ These control buttons, focus rings, active states, and all accent colors.
   --color-border-focus: oklch(0.7155 0 none); /* focus state */
   --color-border-hover: oklch(0.8699 0 none); /* hover state */
   --color-border-disabled: oklch(0.9401 0 none); /* disabled border */
+  --color-border-invalid: oklch(0.6368 0.2078 25.33); /* a field in error */
+  --color-border-invalid-hover: oklch(0.5168 0.2178 25.33); /* ...under the pointer */
 }
 ```
 

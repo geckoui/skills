@@ -1422,6 +1422,9 @@ RHF field components accept `name` (required), `rules` and `control`. Use inside
 exceptions: neither takes `name`, `rules` or `control`. `disabled` comes from each
 component's own base props, not from all of them.
 
+Every field that can be invalid takes its border from `--color-border-invalid`, with
+`--color-border-invalid-hover` for under the pointer, so one line retints all of them.
+
 Every wrapper sets `aria-invalid` on its field from that field's own error, so the red
 border and what a screen reader announces come from the one standard attribute. It is not
 yours to pass on an `RHF*` component; on a base component it is, and it is how you show an
