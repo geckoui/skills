@@ -6,8 +6,6 @@ version: "2.0.0"
 
 # GeckoUI
 
-React component library with Tailwind CSS v4, OKLCH theming, and React Hook Form integration.
-
 **Covers `@geckoui/geckoui` v2.x.** For v1, use the skill on the `v1` branch:
 `npx skills add https://github.com/geckoui/skills/tree/v1/skills/geckoui`.
 
@@ -201,8 +199,13 @@ drag would be undone by the next keystroke. Without `autoResize` it is a plain `
 `children` as functions receive `{ value, selected, focused }`; `onClick` and `onRemove`
 receive `{ preventDefault, selectCurrentOption, closeMenu, filteredKeyword }`.
 
-**Also exported:** `SelectEmpty` for the no-results slot, `SelectDropdownSearch` for a
-search box inside the menu.
+**Also exported:** `SelectEmpty` for the no-results slot — passing one sets
+`hideDefaultEmptyUI` for you. `SelectDropdownSearch` is a search box inside the menu, and
+`filterable="dropdown"` already renders one, so pass it yourself only when building a menu
+by hand.
+
+Values are matched to options by deep equality, so a fresh object literal matches an option
+with the same shape.
 
 **A value that matches no option.** The trigger falls back to text worked out from the
 value itself: a string or number prints as is, an object uses its `label` key if it has
@@ -212,7 +215,7 @@ properties are all nil — shows the placeholder instead. A non-empty value matc
 option warns in development. Give object values a `label` key rather than relying on
 property order.
 
-**SelectTrigger:** render-props for custom trigger, receives `{ keyword, selectedOptions, handleChange, options, toggleMenu, open, openMenu, closeMenu, hasValue, filteredOptions, handleInputChange, handleKeyboardInteraction }`.
+**SelectTrigger:** render-props for custom trigger, receives `{ keyword, selectedOptions, handleChange, options, toggleMenu, open, openMenu, closeMenu, hasValue, filteredOptions, handleInputChange, handleKeyboardInteraction }`. `selectedOptions` is `{ label, value }` on a single `Select` and an array of them on a `multiple` one.
 
 **SelectConsumer:** render-props for accessing full Select context: `<SelectConsumer render={(ctx) => ...} />`.
 
@@ -305,8 +308,6 @@ before it is added; `rules` judges the whole list on submit.
 
 ### Accordion
 
-Four parts. The header and the panel sit inside their item.
-
 ```tsx
 <Accordion defaultValue="shipping">
   <AccordionItem value="shipping">
@@ -345,8 +346,8 @@ One item opens at a time unless `multiple` is set, and `value`, `defaultValue` a
 closes, so `setOpen("")` closes everything. `collapsible={false}` keeps one open at all
 times.
 
-Closed panels stay in the DOM, which is what the open and close animation needs.
-`keepMounted={false}` drops them, and the closing animation with them.
+Closed panels stay in the DOM. `keepMounted={false}` drops them, and the closing
+animation with them.
 
 Arrow up and down move between headers, Home and End jump to the ends, and Enter or Space
 opens. Disabled items are skipped, and the arrow keys are left alone inside a panel.
@@ -372,9 +373,6 @@ opens. Disabled items are skipped, and the arrow keys are left alone inside a pa
 `iconClassName` targets the icon element. Uses `data-color`, `data-condensed` attributes.
 
 ### Dialog
-
-Two forms. Declarative when the dialog belongs to a component's state; imperative when it
-is fired from anywhere.
 
 ```tsx
 const [open, setOpen] = useState(false);
@@ -444,12 +442,11 @@ ConfirmDialog.show({
   content: "This cannot be undone.",
   confirmButtonLabel: "Delete",
   cancelButtonLabel: "Cancel",
-  onConfirm: async ({ dismiss }) => {
+  onConfirm: async () => {
     await deleteItem();
-    dismiss();
   },
-  onCancel: ({ dismiss }) => {
-    dismiss();
+  onCancel: ({ preventDefault }) => {
+    if (dirty) preventDefault();
   }
 });
 ```
@@ -458,8 +455,8 @@ ConfirmDialog.show({
 | ----------------------- | ------------------------------------------ | ------- |
 | `title`                 | `string`                                   | -       |
 | `content`               | `ReactNode \| FC`                          | -       |
-| `confirmButtonLabel`    | `string`                                   | -       |
-| `cancelButtonLabel`     | `string`                                   | -       |
+| `confirmButtonLabel`    | `string`                                   | `"Ok"`     |
+| `cancelButtonLabel`     | `string`                                   | `"Cancel"` |
 | `onConfirm`             | `(e: { preventDefault, dismiss }) => void` | -       |
 | `onCancel`              | `(e: { preventDefault, dismiss }) => void` | -       |
 | `className`             | `string`                                   | -       |
@@ -468,8 +465,15 @@ ConfirmDialog.show({
 | `dismissOnEscape`       | `boolean`                                  | `true`  |
 | `dismissOnOutsideClick` | `boolean`                                  | `true`  |
 
-`onConfirm` and `onCancel` are both awaited, so an async callback shows the button's
-loading state and a `preventDefault()` inside one still lands in time.
+`onConfirm` and `onCancel` are both awaited, and the dialog dismisses itself once the
+handler resolves — call `preventDefault()` to keep it open, not `dismiss()` to close it.
+`dismiss` is there for closing early, before the rest of the handler runs.
+
+The loading state is gated on the handler being written `async`. A plain function that
+returns a promise is awaited but shows no spinner.
+
+While it is the topmost overlay it listens for Enter on the document and confirms, unless
+focus is on something focusable.
 
 **Built-in styles:** Same dialog panel styles as Dialog. Title is `text-base font-semibold`, content is `text-sm text-muted`, actions are right-aligned.
 
@@ -508,7 +512,7 @@ Drawer.dismiss(); // close the topmost drawer
 
 ### Popover
 
-A panel anchored to whatever opens it. `PopoverTrigger` uses its child as the trigger, so
+`PopoverTrigger` uses its child as the trigger, so
 the child keeps its own tag, styling and click handler.
 
 ```tsx
@@ -594,8 +598,14 @@ panel renders inline, not in a portal, so it keeps React context.
 
 Every date in and out is `YYYY-MM-DD`. `DateRange` is `{ from: string \| null; to?: string \| null }`.
 
-`DayCellRenderProps` gives `{ day, month, year, date, isDisabled, isSelected }` and more.
-`CalendarRef` gives `{ moveTo(month, year), clearSelection() }`.
+`DayCellRenderProps` gives `{ day, month, year, date, isDisabled, isSelected,
+isFocusedMonth }`. `CalendarRef` gives `{ moveTo(month, year), clearSelection() }`, where
+`month` is 1 for January.
+
+Clearing a single selection calls `onSelectDate("")`, not `null`.
+
+`disableDate` is the only constraint: there is no `minDate`, `maxDate`, locale or
+first-day-of-week prop.
 
 A month renders the four to six weeks it needs, so the height changes between months.
 `fixedWeeks` always renders six; `DateInput` and `DateRangeInput` take it too.
@@ -688,7 +698,7 @@ strings: `` `${date}T${time}` ``.
 <RHFTimeInput name="startsAt" format="hh:mm A" step={15} />
 ```
 
-Takes everything `TimeInput` does except `aria-invalid`, which the field's own error drives.
+Takes everything `TimeInput` does; `aria-invalid` comes from the field's own error.
 The form holds the 24 hour string, so a resolver can compare `startsAt` and `endsAt`
 directly.
 
@@ -722,8 +732,11 @@ directly.
 <Checkbox checked={allChecked} indeterminate={someChecked && !allChecked} />
 ```
 
-`indeterminate` mirrors the native DOM property and is independent of `checked`, so a
-select-all box shows the dash while staying unchecked.
+Takes every input attribute except `type`, plus `indeterminate`. It mirrors the native
+DOM property and is independent of `checked`, so a select-all box shows the dash while
+staying unchecked.
+
+`className` lands on the `<input>`, not on the `.GeckoUICheckbox` wrapper around it.
 
 ### Badge
 
@@ -805,8 +818,7 @@ so `.GeckoUIAvatarGroup > .GeckoUIAvatar` is not the selector to style against �
 
 ### Tabs
 
-Four parts: `Tabs` holds the state, `TabList` is the strip, each `Tab` is one tab, and each
-`TabPanel` is what its tab reveals — paired by `value`.
+`Tab` and `TabPanel` are paired by `value`.
 
 ```tsx
 <Tabs defaultValue="profile" variant="underline">
@@ -884,6 +896,9 @@ wiring to your own link:
 <label><Radio name="plan" value="pro" /> Pro</label>
 ```
 
+Every input attribute except `type`, and nothing else. `className` lands on the
+`<input>`.
+
 ### Rating
 
 ```tsx
@@ -910,18 +925,14 @@ wiring to your own link:
 Also `disabled`, `name`, `aria-label`, plus any div attribute. Uses `data-color`,
 `data-size`, `data-readonly`, `data-disabled`.
 
-Stars are `gold` by default, a fixed colour rather than a theme token.
-
 Any fraction is drawn exactly whether it can be picked or not: `value={4.3}` shows 4.3.
 `precision` decides only what a click lands on: `0.5` for halves, `0.1` for tenths. The
 arrow keys step by it too. `readOnly` takes the interaction away, nothing else.
 
 Picking the rating it already has sets it to `0`; `clearable={false}` turns that off.
 
-Built as a radio group: visually hidden radios carry the semantics, the arrow keys and the
-form posting. `icon` alone is used for both halves of each,
-filled and empty, with only the colour between them; add `emptyIcon` when the empty state is
-a different shape.
+`icon` alone is used for both filled and empty, with only the colour between them; add
+`emptyIcon` when the empty state is a different shape.
 
 ### RHFRating
 
@@ -947,6 +958,8 @@ catch an untouched rating — use `min` instead.
 | `aspectRatio`    | `string \| number`        | `0.94`   |
 | `onOTPComplete`  | `(value: string) => void` | -        |
 | `disabled`       | `boolean`                 | -        |
+| `aria-invalid`   | `boolean`                 | -        |
+| `onBlur`         | `() => void`              | -        |
 | `className`      | `string`                  | -        |
 | `inputClassName` | `string`                  | -        |
 
@@ -1086,8 +1099,7 @@ the joint and the reachability rules stay.
 
 ### ColorPicker
 
-`ColorPicker` is the panel: saturation square, hue slider, opacity slider, value field.
-`ColorInput` is a field that opens it in a popover.
+`ColorInput` is a field that opens `ColorPicker` in a popover.
 
 ```tsx
 const [color, setColor] = useState("#3b82f6");
@@ -1122,8 +1134,9 @@ const [color, setColor] = useState("#3b82f6");
 | `footer`           | `ReactNode`               | -                       |
 | `swatchesLabel`    | `string`                  | `"Preset colours"`      |
 
-**ColorInput also takes:** `placeholder`, `render`, `readOnly`, `aria-invalid`, `onOpenChange`,
-`pickerPlacement`, `floatingStrategy`, `wrapperClassName`, `pickerClassName`.
+**ColorInput also takes:** `placeholder` (a `ReactNode`, default `"Pick a colour"`),
+`render`, `readOnly`, `aria-invalid`, `onOpenChange`, `pickerPlacement`,
+`floatingStrategy`, `className`, `wrapperClassName`, `pickerClassName`. It drops `footer`.
 
 `formats` sets what the format dropdown offers, in what order, and the starting format —
 the first entry. A single entry pins the format and hides the dropdown.
@@ -1142,9 +1155,10 @@ is given `{ color, open }` and draws inside the trigger. Dragging, keyboard and 
 with the component.
 
 `parseColor(input)` reads 3, 4, 6 and 8 digit hex, `rgb()`, `rgba()`, `hsl()`, `hsla()`,
-and returns `null` for anything else. `formatColor(hsva, format, withAlpha)` writes it back.
+and returns `Hsva | null` — `Hsva` is exported. `formatColor(hsva, format, withAlpha)`
+writes it back; all three arguments are required.
 
-`readOnly` shows the value without opening. `ColorInput` opens at `z-index: 10`.
+`readOnly` shows the value without opening.
 
 ### FileInput
 
@@ -1181,9 +1195,12 @@ const [file, setFile] = useState<PickedFile | null>(null);
 | `preview`       | `boolean`                            | `false`          |
 | `accept`        | `string`                             | `"*"`            |
 | `onReject`      | `(rejected: FileRejection[]) => void` | -               |
-| `placeholder`   | `ReactNode`                          | `"Choose a file"` |
+| `placeholder`   | `ReactNode`                          | `"Choose a file"` / `"Choose files"` |
 | `hideClearIcon` | `boolean`                            | `false`          |
-| `disabled` / `readOnly` / `aria-invalid` | `boolean`   | `false`          |
+| `disabled`      | `boolean`                            | `false`          |
+| `readOnly`      | `boolean`                            | `false`          |
+| `aria-invalid`  | `boolean`                            | -                |
+| `wrapperClassName` | `string`                          | -                |
 | `render`        | `(state) => ReactNode`               | -                |
 
 `append`, `unique` and `max` are only accepted alongside `multiple`; TypeScript rejects
@@ -1209,10 +1226,11 @@ Anything turned away reaches `onReject`: `"type"` for `accept`, `"duplicate"` fo
 `unique` compares by size, then samples the start, middle and end.
 
 `render` draws inside the field, so browsing, dropping, the drag state and the keyboard stay
-with the component. It is given `{ files, dragging, loading, disabled, readOnly, browse,
-clear, remove }`.
+with the component. All get `{ dragging, loading, disabled, readOnly, browse, clear }`; a
+single field also gets `file: T | null`, a `multiple` field gets `files: T[]` and
+`remove(file)` — the file itself, not its index.
 
-**RHFFileInput** takes all of it except `value` and `aria-invalid`. A single field holds `null`
+**RHFFileInput** takes all of it except `value`. A single field holds `null`
 until something is picked, so `required` catches it; a multiple field holds `[]`, which
 `required` does not catch — use `validate`.
 
@@ -1236,8 +1254,6 @@ import Link from "next/link";
 
 <Breadcrumb maxItems={3} separator="/">…</Breadcrumb>
 ```
-
-Only use `href` when there is no router — a static site or a multi page app:
 
 ```tsx
 <BreadcrumbItem href="/settings">Settings</BreadcrumbItem>
@@ -1281,11 +1297,13 @@ current page the quieter `--gecko-breadcrumb-current`.
 <Pagination currentPage={page} totalPages={10} onChange={setPage} />
 ```
 
-Renders nothing when `totalPages <= 1`.
+`currentPage`, `totalPages`, `onChange` and `className`, and nothing else. Renders nothing
+when `totalPages <= 1`.
 
 ### Spinner
 
-Takes every SVG attribute, `stroke` included.
+Takes every SVG attribute, `stroke` included. Ships at 24×24 with
+`role="status" aria-label="Loading"` and `stroke="currentColor"`.
 
 ```tsx
 <Spinner />
@@ -1362,6 +1380,10 @@ Both animations are dropped under `prefers-reduced-motion`.
 <InputError>Invalid email</InputError>
 ```
 
+`Label` takes every label attribute, plus `required` (the asterisk only, no validation),
+`tooltip`, `tooltipIcon`, `tooltipBackgroundColor` and `tooltipClassName`. `InputError`
+takes every div attribute.
+
 ### Toast
 
 ```tsx
@@ -1396,7 +1418,9 @@ toast.promise(save(), {
 `onDismiss` and `onAutoClose` take no arguments.
 
 On `toastOptions`, `className` styles each stack; `toastClassName` and `toastStyle` style
-every toast.
+every toast. Its defaults: `position: "bottom-right"`, `duration: 4000`,
+`closeButton: false`, `dismissible: true`, `visibleToasts: 3`, `gap: 14`, `offset: 24`
+(the last two in pixels).
 
 **Defaults, on `GeckoUIProvider toastOptions`:** `position`, `duration`, `closeButton`,
 `dismissible`, `visibleToasts`, `gap`, `offset`, `className`, `toastClassName`,
@@ -1418,17 +1442,20 @@ Styled through `--gecko-toast-*` variables, not props.
 ## React Hook Form
 
 RHF field components accept `name` (required), `rules` and `control`. Use inside
-`<FormProvider>` or pass `control` explicitly. `RHFError` and `RHFInputGroup` are the
-exceptions: neither takes `name`, `rules` or `control`. `disabled` comes from each
-component's own base props, not from all of them.
+`<FormProvider>` or pass `control` explicitly. `RHFInputGroup` is the one exception: it
+takes none of the three. `disabled` comes from each component's own base props, not from
+all of them.
 
 Every field that can be invalid takes its border from `--color-border-invalid`, with
 `--color-border-invalid-hover` for under the pointer, so one line retints all of them.
 
-Every wrapper sets `aria-invalid` on its field from that field's own error, so the red
-border and what a screen reader announces come from the one standard attribute. It is not
-yours to pass on an `RHF*` component; on a base component it is, and it is how you show an
-error outside React Hook Form.
+A wrapper sets `aria-invalid` on its field from that field's own error, so the red border
+and what a screen reader announces come from the one standard attribute. Passing it
+yourself overrides what the wrapper sets. On a base component it is how you show an error
+outside React Hook Form.
+
+`RHFRating`, `RHFSlider` and `RHFRangeSlider` do not set it: those three have no error
+styling. Show their errors with `RHFError`.
 
 ```tsx
 import { FormProvider, useForm } from "react-hook-form";
@@ -1465,13 +1492,13 @@ const methods = useForm({ defaultValues: { email: "", country: "" } });
 | Switch           | RHFSwitch         | `value`, `uncheckedValue`, `onChange`                                                       |
 | DateInput        | RHFDateInput      | `onChange`                                                                                  |
 | DateRangeInput   | RHFDateRangeInput | `onChange`                                                                                  |
-| OTPInput         | RHFOTPInput       | -                                                                                           |
 | CounterInput     | RHFCounterInput   | `onChange`                                                                                  |
 | Input (number)   | RHFNumberInput    | `positiveOnly`, `strict`, `maxFractionDigits`, `maxWholeDigitPlaces`                        |
 | Input (currency) | RHFCurrencyInput  | `currency: { symbol, code }`                                                                |
-| FileInput        | RHFFileInput      | everything `FileInput` takes, except `value` and `aria-invalid`                             |
-| -                | RHFError          | `render`. No `name`/`rules`/`control`                                                       |
-| -                | RHFInputGroup     | `label`, `labelClassName`, `errorClassName`. No `name`/`rules`/`control`                    |
+| FileInput        | RHFFileInput      | everything `FileInput` takes, except `value`                                                |
+| OTPInput         | RHFOTPInput       | `onChange`, `onBlur`                                                                        |
+| -                | RHFError          | `render`                                                                                    |
+| -                | RHFInputGroup     | every `Label` prop, plus `errorClassName`. No `name`/`rules`/`control`                      |
 
 Shapes for the props above that are not what their name suggests:
 
@@ -1482,10 +1509,14 @@ Shapes for the props above that are not what their name suggests:
   `{ field, fieldState, formState }`.
 - `RHFCheckbox indeterminate` is `boolean | (({ field }) => boolean)`, which is how a
   select-all box reads its group.
+- `RHFCheckbox` holds three shapes. No `value`: a boolean. `value` with `single`: `value`
+  when checked, `uncheckedValue` (default `null`) when not. `value` alone: an array the
+  value is pushed into and filtered out of, so several boxes share one `name`.
 - `RHFError render` receives `ControllerFieldState`, so the message is `error?.message`.
 - `RHFTextarea` takes `transform` too, the same object shape.
 - `RHFCurrencyInput` omits `strict` — passing it is a type error.
 - `RHFRadio` throws if `value` is `null` or `undefined`.
+- `RHFRating` and `RHFColorInput` take `defaultValue`.
 
 `RHFInputGroup` finds its field by walking its children for an RHF input and reading that
 input's `name`. It warns if it finds none.
@@ -1513,23 +1544,24 @@ target a specific form when `FormProvider`s are nested.
 
 The library warns in the console about mistakes only a developer can fix — no provider
 mounted, several providers, an invalid calendar date, `RHFInputGroup` misuse, a `Select`
-value matching no option. Every message is prefixed `[GeckoUI]`.
+value matching no option, a `Progress` `max` at or below 0. Every message is prefixed
+`[GeckoUI]`.
+
+With several providers mounted, the innermost owns the overlay stack and the `Toaster`;
+the rest render nothing.
 
 They are stripped from production builds.
 
 ## Stacking Order
 
 Overlays sit in three tiers: inline dropdowns at `10` (Select, Breadcrumb, TagInput,
-TimeInput), floating panels at `50` (Tooltip, Menu, Popover, the date calendars), and full
-overlays above them — Drawer `1000`, Dialog `2000`, Toast `3000`.
+TimeInput, ColorInput), floating panels at `50` (Tooltip, Menu, Popover, the date
+calendars), and full overlays above them — Drawer `1000`, Dialog `2000`, Toast `3000`.
 
 Each is a variable: `--gecko-select-menu-z`, `--gecko-breadcrumb-z`,
-`--gecko-tag-input-z`, `--gecko-time-input-z`, `--gecko-tooltip-z`, `--gecko-menu-z`,
-`--gecko-popover-z`, `--gecko-date-input-z`, `--gecko-date-range-input-z`,
-`--gecko-color-input-z`, `--gecko-toast-z`.
-
-Keep the app's own chrome below `1000`; above it, a sticky header covers drawers, dialogs
-and toasts.
+`--gecko-tag-input-z`, `--gecko-time-input-z`, `--gecko-color-input-z`,
+`--gecko-tooltip-z`, `--gecko-menu-z`, `--gecko-popover-z`, `--gecko-date-input-z`,
+`--gecko-date-range-input-z`, `--gecko-drawer-z`, `--gecko-dialog-z`, `--gecko-toast-z`.
 
 ## Module Augmentation
 
