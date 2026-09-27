@@ -507,10 +507,21 @@ Drawer.dismiss(); // close the topmost drawer
 | `hideBackdrop`      | `boolean`                                | `false`   |
 | `allowClickOutside` | `boolean`                                | `false`   |
 | `dismissOnEscape`   | `boolean`                                | `true`    |
+| `keepMounted`       | `boolean`                                | `false`   |
 | `className`         | `string`                                 | -         |
 | `backdropClassName` | `string`                                 | -         |
 
 `className` targets the drawer panel. `backdropClassName` targets the backdrop overlay. Uses `data-placement`, `data-state="open" | "closed"` on the panel.
+
+**Closed content unmounts.** Children render while open and through the slide out, then
+unmount. So a form inside starts fresh on every open, and an `autoFocus` field only takes
+focus when the drawer is shown — no need to reset it by hand or key it on `open`.
+`keepMounted` keeps the children alive while closed instead, for state that should survive
+closing. A closed panel is `inert` either way, so nothing in it can be focused or reached
+by a screen reader.
+
+Before 2.0.4, closed children stayed mounted: an `autoFocus` field inside took focus on page
+load (on a phone, the keyboard popped up) and a form kept its last values.
 
 ### Popover
 
