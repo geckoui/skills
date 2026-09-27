@@ -178,6 +178,7 @@ drag would be undone by the next keystroke. Without `autoResize` it is a plain `
 | `onChange`             | `(v: T) => void` or `(v: T[]) => void` | -                                |
 | `multiple`             | `boolean`                              | `false`                          |
 | `filterable`           | `boolean \| "inline" \| "dropdown"`    | `false`                          |
+| `autoFocusSearch`      | `boolean`                              | `false`                          |
 | `placeholder`          | `string`                               | -                                |
 | `placeholderClassName` | `string`                               | -                                |
 | `disabled`             | `boolean`                              | -                                |
@@ -203,6 +204,11 @@ receive `{ preventDefault, selectCurrentOption, closeMenu, filteredKeyword }`.
 `hideDefaultEmptyUI` for you. `SelectDropdownSearch` is a search box inside the menu, and
 `filterable` (or `"dropdown"`) already renders one; `filterable="inline"` types into the button instead, so pass it yourself only when building a menu
 by hand.
+
+The dropdown search does not take focus on open, since on a phone that pops the keyboard
+over the options. `autoFocusSearch` focuses it. Typing on a keyboard while the select is
+focused moves into it either way. `filterable="inline"` always focuses, and the trigger's
+own field is `readOnly` in every other mode, so a plain select never brings up a keyboard.
 
 Values are matched to options by deep equality, so a fresh object literal matches an option
 with the same shape.
@@ -522,6 +528,10 @@ by a screen reader.
 
 Before 2.0.4, closed children stayed mounted: an `autoFocus` field inside took focus on page
 load (on a phone, the keyboard popped up) and a form kept its last values.
+
+**Nested overlays close one at a time.** A Select, Menu, Popover, ColorInput, DateInput,
+TimeInput or TagInput open inside a Drawer or Dialog takes the outside click or Escape
+first: the click closes the menu, the next one closes the drawer. Nothing to wire up.
 
 ### Popover
 
