@@ -201,7 +201,7 @@ receive `{ preventDefault, selectCurrentOption, closeMenu, filteredKeyword }`.
 
 **Also exported:** `SelectEmpty` for the no-results slot — passing one sets
 `hideDefaultEmptyUI` for you. `SelectDropdownSearch` is a search box inside the menu, and
-`filterable="dropdown"` already renders one, so pass it yourself only when building a menu
+`filterable` (or `"dropdown"`) already renders one; `filterable="inline"` types into the button instead, so pass it yourself only when building a menu
 by hand.
 
 Values are matched to options by deep equality, so a fresh object literal matches an option
