@@ -221,6 +221,20 @@ own field is `readOnly` in every other mode, so a plain select never brings up a
 Values are matched to options by deep equality, so a fresh object literal matches an option
 with the same shape.
 
+**Clearing** (`clearable`, the × button) calls `onChange(undefined)` on a single select and
+`onChange([])` on a multiple one, even though `onChange` is typed `(value: T) => void`. If the
+code receiving the value treats `undefined` differently from "empty", map it. For example, some
+URL-state libraries only remove a key on `null` and ignore `undefined`:
+`onChange={(value) => setFilter(value ?? null)}`.
+
+**Focus opens the menu**, programmatic focus included. So a `Select` that a form focuses for you
+(for example the first field of a row just added to a field array) opens straight away.
+
+**Inside a scroll container** — a table in an `overflow-x-auto` wrapper, a scroll area, anything
+with `overflow: hidden/auto` — the menu is clipped. Pass `floatingStrategy="fixed"` so it is
+positioned against the viewport. The same applies to `Menu`, `Popover`, `DateInput`,
+`DateRangeInput`, `TimeInput`, `ColorInput` and `TagInput`.
+
 **A value that matches no option.** The trigger falls back to text worked out from the
 value itself: a string or number prints as is, an object uses its `label` key if it has
 one, otherwise its first non-nil property. `{ id: null, name: "Ann" }` reads as "Ann".
@@ -321,6 +335,21 @@ before it is added; `rules` judges the whole list on submit.
 **MenuItem props:** `onClick`, `disabled`, `children`.
 
 **MenuTrigger:** render function receiving `{ open, toggleMenu, openMenu, closeMenu, disabled }`.
+
+A row-action menu with an icon trigger, safe inside a scrolling table:
+
+```tsx
+<Menu floatingStrategy="fixed" placement="bottom-end">
+  <MenuTrigger>
+    {({ toggleMenu }) => (
+      <Button type="button" variant="icon" aria-label="Actions" onClick={toggleMenu}>
+        <EllipsisVerticalIcon className="size-4" />
+      </Button>
+    )}
+  </MenuTrigger>
+  <MenuItem onClick={edit}>Edit</MenuItem>
+</Menu>
+```
 
 ### Accordion
 
@@ -440,6 +469,33 @@ Dialog.show({
 
 Clicking inside a dialog never dismisses it; only a press and release both landing on the
 backdrop does.
+
+**Closed content unmounts**, as with `Drawer`: children render while open and through the
+close animation, then unmount. Two things follow:
+
+- Keep the dialog's form state (`useForm`, `useState`) in an inner component rendered as the
+  children. Every open then starts fresh, with no reset needed.
+- Don't clear state on close. Resetting fields in the close handler, or guarding the children
+  with `{data && …}` where closing clears `data`, empties the panel while it is still animating
+  out. Keep `open` as its own state, separate from the data shown inside.
+
+```tsx
+function EditForm({ item, onClose }) {
+  const methods = useForm({ defaultValues: toValues(item) }); // fresh on every open
+  // ...
+}
+
+const [open, setOpen] = useState(false);
+const [item, setItem] = useState<Item | null>(null); // kept while closing
+
+<Dialog open={open} onClose={() => setOpen(false)}>
+  {item && <EditForm key={item.id} item={item} onClose={() => setOpen(false)} />}
+</Dialog>;
+```
+
+Opening animates the panel from `scale-95`. A library that measures its box when it mounts (an
+image cropper, a chart) reads a size 5% too small; give the panel `className="scale-100!"` or
+let the library re-measure after the dialog has opened.
 
 | Prop                    | Type                           | Default |
 | ----------------------- | ------------------------------ | ------- |
@@ -1266,6 +1322,10 @@ Anything turned away reaches `onReject`: `"type"` for `accept`, `"duplicate"` fo
 
 `unique` compares by size, then samples the start, middle and end.
 
+The outer `GeckoUIFileInputWrapper` is full width and `className` targets the field inside it.
+To size a custom tile (a square image picker), size the wrapper:
+`wrapperClassName="w-32 shrink-0"` with `className="w-full"`.
+
 `render` draws inside the field, so browsing, dropping, the drag state and the keyboard stay
 with the component. All get `{ dragging, loading, disabled, readOnly, browse, clear }`; a
 single field also gets `file: T | null`, a `multiple` field gets `files: T[]` and
@@ -1561,6 +1621,17 @@ Shapes for the props above that are not what their name suggests:
 
 `RHFInputGroup` finds its field by walking its children for an RHF input and reading that
 input's `name`. It warns if it finds none.
+
+It walks rendered elements' `props.children` and matches a component whose `displayName`
+contains "RHF". It sees through plain elements (`<div>`), but not into your own components:
+their output isn't rendered yet. So `<RHFInputGroup><MyField name="x" /></RHFInputGroup>` warns
+and never shows the field's error. Put the RHF input directly inside (or inside plain
+elements), or give your component a `name` prop and a `displayName` containing "RHF":
+
+```tsx
+export function RHFImageInput({ name }: { name: string }) { /* useController({ name }) */ }
+RHFImageInput.displayName = "RHFImageInput";
+```
 
 ### RHFController
 
