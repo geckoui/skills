@@ -33,6 +33,14 @@ For Tailwind CSS v4 projects, import inside `@layer`:
 }
 ```
 
+Imported this way, every GeckoUI color is also a Tailwind utility with no extra setup:
+`bg-surface-primary`, `bg-surface-secondary`, `text-text-muted`, `text-text-secondary`,
+`border-border-secondary`, `bg-primary-600/50`, `text-error`, `hover:bg-surface-hover`. They
+read the same `--color-*` variables, so they follow dark mode and theme overrides. Prefer
+them over hardcoded colors (`bg-white`, `text-gray-500`) or `bg-(--color-...)`. Do not
+redeclare the tokens in the app's `@theme`. A JS-only import (`import "...styles.css"`) does
+not add the utilities.
+
 ### Dark mode needs the `dark` class
 
 GeckoUI keeps its dark values under a `.dark` class. Nothing switches on its own, so

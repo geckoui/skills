@@ -12,6 +12,15 @@ import "@geckoui/geckoui/styles.css";
 import "./my-theme.css";
 ```
 
+## Tailwind Utilities
+
+When `styles.css` is imported from the app's Tailwind v4 CSS file (inside
+`@layer components`), every `--color-*` variable below is also a Tailwind utility:
+`bg-surface-primary`, `text-text-muted`, `border-border-secondary`, `bg-primary-600/50`,
+`text-error`, with variants such as `hover:` and `dark:`. The stylesheet ships a
+`@theme inline reference` block, so each utility is `var(--color-*)` and follows dark mode
+and overrides, and nothing is redeclared. A JS-only import does not add the utilities.
+
 ## Complete Variable Reference
 
 ### Primary Colors (brand color scale)
