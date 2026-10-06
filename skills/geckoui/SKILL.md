@@ -221,11 +221,11 @@ own field is `readOnly` in every other mode, so a plain select never brings up a
 Values are matched to options by deep equality, so a fresh object literal matches an option
 with the same shape.
 
-**Clearing** (`clearable`, the × button) calls `onChange(undefined)` on a single select and
-`onChange([])` on a multiple one, even though `onChange` is typed `(value: T) => void`. If the
-code receiving the value treats `undefined` differently from "empty", map it. For example, some
-URL-state libraries only remove a key on `null` and ignore `undefined`:
-`onChange={(value) => setFilter(value ?? null)}`.
+**Clearing** (`clearable`, the × button) calls `onChange(null)` on a single select and
+`onChange([])` on a multiple one. So with `clearable`, a single `Select` or `RHFSelect` types
+`onChange` as `(value: T | null) => void`; without it, `(value: T) => void`. `null` survives
+`JSON.stringify` and means "set to empty" to most APIs and ORMs, where a missing (`undefined`)
+key often means "leave unchanged". Schemas for a clearable field need `.nullable()`.
 
 **Focus opens the menu**, programmatic focus included. So a `Select` that a form focuses for you
 (for example the first field of a row just added to a field array) opens straight away.
