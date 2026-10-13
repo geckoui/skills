@@ -634,6 +634,10 @@ the child keeps its own tag, styling and click handler.
 `offset` is the gap from the trigger to the nearest part of the popover: the arrow's tip
 when `arrow` is on, otherwise the panel edge.
 
+The panel has no width of its own: it takes its content's width, up to the viewport edge.
+Size a popover through its content (`<div className="w-[360px]">`), not `PopoverContent`.
+`--gecko-popover-max-width` caps it when wanted, such as for a long paragraph.
+
 `usePopover()` gives anything inside the panel `open`, `close()`, `toggle()` and
 `setOpen()`, so a Cancel button or a form submit can shut it.
 
